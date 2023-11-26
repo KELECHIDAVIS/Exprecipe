@@ -2,11 +2,12 @@ const asyncHandler = require('express-async-handler')
 
 
 const Ingredient = require("../models/ingredientModel")
+const User = require('../models/userModel')
 // Gets goals (only the specific user goal after auth )
 //route: GET /api/goals
 //access: Private 
 const getIngredients = asyncHandler(async (req, res) =>{
-    const ingredients = await Ingredient.find() 
+    const ingredients = await Ingredient.find({user: req.user.id}) 
 
     res.status(200).json(ingredients); 
 })
@@ -24,7 +25,8 @@ const setIngredient =  asyncHandler(async (req, res) =>{
 
    
     const ingredient = await Ingredient.create({
-        name: req.body.name
+        name: req.body.name,
+        user: req.user.id
     })
     res.status(200).json(ingredient); 
 })
@@ -34,20 +36,33 @@ const setIngredient =  asyncHandler(async (req, res) =>{
 //access: Private 
 const updateIngredient =  asyncHandler(async (req, res) =>{
 
+    const ingredient = await Ingredient.findById(req.params.id); 
 
-    try {
-        const ingredientId = req.params.id; 
-        const updatedName = req.body.name; 
-        let ingredient = await Ingredient.findOneAndUpdate({_id:ingredientId}, {name:updatedName})
-
-        ingredient = await Ingredient.findOne({_id:ingredientId}); 
-        console.log(ingredient) ; 
-        res.status(200).json({ingredient}); 
-    
-    } catch (error) {
-        console.error(error); 
-        res.status(500).json({message:"Something Went Wrong When Trying To Update That Ingredient"})
+    if(!ingredient)
+    {
+        res.status(400); 
+        throw new Error("Ingredient Not found"); 
     }
+
+    const user = await User.findById(req.user.id);
+
+    // check for user 
+    if(!user){
+        res.status(401); 
+        throw new Error("User not found"); 
+    }
+
+    // make sure logged in user matches the ingredient user
+    if(ingredient.user.toString() !== user.id){
+        res.status(401); 
+        throw new Error("User not authorized"); 
+    }
+
+
+
+    const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, req.body, { new: true,})
+
+    res.status(200).json(updatedIngredient); 
 })
 
 
@@ -55,18 +70,32 @@ const updateIngredient =  asyncHandler(async (req, res) =>{
 //route: GET /api/goals/:id
 //access: Private 
 const deleteIngredient =  asyncHandler(async (req, res) =>{
-    try {
-        const ingredientId = req.params.id; 
-        
-        let ingredient = await Ingredient.deleteOne({_id:ingredientId})
+    const ingredient = await Ingredient.findById(req.params.id); 
 
-        console.log(ingredient) ; 
-        res.status(200).json({message:`Ingredient with id ${ingredientId} has been deleted`}); 
-    
-    } catch (error) {
-        console.error(error); 
-        res.status(500).json({message:"Something Went Wrong When Trying To Delete That Ingredient"})
+    if(!ingredient) {
+        res.status(400) ; 
+        throw new Error("Goal Not Found"); 
     }
+
+    const user = await User.findById(req.user.id);
+
+    // check for user 
+    if(!user){
+        res.status(401); 
+        throw new Error("User not found"); 
+    }
+
+    // make sure logged in user matches the ingredient user
+    if(ingredient.user.toString() !== user.id){
+        res.status(401); 
+        throw new Error("User not authorized"); 
+    }
+
+
+    await ingredient.deleteOne(); 
+
+    res.status(200).json({id: req.params.id}); 
+
 })
 
 module.exports = {
