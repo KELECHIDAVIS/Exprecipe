@@ -4,7 +4,6 @@
   "description": "Exprecipe App ",
   "main": "server.js",
   "scripts": {
-    "start": "node backed/server.js",
     "server": "nodemon backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,6 +13,7 @@
     "colors": "^1.4.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
     "mongoose": "^8.0.1"
   },
   "devDependencies": {
