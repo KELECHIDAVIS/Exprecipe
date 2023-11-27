@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
      pageBackgroundColor:{
-        backgroundColor:"#FFF8D6"
+        backgroundColor:"#fefefe"
      },
      primaryColor:{
         backgroundColor:"#F7E1AE"

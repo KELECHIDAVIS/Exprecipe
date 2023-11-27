@@ -1,28 +1,28 @@
 
-import {StyleSheet, SafeAreaView , Text,Image,TouchableOpacity, View, TouchableWithoutFeedback} from "react-native";
+import {StyleSheet, SafeAreaView , Text,Image,TouchableOpacity, View, TouchableWithoutFeedback, TextInput} from "react-native";
 import GlobalStyles from "../assets/styles/GlobalStyles";
 import InputField from "../components/InputField"; 
 import CustomButton from "../components/CustomButton"; 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useState } from "react";
+import {useForm, Controller}  from 'react-hook-form'
 
 export default function RegisterScreen({navigation})
 {
 
-    const [formData, setFormData]    = useState({
-        name:'',
-        email:"",
-        password:'',
-        password2:"",
-    })
+    const {control , handleSubmit, formState:{errors}}  = useForm();  
 
-    const {name, email, password, password2} = formData; 
+    const onRegisterPressed = (data)=>{
+      console.log(data); 
+      navigation.navigate("Tabs")
+    }
 
     return (
         
     <SafeAreaView style={[{flex: 1, justifyContent: 'center'}, GlobalStyles.pageBackgroundColor]}>
       <View style={{paddingHorizontal: 25}}>
+        
         
         <Text
           style={{
@@ -37,46 +37,68 @@ export default function RegisterScreen({navigation})
           Register
         </Text>
 
+        {/* start form */}
+
+
         <InputField
-          label={'Name'}
-          icon={
-            <MaterialIcons
+          name="name"
+          placeHolder={"Name"}  
+          icon={<Ionicons
             name="person"
-            size={20}
+            size={18}
             color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          keyboardType="email-address"
-        />
-        
-        <InputField
-          label={'Email'}
-          icon={
-            <MaterialIcons
-            name="alternate-email"
-            size={20}
-            color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          keyboardType="email-address"
+            style={{marginRight: 8, }}
+          />}
+          control={control}
+          rules={{required:true}}
         />
 
         <InputField
-          label={'Password'}
-          icon={
-            <Ionicons
-            name="ios-lock-closed-outline"
-            size={20}
+          name="email"
+          placeHolder={"Email"}  
+          rules={{required:true}}
+          icon={<Ionicons
+            name="at"
+            size={18}
             color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          inputType="password"
+            style={{marginRight: 8, }}
+          />}
+          control={control}
+        />
+        <InputField
+          name="password"
+          placeHolder={"Password"}
+          rules={{required:true}}
+          icon={<Ionicons
+            name="lock-closed-outline"
+            size={18}
+            color="#666"
+            style={{marginRight: 8, }}
+          />}  
+          secureTextEntry= {true}
+          control={control}
+        />
+
+        <InputField
+          name="password2"
+          placeHolder={"Retype Password"}
+          rules={{required:true}}
+          icon={<Ionicons
+            name="lock-closed-outline"
+            size={18}
+            color="#666"
+            style={{marginRight: 8, }}
+          />}  
+          secureTextEntry= {true}
+          control={control}
         />
         
-        <CustomButton label={"Register"} onPress={() => {}} />
+        
+        <CustomButton label={"Register"} onPress={handleSubmit(onRegisterPressed)} />
+
+        {/* end form */}
+
+
 
         <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
           Or, register with ...

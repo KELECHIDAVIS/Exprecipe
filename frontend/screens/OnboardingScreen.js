@@ -7,26 +7,44 @@ import GlobalStyles from '../assets/styles/GlobalStyles';
 
 
 const OnboardingScreen = ({navigation}) => {
-  return (
-    <SafeAreaView style={[styles.pageContainer, GlobalStyles.pageBackgroundColor]}>
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fefefe',
+        }}>
         
-
-        <View style={styles.logoContainer}>
-            <Image  source={require("../assets/Images/exprecipeLogo1.png")}/>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Image style={styles.logo} source={require("../assets/Images/exprecipeLogo1.png")}/>
         </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: GlobalStyles.accentColor.backgroundColor,
+            padding: 20,
+            width: '90%',
+            borderRadius: 10,
+            marginBottom: 50,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+          onPress={() => navigation.navigate('Login')}>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 18,
+              textAlign: 'center',
+              fontWeight: 'bold',
 
-        <TouchableOpacity 
-            style={[styles.buttonStyle, GlobalStyles.accentColor]}
-            onPress={ () => navigation.navigate("Login")}
-        >
-            <Text style={{color:"white", fontStyle:"italic", fontSize:18}}>Welcome</Text>
-            <MaterialIcons name='arrow-forward-ios' size={22} color={"white"}/>
+            }}>
+            Let's Begin
+          </Text>
+          <MaterialIcons name="arrow-forward-ios" size={22} color="#fff" />
         </TouchableOpacity>
-
-    </SafeAreaView>
-  );
-};
-
+      </SafeAreaView>
+    );
+  };
 
 
 styles = StyleSheet.create({
@@ -43,9 +61,6 @@ styles = StyleSheet.create({
     logo:{
         width: 320,
         height:150,
-        borderRadius:20,
-        overflow:"hidden",
-        
     },
     logoContainer:{flex: 1, alignItems: 'center', marginTop: 75},
     buttonStyle:{

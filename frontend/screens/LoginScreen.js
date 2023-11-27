@@ -5,9 +5,17 @@ import InputField from "../components/InputField";
 import CustomButton from "../components/CustomButton"; 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useForm, Controller}  from 'react-hook-form'
 
 export default function LoginScreen({navigation})
 {
+
+    const {control , handleSubmit, formState:{errors}}  = useForm();  
+    const onLoginPressed = (data)=>{
+      console.log(data); 
+      navigation.navigate("Tabs")
+    }
+
     return (
     <SafeAreaView style={[{flex: 1, justifyContent: 'center'}, GlobalStyles.pageBackgroundColor]}>
       <View style={{paddingHorizontal: 25}}>
@@ -23,35 +31,43 @@ export default function LoginScreen({navigation})
           Login
         </Text>
 
-        <InputField
-          label={'Email'}
-          icon={
-            <MaterialIcons
-            name="alternate-email"
-            size={20}
-            color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          keyboardType="email-address"
-        />
+        {/* start form */}
+
 
         <InputField
-          label={'Password'}
-          icon={
-            <Ionicons
-            name="ios-lock-closed-outline"
-            size={20}
+          name="email"
+          placeHolder={"Email"}  
+          rules={{required:true}}
+          icon={<Ionicons
+            name="at"
+            size={18}
             color="#666"
-            style={{marginRight: 5}}
-          />
-          }
-          inputType="password"
-          fieldButtonLabel={"Forgot?"}
-          fieldButtonFunction={() => {}}
+            style={{marginRight: 8, }}
+          />}
+          control={control}
         />
+        <InputField
+          name="password"
+          placeHolder={"Password"}
+          rules={{required:true}}
+          icon={<Ionicons
+            name="lock-closed-outline"
+            size={18}
+            color="#666"
+            style={{marginRight: 8, }}
+          />}  
+          secureTextEntry= {true}
+          control={control}
+        />
+
         
-        <CustomButton label={"Login"} onPress={() => {}} />
+        
+        
+        <CustomButton label={"Login"} onPress={handleSubmit(onLoginPressed)} />
+
+        {/* end form */}
+
+        
 
         <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
           Or, login with ...
