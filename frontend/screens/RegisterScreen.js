@@ -154,8 +154,8 @@ export default function RegisterScreen({navigation})
           }}>
           
           {/* Only for development */}
-          <CustomButton label={"Go Login"} onPress={()=>navigation.navigate("Login")}/>
-          <CustomButton label={"Go Home"} onPress={()=>navigation.navigate("Onboarding")}/>
+          {/* <CustomButton label={"Go Login"} onPress={()=>navigation.navigate("Login")}/>
+          <CustomButton label={"Go Home"} onPress={()=>navigation.navigate("Onboarding")}/> */}
         </View>
       </View>
     </SafeAreaView>

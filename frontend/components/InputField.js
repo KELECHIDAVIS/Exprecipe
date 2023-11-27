@@ -39,7 +39,7 @@ export default function InputField({
           render ={({field: {value, onChange, onBlur}, fieldState:{error}}) => 
             <TextInput
             placeholder={placeHolder}
-            style={[{flex: 1, paddingVertical: 0}, {backgroundColor: error ? 'orange': '#fefefe'}]}
+            style={[{flex: 1, paddingVertical: 0}, {backgroundColor: error ? 'orange': GlobalStyles.pageBackgroundColor.backgroundColor}]}
             secureTextEntry={secureTextEntry}
             value={value}
             onChangeText={onChange}

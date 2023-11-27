@@ -32,7 +32,7 @@ export default function Recipes() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: GlobalStyles.pageBackgroundColor,
+    backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor,
     
   },
 });

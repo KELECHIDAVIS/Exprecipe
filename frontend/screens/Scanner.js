@@ -18,7 +18,7 @@ export default function Scanner() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: GlobalStyles.backgroundColor,
+    backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor,
     alignItems: 'center',
     justifyContent: 'center',
   },

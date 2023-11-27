@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         width: "100%",
         height:55,
-        backgroundColor: GlobalStyles.primaryColor,
+        backgroundColor: GlobalStyles.primaryColor.backgroundColor,
         alignItems:"center",
         marginTop: 10
     },
     title:{
-        color: GlobalStyles.secondaryColor,
+        color: GlobalStyles.secondaryColor.backgroundColor,
         fontWeight: "400",
         fontSize: 20,
         marginLeft:15
@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
         width: 30 ,
         height: 30, 
         marginLeft:15,
-        tintColor: GlobalStyles.secondaryColor
+        tintColor: GlobalStyles.secondaryColor.backgroundColor
     }
 }); 

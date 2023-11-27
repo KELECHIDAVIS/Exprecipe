@@ -5,7 +5,7 @@ export default function RecipeCard(props){
     
     const {name , image, time , ingredientCount, missingIngredients, timeImage, ingrImage} = props; 
     
-    let color= GlobalStyles.accentColor; 
+    let color= GlobalStyles.accentColor.backgroundColor; 
     if(missingIngredients >0 && missingIngredients<=5)
         color = "#e09838"
     if(missingIngredients >5)
@@ -36,7 +36,7 @@ export default function RecipeCard(props){
 
 styles  = StyleSheet.create({
     outerContainer:{
-        backgroundColor:GlobalStyles.primaryColor,
+        backgroundColor:GlobalStyles.primaryColor.backgroundColor,
         height:100,
         width: 365,
         borderRadius:10,
@@ -63,17 +63,17 @@ styles  = StyleSheet.create({
     },
     header:{
         fontSize:18,
-        color:GlobalStyles.secondaryColor, 
+        color:GlobalStyles.secondaryColor.backgroundColor, 
         fontWeight:'bold'
     },
     bodyText:{
         fontSize :14,
-        color:GlobalStyles.secondaryColor,
+        color:GlobalStyles.secondaryColor.backgroundColor,
         fontWeight:'500'
     },
     noMissingIngrText:{
         fontSize :12,
-        color:GlobalStyles.accentColor,
+        color:GlobalStyles.accentColor.backgroundColor,
         fontWeight:'400'
     },
     mediumMissingIngrText:{
@@ -108,6 +108,6 @@ styles  = StyleSheet.create({
         width:20,
         height:24,
         marginRight:5,
-        tintColor:GlobalStyles.secondaryColor
+        tintColor:GlobalStyles.secondaryColor.backgroundColor
     }
 })

@@ -13,7 +13,7 @@ const OnboardingScreen = ({navigation}) => {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#fefefe',
+          backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor,
         }}>
         
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

@@ -8,7 +8,7 @@ export default function CheckBubble(props)  {
     const {name} = props 
     return (
         <View style = {styles.container}>
-            <CheckBox style={styles.check} value= {checked} onValueChange={setChecked} color={GlobalStyles.accentColor}/>
+            <CheckBox style={styles.check} value= {checked} onValueChange={setChecked} color={GlobalStyles.accentColor.backgroundColor}/>
             <Text style={styles.name}> {props.name}</Text>
         </View>
     )
@@ -17,7 +17,7 @@ export default function CheckBubble(props)  {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: GlobalStyles.primaryColor,
+        backgroundColor: GlobalStyles.primaryColor.backgroundColor,
         width: 100,
         height: 35, 
         alignItems:"center",

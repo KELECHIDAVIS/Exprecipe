@@ -14,7 +14,7 @@ const Tab  = createBottomTabNavigator();
 
 const getTabBarIcon = (focused, iconName) => {
   const iconSize = focused ? 55 : 50; // Adjust the size based on focused state
-  const iconColor = focused? GlobalStyles.accentColor : GlobalStyles.secondaryColor; 
+  const iconColor = focused? GlobalStyles.accentColor.backgroundColor : GlobalStyles.secondaryColor.backgroundColor; 
 
   
 
@@ -76,8 +76,8 @@ const CustomTabBarButton = ({children , onPress}) =>(
     style={{
       width:70, 
       height:70,
-      borderRadius: 35,
-      backgroundColor: GlobalStyles.accentColor
+      borderRadius:30,
+      backgroundColor: GlobalStyles.accentColor.backgroundColor
     }}
     >
       {children}
@@ -97,17 +97,17 @@ const Tabs = () =>{
               right: 20,
               elevation:0, 
               borderRadius: 15,
-              backgroundColor: GlobalStyles.primaryColor,
+              backgroundColor: GlobalStyles.primaryColor.backgroundColor,
               height: 80, 
               ...styles.shadow
             }
           }} 
         >
-            <Tab.Screen name="Pantry" component={Pantry} options={{headerStyle: {backgroundColor: GlobalStyles.bgColor } ,headerTitle: "Pantry", tabBarIcon:({focused }) => getTabBarIcon(focused, "Pantry") }} />
-            <Tab.Screen name='Recipes' component={Recipes} options={{headerStyle: {backgroundColor: GlobalStyles.bgColor} ,headerTitle: "Recipes", tabBarIcon:({focused }) => getTabBarIcon(focused, "Recipes") }}/>
+            <Tab.Screen name="Pantry" component={Pantry} options={{headerStyle: {backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor } ,headerTitle: "Pantry", tabBarIcon:({focused }) => getTabBarIcon(focused, "Pantry") }} />
+            <Tab.Screen name='Recipes' component={Recipes} options={{headerStyle: {backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor} ,headerTitle: "Recipes", tabBarIcon:({focused }) => getTabBarIcon(focused, "Recipes") }}/>
             <Tab.Screen name='Scanner' component={Scanner} 
             options={{
-              headerStyle: {backgroundColor: GlobalStyles.bgColor} ,
+              headerStyle: {backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor} ,
               headerTitle: "Scanner",
               tabBarButton: (props) =>(
                 <CustomTabBarButton {...props} />
@@ -124,8 +124,8 @@ const Tabs = () =>{
                 />
               ),
                }}/>
-            <Tab.Screen name='Favorites' component={Favorites} options={{headerStyle: {backgroundColor: GlobalStyles.bgColor} ,headerTitle: "Saved Recipes", tabBarIcon:({focused }) => getTabBarIcon(focused, "Favorites") }}/>
-            <Tab.Screen name='Settings' component={UserSettings} options={{headerStyle: {backgroundColor: GlobalStyles.bgColor} ,headerTitle: "Settings", tabBarIcon:({focused }) => getTabBarIcon(focused, "Settings") }}/>
+            <Tab.Screen name='Favorites' component={Favorites} options={{headerStyle: {backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor} ,headerTitle: "Saved Recipes", tabBarIcon:({focused }) => getTabBarIcon(focused, "Favorites") }}/>
+            <Tab.Screen name='Settings' component={UserSettings} options={{headerStyle: {backgroundColor: GlobalStyles.pageBackgroundColor.backgroundColor} ,headerTitle: "Settings", tabBarIcon:({focused }) => getTabBarIcon(focused, "Settings") }}/>
         </Tab.Navigator>
     ); 
 }; 

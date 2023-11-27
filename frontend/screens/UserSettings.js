@@ -53,14 +53,14 @@ export default function UserSettings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:  GlobalStyles.bgColor,
+    backgroundColor:  GlobalStyles.pageBackgroundColor.backgroundColor,
   },
   sectionHeader:{
     marginLeft:10,
     marginTop:25,
     fontWeight:"400",
     fontSize:17,
-    color: GlobalStyles.secondaryColor
+    color: GlobalStyles.secondaryColor.backgroundColor
   }, 
   grid:{
     flex:1 ,

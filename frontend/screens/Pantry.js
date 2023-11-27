@@ -55,7 +55,7 @@ export default function Pantry( ) {
 
   
   return (
-    <View style= {styles.container}>
+    <View style= {[styles.container, GlobalStyles.pageBackgroundColor]}>
 
       {/* this is going to be the header with input and button */}
       <View style={{flexDirection: 'row' }}>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:"center",
     padding:10,
-    backgroundColor:GlobalStyles.bgColor,
+    backgroundColor:GlobalStyles.pageBackgroundColor.backgroundColor,
 
   },
   textInput:{
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     tintColor: GlobalStyles.primaryColor
   },
   ingrCardContainer:{
-    backgroundColor: GlobalStyles.primaryColor,
+    backgroundColor: GlobalStyles.primaryColor.backgroundColor,
     marginVertical: 15,
     marginHorizontal:20, 
     width: 140,
@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius:10,
     
-  
   },
   ingrCardImage:{
     width:60, 
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   ingrNameHolder:{
-    backgroundColor:GlobalStyles.accentColor,
+    backgroundColor:GlobalStyles.accentColor.backgroundColor,
     position:'absolute',
     bottom:0,
     margin: 'auto',
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
   }, 
   addButtonContainer:{
     alignSelf:"center",
-    backgroundColor: GlobalStyles.accentColor,
+    backgroundColor: GlobalStyles.accentColor.backgroundColor,
     padding :10 , 
     borderRadius : 5
   }, 
