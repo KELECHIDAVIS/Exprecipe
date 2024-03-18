@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "color": "^4.2.3",
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
@@ -10,7 +11,6 @@
   "name": "exprecipev1",
   "version": "1.0.0",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon backend/server.js"
