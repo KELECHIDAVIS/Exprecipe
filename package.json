@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.2.1",
+    "nodemon": "^3.1.0"
+  },
+  "name": "exprecipev1",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon backend/server.js"
+  },
+  "author": "Kelechi Duru",
+  "license": "MIT",
+  "description": ""
+}
