@@ -7,6 +7,7 @@ const {protect}  = require("../middleware/authMiddleware")
 
 router.post("/", registerUser) // add user
 router.post("/login", loginUser) // login user 
+// protect this route because it pertains to a certain user 
 router.get("/me", protect,  getMe) // get user  and protect the route 
 
 
