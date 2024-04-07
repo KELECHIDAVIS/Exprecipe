@@ -24,12 +24,13 @@ const setIngr = asyncHandler ( async (req, res) =>{
     const ingredient = await Ingredient.create({
         name: req.body.name,
         user:req.user.id, // attach this to current user 
+        imagePath: req.body.imagePath,
     })
     res.status(200).json(ingredient)
 })
 
 //@desc     Update an ingredient
-//@route     PUT /api/ingredients/:id
+//@route     PUT /api/ingredients/:id  // THE ID IS THE INGREDIENT ID
 //@access     Private
 const updateIngr = asyncHandler ( async (req, res) =>{
 
