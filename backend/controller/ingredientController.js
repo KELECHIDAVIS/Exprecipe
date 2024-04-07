@@ -29,7 +29,7 @@ const setIngr = asyncHandler ( async (req, res) =>{
 })
 
 //@desc     Update an ingredient
-//@route     PUT /api/ingredients/:id
+//@route     PUT /api/ingredients/:id // THIS IS THE INGREDIENT ID 
 //@access     Private
 const updateIngr = asyncHandler ( async (req, res) =>{
 
