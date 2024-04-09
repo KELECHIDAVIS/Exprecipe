@@ -1,10 +1,10 @@
 import React from 'react'
 import { Text } from 'react-native'
 
-function Login() {
+function AppStack() {
   return (
-    <Text>Login</Text>
+    <Text>AppStack</Text>
   )
 }
 
-export default Login
+export default AppStack
