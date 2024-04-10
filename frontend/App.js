@@ -7,8 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './pages/AppStack';
 import Register from './pages/Register'
 import AuthStack from './pages/AuthStack'
-
-
+import {Provider} from 'react-redux'
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { store } from './app/store';
 
 // if the user is logged in:
 // show tabbed page 
@@ -20,11 +21,19 @@ function App() {
 
     // THIS WOULD BE THE APP STACK COULD MAKE A PAGE FOR THAT 
     return (
-      <Text>Loggin In View</Text>
+      <RootSiblingParent>
+        <Provider store={store}>
+          <AuthStack/>
+        </Provider>
+      </RootSiblingParent>
     );
   }else{
     return (
-      <AuthStack/>
+      <RootSiblingParent>
+        <Provider store={store}>
+          <AuthStack/>
+        </Provider>
+      </RootSiblingParent>
     );
   }
   
