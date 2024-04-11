@@ -8,15 +8,31 @@ const saveUserData = async(key, value) =>{
 }
 // register user with our backend api 
 const register = async (userData) =>{
-    const response = await axios.post(API_URL, userData)
 
-    console.log("Reaching inside")
-    if(response.data){
-        //localStorage.setItem('user', JSON.stringify(response.data))
-        //await saveUserData('user', JSON.stringify(response.data))
-    }
+    console.log("started calling axios api")
+    //const response =await  axios.post(API_URL, userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    const res = await fetch("https://localhost:5000/api/user/", {
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => response.json())
+      .then((json) => console.log(json));
 
-    return response.data
+    console.log(JSON.stringify(res))
+    // res.
+    // if(response.data){
+    //     //localStorage.setItem('user', JSON.stringify(response.data))
+    //     //await saveUserData('user', JSON.stringify(response.data))
+
+    //     console.log(response.data); 
+    // }
+
+
+    // console.log("Response wasnt null")
+    // return response.data
+    return null 
 }
 
 const authService = {

@@ -41,8 +41,10 @@ const loginUser = asyncHandler(async (req, res) =>{
 
 //@desc      Create new user 
 //@route     POST /api/user/
-//@access     Private
+//@access     Public
 const registerUser = asyncHandler(async (req, res) =>{
+    
+    console.log ("entered backend registerUser function")
     const {name , email, password} = req.body
     
     if(!name || !email || !password){

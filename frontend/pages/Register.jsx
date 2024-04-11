@@ -26,7 +26,7 @@ function Register( {navigation}) {
     if(isError){
       let toast = Toast.show(message, {
         duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
+        position: Toast.positions.TOP,
         shadow: true,
         animation: true,
         hideOnPress: true,
@@ -37,11 +37,14 @@ function Register( {navigation}) {
     if(isSuccess || user )
     {
       // navigate to login page or just home page 
-      console.log('success')
+      console.log(`Success Response: ${JSON.stringify(user)} `)
     }
-  }, [user, isError, isSuccess, message, dispatch])
-  const onSubmit = ()=>{
 
+    dispatch(reset())
+  }, [user, isError, isSuccess, message, dispatch])
+
+  const onSubmit = (e)=>{
+    e.preventDefault(); 
     if(password!==password2){
       let toast = Toast.show('Passwords do not match', {
         duration: Toast.durations.LONG,
