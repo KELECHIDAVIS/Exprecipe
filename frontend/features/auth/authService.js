@@ -1,40 +1,37 @@
 //service files are strictly for making http requests, sending data back, and sending any data in local storage 
 import axios from 'axios' 
 import * as SecureStore from 'expo-secure-store';
-const API_URL = '/api/user/'
+import * as Network from 'expo-network'; 
 
-const saveUserData = async(key, value) =>{
-    await SecureStore.setItemAsync(key, value)
-}
+
+
+
+
+// the url has to consist of the devices local ip 
+
+const API_URL = '/api/user/' // proxy didn't work :*(
+
 // register user with our backend api 
 const register = async (userData) =>{
 
-    console.log("started calling axios api")
-    //const response =await  axios.post(API_URL, userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
-    const res = await fetch("https://localhost:5000/api/user/", {
-        method: "POST",
-        body: JSON.stringify(userData),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-      }).then((response) => response.json())
-      .then((json) => console.log(json));
+    
+    const response =await  axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    
+    if(response.data){
+        //localStorage.setItem('user', JSON.stringify(response.data))
 
-    console.log(JSON.stringify(res))
-    // res.
-    // if(response.data){
-    //     //localStorage.setItem('user', JSON.stringify(response.data))
-    //     //await saveUserData('user', JSON.stringify(response.data))
+        // only store token from response b/c thats all we need 
+        await  SecureStore.setItemAsync('userToken', JSON.stringify(response.data.token))
 
-    //     console.log(response.data); 
-    // }
+    }
 
-
-    // console.log("Response wasnt null")
-    // return response.data
-    return null 
+    return response.data
+    
 }
 
+const logout = async (userData)=>{
+    await SecureStore.deleteItemAsync('user') 
+}
 const authService = {
     register
 }

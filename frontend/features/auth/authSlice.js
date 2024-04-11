@@ -4,14 +4,12 @@ import authService from './authService'
 import * as SecureStore from 'expo-secure-store';
 //Get user from localStorage (to save jwt)
 
-const getSecureVal = async (key)=>{
-    let result = await SecureStore.getItemAsync(key)
-    return result
-}
-//const user = await getSecureVal("user") //await SecureStore.getItemAsync("user") //JSON.parse(localStorage.getItem("user"))
+
+
+const user = null //JSON.parse(localStorage.getItem("user"))
 
 const initialState = {
-    user: null, //user? user: null,
+    user: user? user: null,
     isError: false,
     isSuccess:false,
     isLoading:false,
@@ -31,6 +29,9 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
     }
 })
 
+export const logout = createAsyncThunk('auth/logout', async () =>{
+    await authService.logout(); 
+})
 
 //actual slice 
 // extra reducers takes care of the pending state, sucess and error states

@@ -37,7 +37,7 @@ function Register( {navigation}) {
     if(isSuccess || user )
     {
       // navigate to login page or just home page 
-      console.log(`Success Response: ${JSON.stringify(user)} `)
+      console.log("navigate")
     }
 
     dispatch(reset())
@@ -48,7 +48,7 @@ function Register( {navigation}) {
     if(password!==password2){
       let toast = Toast.show('Passwords do not match', {
         duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
+        position: Toast.positions.TOP,
         shadow: true,
         animation: true,
         hideOnPress: true,
