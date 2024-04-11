@@ -37,7 +37,7 @@ function Register( {navigation}) {
     if(isSuccess || user )
     {
       // navigate to login page or just home page 
-      console.log("navigate")
+      console.log("navigate"); 
     }
 
     dispatch(reset())

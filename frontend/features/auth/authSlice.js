@@ -2,14 +2,26 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import authService from './authService'
 import * as SecureStore from 'expo-secure-store';
+
 //Get user from localStorage (to save jwt)
 
+const getUserFromLocalStorage = async  () =>{
+    try {
+        const token =  await SecureStore.getItemAsync('userToken'); 
+        return JSON.stringify(token); 
+    } catch (error) {
+        const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
+        console.log(`Error in getting data from local storage: ${message} `)
+        return null
+    }
+}
 
 
-const user = null //JSON.parse(localStorage.getItem("user"))
-
+// THIS IS THROWING AN ERROR BECAUSE IT HAPPENS ON THE INITAL STATE FIGURE OUT A WAY TO NOT LAG JS
+const userToken = null// await getUserFromLocalStorage() // await SecureStore.getItemAsync('userToken') //JSON.parse(localStorage.getItem("user"))
+console.log(`User Token: ${userToken}`)
 const initialState = {
-    user: user? user: null,
+    userToken: userToken? userToken: null,
     isError: false,
     isSuccess:false,
     isLoading:false,
@@ -56,13 +68,13 @@ export const authSlice= createSlice({
             // since the register func returns a user there is going to be an action
             state.isLoading = false
             state.isSuccess = true 
-            state.user = action.payload
+            state.userToken = action.payload
         })
         .addCase(register.rejected, (state, action) =>{
             state.isLoading = false
             state.isError = true 
             state.message = action.payload // b/c of the rejectfunction earlier
-            state.user = null
+            state.userToken = null
         })
     }
 })
