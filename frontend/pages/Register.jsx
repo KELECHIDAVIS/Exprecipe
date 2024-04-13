@@ -1,14 +1,12 @@
 import React from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import { Text, TextInput, StyleSheet , Button, View, ViewStyle, TextStyle, TextInputProps} from 'react-native'
-import {FieldError} from 'react-hook-form'
 import {useState,useEffect} from "react" // component level state and useeffect
-import {FaUser} from 'react-icons/fa'
 import Toast from 'react-native-root-toast';
 
 // bring in register and reset function (through redux) from slice
 import { register, reset } from '../features/auth/authSlice'
-
+import { StackActions } from '@react-navigation/native';
  
 function Register( {navigation}) {
   const [name , setName] = useState("")
@@ -18,7 +16,7 @@ function Register( {navigation}) {
 
 
   const dispatch = useDispatch()
-  const {user, isLoading, isError, isSuccess, message} = useSelector( 
+  const {userToken, isLoading, isError, isSuccess, message} = useSelector( 
     (state) => state.auth
   )
 
@@ -34,14 +32,13 @@ function Register( {navigation}) {
         }); 
     }
     // created a user
-    if(isSuccess || user )
+    if(isSuccess || userToken )
     {
-      // navigate to login page or just home page 
-      console.log("navigate"); 
+      navigation.popToTop(); 
     }
 
     dispatch(reset())
-  }, [user, isError, isSuccess, message, dispatch])
+  }, [userToken, isError, isSuccess, message, dispatch])
 
   const onSubmit = (e)=>{
     e.preventDefault(); 
@@ -55,7 +52,6 @@ function Register( {navigation}) {
         delay: 0,
         });   
     }else{
-      // check if a user has that email alr first 
 
 
       // create a user with given info 

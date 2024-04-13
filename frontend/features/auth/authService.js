@@ -1,6 +1,6 @@
 //service files are strictly for making http requests, sending data back, and sending any data in local storage 
 import axios from 'axios' 
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 
@@ -11,35 +11,51 @@ const API_URL = '/api/user/' // proxy didn't work :*(
 // register user with Four backend api 
 const register = async (userData) =>{
 
-    
-    const response =await axios.post("http://172.17.53.6:5000/api/user/", userData)  //axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
-    
-    if(response.data){
-        //localStorage.setIteam('user', JSON.stringify(response.data))
+    try {
+        const response =await axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
-        // only store token from response b/c thats all we need 
-        await  SecureStore.setItemAsync('userToken', JSON.stringify(response.data.token))
 
-        try {
-            await SecureStore.setItemAsync('userToken', JSON.stringify(response.data.token)); 
-            
-        } catch (error) {
-            const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
-            console.log(`Error in getting data from local storage: ${message} `)
-            
+        if(response.data){
+            //localStorage.setIteam('user', JSON.stringify(response.data))
+            await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
+            return response.data.token 
         }
-    }
-
-    return response.data
     
+    } catch (error) {
+        console.log(`Error when registering user: ${error.message}`)
+    }
+  
 }
 
+const login = async (userData) =>{
+
+    try {
+        const response =await axios.post("http://192.168.1.35:5000/api/user/login/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+
+
+        if(response.data){
+            //localStorage.setIteam('user', JSON.stringify(response.data))
+            await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
+            return response.data.token
+        }
+    
+    } catch (error) {
+        console.log(`Error when logging in user: ${error.message}`)
+    }
+  
+}
+
+const checkLoggedIn = async() =>{
+    return await AsyncStorage.getItem('userToken')
+}
 const logout = async (userData)=>{
-    await SecureStore.deleteItemAsync('user') 
+    await AsyncStorage.removeItem('userToken')
 }
 const authService = {
     register,
     logout,
+    checkLoggedIn,
+    login
 }
 
 export default authService
