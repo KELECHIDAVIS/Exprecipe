@@ -11,44 +11,35 @@ const API_URL = '/api/user/' // proxy didn't work :*(
 // register user with Four backend api 
 const register = async (userData) =>{
 
-    try {
-        const response =await axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    const response =await axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
 
         if(response.data){
             //localStorage.setIteam('user', JSON.stringify(response.data))
             await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
-            return response.data.token 
+            
         }
-    
-    } catch (error) {
-        console.log(`Error when registering user: ${error.message}`)
-    }
-  
+    return response.data.token 
 }
 
 const login = async (userData) =>{
 
-    try {
-        const response =await axios.post("http://192.168.1.35:5000/api/user/login/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    const response =await axios.post("http://192.168.1.35:5000/api/user/login/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
 
-        if(response.data){
-            //localStorage.setIteam('user', JSON.stringify(response.data))
-            await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
-            return response.data.token
-        }
-    
-    } catch (error) {
-        console.log(`Error when logging in user: ${error.message}`)
+    if(response.data){
+        //localStorage.setIteam('user', JSON.stringify(response.data))
+        await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
+        
     }
-  
+
+    return response.data.token
 }
 
 const checkLoggedIn = async() =>{
     return await AsyncStorage.getItem('userToken')
 }
-const logout = async (userData)=>{
+const logout = async ()=>{
     await AsyncStorage.removeItem('userToken')
 }
 const authService = {

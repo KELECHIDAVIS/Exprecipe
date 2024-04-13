@@ -18,20 +18,21 @@ function MainAppPages({navigation}) {
   useEffect(() =>{
     if(!userToken)
     {
-      // // check if it is in storage 
-      // dispatch(checkLoggedIn())
+      // check if it is in storage 
+      dispatch(checkLoggedIn())
 
-      // //now check again; if still null login 
-      // if(!userToken)
-      // {
-      //  navigation.navigate('Login')
-      // }
-      navigation.navigate('Login')
+      //now check again; if still null login 
+      if(!userToken)
+      {
+       navigation.navigate('Login')
+      }
+      
     }
 
     dispatch(reset())
   }, [userToken])
 
+  
 
   // if you are viewing this page that means that you are logged in
   return (
