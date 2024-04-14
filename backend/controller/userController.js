@@ -6,13 +6,8 @@ const bcrypt = require("bcryptjs")
 //@route     GET /api/user/me
 //@access     Private
 const getMe = asyncHandler(async (req, res) =>{
-    const {_id , name , email} = await User.findById (req.user.id)
 
-    res.status(200).json({
-        id: _id,
-        name,
-        email,
-    })
+    res.status(200).json(req.user) // alr found user in middleware 
 })
 
 //@desc     Login User

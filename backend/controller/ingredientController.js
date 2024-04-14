@@ -38,17 +38,15 @@ const updateIngr = asyncHandler ( async (req, res) =>{
         res.status(400)
         throw new Error("Ingredient Not Found")
     }
-
-    const user = await User.findById(req.user.id)
     
     // check for user 
-    if(!user){
+    if(!req.user){
         res.status(401)
         throw new Error("User Not Found")
     }
 
     // make sure the logged in user matches the ingredient user 
-    if(ingredient.user.toString() !== user.id){
+    if(ingredient.user.toString() !== req.user.id){
         res.status(401)
         throw new Error("User not authorized")
     }
@@ -72,16 +70,15 @@ const deleteIngr = asyncHandler ( async (req, res) =>{
     }
 
 
-    const user = await User.findById(req.user.id)
     
     // check for user 
-    if(!user){
+    if(!req.user){
         res.status(401)
         throw new Error("User Not Found")
     }
 
     // make sure the logged in user matches the ingredient user 
-    if(ingredient.user.toString() !== user.id){
+    if(ingredient.user.toString() !== req.user.id){
         res.status(401)
         throw new Error("User not authorized")
     }

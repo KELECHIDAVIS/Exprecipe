@@ -5,18 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 // the url has to consist of the devices local ip 
-
-const API_URL = '/api/user/' // proxy didn't work :*(
+const API_URL ='/api/user/'// proxy didn't work :*(
 
 // register user with Four backend api 
 const register = async (userData) =>{
 
     const response =await axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
-
         if(response.data){
             //localStorage.setIteam('user', JSON.stringify(response.data))
-            await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
+            await AsyncStorage.setItem('userToken', response.data.token)
             
         }
     return response.data.token 
@@ -29,7 +27,7 @@ const login = async (userData) =>{
 
     if(response.data){
         //localStorage.setIteam('user', JSON.stringify(response.data))
-        await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token))
+        await AsyncStorage.setItem('userToken', response.data.token)
         
     }
 
