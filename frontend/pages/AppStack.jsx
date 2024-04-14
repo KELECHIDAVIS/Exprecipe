@@ -28,7 +28,7 @@ function AppStack() {
                         return(
                           <View style={styles.logoContainer}>
                             <Image
-                              style={{resizeMode:'contain',  width:'100%', height:'100%', position: 'relative', left: -width * 0.4, alignSelf:'center'}}
+                              style={{resizeMode:'contain',  width:'100%', height:'100%', position: 'relative', left: -width * 0.375, }}
                               source={require('../assets/exprecipeLogo.png')}
                             />
                           </View>
@@ -53,7 +53,7 @@ styles= StyleSheet.create({
     alignContent:'center',
     width:'100%',
     height:50,
-    paddingBottom:10,
+    paddingBottom:8,
   }
 })
 export default AppStack

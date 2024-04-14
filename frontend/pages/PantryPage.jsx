@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { Text } from 'react-native'
+import { FlatList, Text } from 'react-native'
 import IngredientTextInputForm from '../components/IngredientTextInputForm'
 import { useSelector, useDispatch } from 'react-redux'
 
 function PantryPage() {
   const dispatch =useDispatch()
-  const { isError, isLoading, isSuccess ,message } = useSelector((state)=>state.ingredients)
+  const { ingredients , isError, isLoading, isSuccess ,message } = useSelector((state)=>state.ingredients)
   useEffect(()=>{
 
     
@@ -16,6 +16,7 @@ function PantryPage() {
   }
   return (
     <IngredientTextInputForm/>
+
   )
 }
 
