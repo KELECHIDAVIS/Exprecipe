@@ -1,25 +1,43 @@
 
 import * as React from 'react';
-import { View, Text , Button, StyleSheet} from 'react-native';
+import { View, Text , Button, StyleSheet, Image} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './Login';
 import Register from './Register'
 import { RootSiblingParent } from 'react-native-root-siblings';
-import { logout, reset } from '../features/auth/authSlice';
+import {  reset } from '../features/auth/authSlice';
+import { checkLoggedIn } from '../features/auth/authSlice';
 import {useSelector, useDispatch} from 'react-redux'
 import MainAppPages from './MainAppPages';
+import { useWindowDimensions } from 'react-native';
 
 
 const Stack = createNativeStackNavigator(); 
 function AppStack() {
-  
+  const {height , width }  = useWindowDimensions();  
   return (
     <RootSiblingParent>
           
             <NavigationContainer>
               <Stack.Navigator>
-                <Stack.Screen name="MainApp" component={MainAppPages} /> 
+                <Stack.Screen name="Exprecipe" component={MainAppPages} 
+                  options={
+                    {
+                      headerTitle:(props)=> {
+                        return(
+                          <View style={styles.logoContainer}>
+                            <Image
+                              style={{resizeMode:'contain',  width:'100%', height:'100%', position: 'relative', left: -width * 0.4, alignSelf:'center'}}
+                              source={require('../assets/exprecipeLogo.png')}
+                            />
+                          </View>
+                        )
+                      }, 
+                      
+                    }
+                  }
+                /> 
                 <Stack.Screen name="Register" component={Register} /> 
                 <Stack.Screen name="Login" component={Login} options={{headerBackVisible:false}} />
               </Stack.Navigator>
@@ -30,5 +48,12 @@ function AppStack() {
 
 }
 
-
+styles= StyleSheet.create({
+  logoContainer:{
+    alignContent:'center',
+    width:'100%',
+    height:50,
+    paddingBottom:10,
+  }
+})
 export default AppStack

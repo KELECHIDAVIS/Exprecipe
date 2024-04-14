@@ -71,7 +71,7 @@ function Login({navigation}) {
       onChangeText={setPassword}
      /> 
     <Button title = 'New To Exprecipe? Register' onPress={goToRegisterPage} />
-     <Button title='Submit' onPress={onSubmit}/>
+     <Button title='Login' onPress={onSubmit}/>
     </>
   )
 }

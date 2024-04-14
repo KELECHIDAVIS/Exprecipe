@@ -89,7 +89,7 @@ function Register( {navigation}) {
       keyboardType='default' id='password2' value={password2} placeholder='Confirm Password'
       onChangeText={setPassword2}
      /> 
-     <Button title='Submit' onPress={onSubmit}/>
+     <Button title='Register' onPress={onSubmit}/>
     </>
   )
 }
