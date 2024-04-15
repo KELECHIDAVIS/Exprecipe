@@ -32,11 +32,11 @@ function Login({navigation}) {
     // created a user
     if(isSuccess || userToken )
     {
-      navigation.popToTop(); 
+      navigation.pop(); 
     }
 
     dispatch(reset())
-  }, [userToken, isError, isSuccess, message, dispatch])
+  }, [userToken, isError, isSuccess, message])
 
   const onSubmit = ()=>{
     // create a user with given info 

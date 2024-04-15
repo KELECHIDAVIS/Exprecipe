@@ -7,6 +7,7 @@ import SettingsPage from './SettingsPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkLoggedIn, reset } from '../features/auth/authSlice';
+import { getIngrs } from '../features/ingredients/ingredientSlice';
 const Tab = createBottomTabNavigator();
 
 function MainAppPages({navigation}) {
@@ -14,9 +15,9 @@ function MainAppPages({navigation}) {
   const {userToken} = useSelector((state)=>state.auth) // get token from state
 
   useEffect(() =>{
-    console.log("Main Pages useEffect called")
     if(!userToken)
     {
+      console.log("Start of main Page Dispatch")
       // check if it is in storage 
       dispatch(checkLoggedIn())
 
@@ -25,6 +26,9 @@ function MainAppPages({navigation}) {
       {
        navigation.navigate('Login')
       }
+
+      console.log("end of main page dispatch ")
+      // problem stems from here figure out later 
       
     }
     dispatch(reset())

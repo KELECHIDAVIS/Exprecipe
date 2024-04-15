@@ -48,7 +48,13 @@ export const ingredientSlice = createSlice({
     name:'ingredient',
     initialState, 
     reducers:{
-        resetIngredients: (state) =>initialState  // reset just sets ingredients back to initial state; doesnt need to persist b'c ingredients come with user 
+        resetIngredientSlice: (state) =>
+        {
+            state.isLoading = false
+            state.isSucces = false; 
+            state.isError = false; 
+            state.message= ''; 
+        }  // reset everything but ingredients 
     },
     extraReducers:(builder) =>{
         builder
@@ -59,7 +65,6 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
             state.ingredients.push (action.payload)// push ingredient to list 
-            
         })
         .addCase(createIngr.rejected, (state, action )=>{
             state.isLoading = false
@@ -86,6 +91,6 @@ export const ingredientSlice = createSlice({
 
 
 
-export const {resetIngredients}  = ingredientSlice.actions
+export const {resetIngredientSlice}  = ingredientSlice.actions
 
 export default ingredientSlice.reducer 
