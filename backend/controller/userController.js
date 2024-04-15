@@ -39,7 +39,6 @@ const loginUser = asyncHandler(async (req, res) =>{
 //@access     Public
 const registerUser = asyncHandler(async (req, res) =>{
     
-    console.log ("entered backend registerUser function")
     const {name , email, password} = req.body
     
     if(!name || !email || !password){

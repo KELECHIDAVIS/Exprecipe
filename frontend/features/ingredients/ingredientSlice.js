@@ -26,6 +26,7 @@ export const createIngr = createAsyncThunk('ingredients/createIngr', async(ingrD
     }
 })
 
+// get all user's ingredients 
 export const getIngrs = createAsyncThunk('ingredients/getAll', async(_, thunkAPI)=>{
     try {
         // have to send token since this is a protected route; 

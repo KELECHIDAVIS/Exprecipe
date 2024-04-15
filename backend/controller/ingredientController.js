@@ -1,5 +1,8 @@
+
+
 const asyncHandler = require("express-async-handler")
 
+const CommonIngredients = require('../models/commonIngredientModel')
 const Ingredient = require("../models/ingredientModel")
 const User = require("../models/userModel")
 //@desc     Get all user ingredients
@@ -8,6 +11,16 @@ const User = require("../models/userModel")
 const getIngrs = asyncHandler ( async (req, res) =>{
     // find this user's specific ingredients
     const ingredients = await Ingredient.find({user: req.user.id}); 
+
+    res.status(200).json(ingredients) 
+})
+
+//@desc     Get 5000 of the most common ingredients from spoonacular 
+//@route     GET /api/ingredients/common
+//@access     Public
+const getCommonIngrs = asyncHandler ( async (req, res) =>{
+    
+    const ingredients = await CommonIngredients.find(); 
 
     res.status(200).json(ingredients) 
 })
@@ -21,11 +34,24 @@ const setIngr = asyncHandler ( async (req, res) =>{
         throw new Error("Please Give The Ingredient A Name")
     }
 
-    const ingredient = await Ingredient.create({
-        name: req.body.name,
-        user:req.user.id, // attach this to current user 
-    })
-    res.status(200).json(ingredient)
+    // first find the actual ingredient counterPart from commonIngredients Collection
+
+    const nameRegex = new RegExp(req.body.name.toLowerCase())
+    const commonIngredient = await CommonIngredients.findOne({name: {$regex:nameRegex, $options: 'i'}}); 
+   
+    if(!commonIngredient){
+        throw new Error ("Ingredient Not Found. Recheck Ingredient Spelling")
+    }else{
+        const ingredient = await Ingredient.create({
+            name: commonIngredient.name,
+            imagePath: commonIngredient.imagePath,
+            apiID: commonIngredient.apiID, 
+            user:req.user.id, // attach this to current user 
+        })
+        res.status(200).json(ingredient)
+    }
+    
+    
 })
 
 //@desc     Update an ingredient
@@ -94,4 +120,5 @@ module.exports = {
     setIngr,
     updateIngr,
     deleteIngr, 
+    getCommonIngrs,
 }
