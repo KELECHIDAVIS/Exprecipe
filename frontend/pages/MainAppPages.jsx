@@ -15,24 +15,16 @@ function MainAppPages({navigation}) {
   const {userToken} = useSelector((state)=>state.auth) // get token from state
 
   useEffect(() =>{
-    if(!userToken)
+    if(!userToken) // check if a user is logged in 
     {
-      console.log("Start of main Page Dispatch")
-      // check if it is in storage 
-      dispatch(checkLoggedIn())
-
-      //now check again; if still null login 
-      if(!userToken)
-      {
-       navigation.navigate('Login')
-      }
-
-      console.log("end of main page dispatch ")
-      // problem stems from here figure out later 
-      
+      console.log("Have to login user")
+      navigation.push("Login"); 
+    }else{
+      //get user ingrs if they are logged in 
+      console.log('user now logged in, getting ingredients')
+      dispatch(getIngrs())
     }
-    dispatch(reset())
-  }, [userToken])
+  }, [])
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'>
       <Tab.Screen name="Pantry" options={{headerShown:false}} component={PantryPage} />

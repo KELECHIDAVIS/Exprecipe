@@ -38,7 +38,7 @@ function Register( {navigation}) {
     }
 
     dispatch(reset())
-  }, [userToken, isError, isSuccess, message, dispatch])
+  }, [userToken, isError, isSuccess, message, ])
 
   const onSubmit = (e)=>{
     e.preventDefault(); 
