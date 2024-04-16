@@ -21,23 +21,7 @@ function AppStack() {
           
             <NavigationContainer>
               <Stack.Navigator>
-                <Stack.Screen name="Exprecipe" component={MainAppPages} 
-                  options={
-                    {
-                      headerTitle:(props)=> {
-                        return(
-                          <View style={styles.logoContainer}>
-                            <Image
-                              style={{resizeMode:'contain',  width:'100%', height:'100%', position: 'relative', left: -width * 0.375, }}
-                              source={require('../assets/exprecipeLogo.png')}
-                            />
-                          </View>
-                        )
-                      }, 
-                      
-                    }
-                  }
-                /> 
+                <Stack.Screen name="Exprecipe" component={MainAppPages}  options={{headerShown: false}}/> 
                 <Stack.Screen name="Register" component={Register} /> 
                 <Stack.Screen name="Login" component={Login} options={{headerBackVisible:false}} />
               </Stack.Navigator>

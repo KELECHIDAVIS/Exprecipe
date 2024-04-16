@@ -20,7 +20,7 @@ export const createIngr = createAsyncThunk('ingredients/createIngr', async(ingrD
         return await ingredientService.createIngr(ingrData, token) 
     } catch (error) {
         const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
-        console.log(`Error In Setting Ingredient: ${message} `)
+        //console.log(`Error In Setting Ingredient: ${message} `)
         
         return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
     }
@@ -36,7 +36,7 @@ export const getIngrs = createAsyncThunk('ingredients/getAll', async(_, thunkAPI
         return await ingredientService.getIngrs( token) 
     } catch (error) {
         const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
-        console.log(`Error In Getting Ingredient: ${message} `)
+        //console.log(`Error In Getting Ingredient: ${message} `)
         
         return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
     }
@@ -65,7 +65,7 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
             state.ingredients.push (action.payload)// push ingredient to list 
-            console.log("Ingredients: "+ JSON.stringify(state.ingredients))
+            
         })
         .addCase(createIngr.rejected, (state, action )=>{
             state.isLoading = false
