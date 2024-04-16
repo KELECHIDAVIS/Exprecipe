@@ -79,7 +79,7 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
             state.ingredients=action.payload// set ingrs  
-            console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
+            //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
         })
         .addCase(getIngrs.rejected, (state, action )=>{
             state.isLoading = false

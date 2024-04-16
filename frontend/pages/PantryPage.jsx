@@ -28,7 +28,9 @@ function PantryPage() {
             <TextInput style={styles.input} onChangeText={setName} value={name} />
             <Button title='Add Ingredient' onPress={addIngredient} />
             {ingredients.length > 0 ? (
-              <Text>You have {ingredients.map(showIngrs)} </Text>
+              <View>
+                
+              </View>
               ): 
               (
                 <Text>You Have No Ingredients</Text>
