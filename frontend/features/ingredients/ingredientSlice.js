@@ -51,7 +51,7 @@ export const ingredientSlice = createSlice({
         resetIngredientSlice: (state) =>
         {
             state.isLoading = false
-            state.isSucces = false; 
+            state.isSuccess = false; 
             state.isError = false; 
             state.message= ''; 
         }  // reset everything but ingredients 
@@ -65,6 +65,7 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
             state.ingredients.push (action.payload)// push ingredient to list 
+            console.log("Ingredients: "+ JSON.stringify(state.ingredients))
         })
         .addCase(createIngr.rejected, (state, action )=>{
             state.isLoading = false

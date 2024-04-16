@@ -10,6 +10,7 @@ const createIngr = async (ingrData , token) =>{
             Authorization: `Bearer ${token}`
         }
     }
+    
     const response =await axios.post("http://192.168.1.35:5000/api/ingredients/", ingrData, config) 
     return response.data
 }

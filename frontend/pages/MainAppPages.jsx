@@ -8,23 +8,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkLoggedIn, reset } from '../features/auth/authSlice';
 import { getIngrs } from '../features/ingredients/ingredientSlice';
+import { Text } from 'react-native';
+import Toast from 'react-native-root-toast';
 const Tab = createBottomTabNavigator();
 
 function MainAppPages({navigation}) {
   const dispatch = useDispatch()
-  const {userToken} = useSelector((state)=>state.auth) // get token from state
+  const {userToken, isError , isLoading , message} = useSelector((state)=>state.auth) // get token from state
 
   useEffect(() =>{
-    if(!userToken) // check if a user is logged in 
+    if(isError )
     {
-      console.log("Have to login user")
-      navigation.push("Login"); 
-    }else{
-      //get user ingrs if they are logged in 
-      console.log('user now logged in, getting ingredients')
-      dispatch(getIngrs())
+      Toast.show(message, { duration: Toast.durations.LONG, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
     }
-  }, [])
+    if(!userToken){
+      navigation.push("Login")
+    }
+    
+    dispatch(getIngrs()); 
+    return () =>{
+      dispatch(reset()) ; 
+    }
+  }, [userToken, navigation, isError, message , dispatch])
+
+  if(isLoading){
+    return <Text>Loading...</Text>
+  }
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'>
       <Tab.Screen name="Pantry" options={{headerShown:false}} component={PantryPage} />

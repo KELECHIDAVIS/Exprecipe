@@ -20,14 +20,7 @@ function Login({navigation}) {
 
   useEffect(() =>{
     if(isError){
-      let toast = Toast.show(message, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.TOP,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        }); 
+      Toast.show(message, { duration: Toast.durations.LONG, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
     }
     // created a user
     if(isSuccess || userToken )
