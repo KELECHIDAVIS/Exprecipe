@@ -1,1 +1,1 @@
-This app allows you to scan household food ingredients and return recipes based on those scanned ingredients.
+This application will allow users to input household ingredients, via text or image, and generate recipes based on the available ingredients. 
