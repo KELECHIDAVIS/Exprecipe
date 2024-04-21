@@ -86,7 +86,6 @@ export const ingredientSlice = createSlice({
             state.isError = true; 
             state.message = action.payload; 
         })
-        
     }
 })
 

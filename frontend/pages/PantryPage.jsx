@@ -32,13 +32,14 @@ function PantryPage() {
   
   const addIngredient = () => {
       
-      const formattedName = name.trim() // get rid of random spaces 
-      dispatch(createIngr({formattedName}))
+      dispatch(createIngr({name}))
       
       setName('')
   }
   
-  
+  const showIngrs = (ingr)  =>{
+    return ingr.name+", "; 
+  }
   return (
     <SafeAreaView style={styles.container}>
             <TextInput style={{alignSelf:'center'}}>Enter The Name of Your Ingredient</TextInput>
@@ -48,7 +49,7 @@ function PantryPage() {
               <FlatList
                 style={styles.flatList}
                 data= {ingredients}
-                renderItem={({item}) => <IngredientItem name={item.name} imagePath = {item.imagePath} _id={item._id} /> }
+                renderItem={({item}) => <IngredientItem name={item.name} imagePath = {item.imagePath} /> }
                 keyExtractor={ingr=>ingr._id}
                 numColumns={numColumns}
                 contentContainerStyle={{alignItems: 'center', justifyContent:'space-evenly'}}

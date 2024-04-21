@@ -15,8 +15,6 @@ const createIngr = async (ingrData , token) =>{
     return response.data
 }
 
-
-
 // get ingredients  
 const getIngrs = async ( token )=>{
     // for protected routes 
@@ -32,7 +30,7 @@ const getIngrs = async ( token )=>{
 const ingredientService = {
     createIngr, 
     getIngrs,
-    
+
 }
 
 export default ingredientService; 
