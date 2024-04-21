@@ -1,14 +1,20 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, Button } from 'react-native'
+import { useDispatch } from 'react-redux';
+
 
 
 const width = 100; 
-function IngredientItem({name , imagePath}) {
+function IngredientItem({name , imagePath, _id}) {
+
+    const dispatch = useDispatch(); 
+    
+    
   return (
     <View style= {styles.ingrContainer}>
+        <Button title='X' />
         <Image
-            style = {styles.ingredientImage}    
-            source={{uri : imagePath}}
+            source={{uri : imagePath, width:width, height:85, resizeMode:'cover'}}
 
         />
         <Text>{name}</Text>

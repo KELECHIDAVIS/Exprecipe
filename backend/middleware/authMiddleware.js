@@ -10,15 +10,17 @@ const protect = asyncHandler(async (req, res, next) => {
         try {
             // Get token from header 
             token = req.headers.authorization.split(' ') [1]
-
-            // verify token 
-          
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)   
-
-            // get user from token
-            req.user = await User.findById(decoded.id).select('-password')  
             
+            
+            if(token!== 'null' && token){
+                // verify token 
+                const secret = process.env.JWT_SECRET
+                const decoded = jwt.verify(token, secret)   
 
+                // get user from token
+                req.user = await User.findById(decoded.id).select('-password')  
+            
+            }
             next() // call next middleware 
 
         } catch (error) {
