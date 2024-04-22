@@ -14,7 +14,18 @@ const createIngr = async (ingrData , token) =>{
     const response =await axios.post("http://192.168.1.35:5000/api/ingredients/", ingrData, config) 
     return response.data
 }
-
+// deleteIngr from our backend api 
+const deleteIngr = async (id , token) =>{
+    // for protected routes 
+    const config ={
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    }
+    console.log("id from service: "+ id)
+    const response =await axios.delete("http://192.168.1.35:5000/api/ingredients/"+id,  config) 
+    return response.data
+}
 // get ingredients  
 const getIngrs = async ( token )=>{
     // for protected routes 
@@ -30,6 +41,7 @@ const getIngrs = async ( token )=>{
 const ingredientService = {
     createIngr, 
     getIngrs,
+    deleteIngr,
 
 }
 

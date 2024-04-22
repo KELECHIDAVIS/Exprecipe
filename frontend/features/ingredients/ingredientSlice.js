@@ -25,6 +25,22 @@ export const createIngr = createAsyncThunk('ingredients/createIngr', async(ingrD
         return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
     }
 })
+// Delete ingredient 
+export const deleteIngr = createAsyncThunk('ingredients/deleteIngr', async(id, thunkAPI)=>{
+    try {
+        // have to send token since this is a protected route; 
+        // usertoken is in auth state 
+        // use thunkapi to get auth state
+        const token = thunkAPI.getState().auth.userToken;  
+        console.log("Id from async thunk: "+ id)
+        return await ingredientService.deleteIngr(id, token) 
+    } catch (error) {
+        const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
+        //console.log(`Error In Setting Ingredient: ${message} `)
+        
+        return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
+    }
+})
 
 // get all user's ingredients 
 export const getIngrs = createAsyncThunk('ingredients/getAll', async(_, thunkAPI)=>{
@@ -42,6 +58,20 @@ export const getIngrs = createAsyncThunk('ingredients/getAll', async(_, thunkAPI
     }
 })
 
+const filterIngredients = (list, id) =>{
+    const result = []
+
+    for(let i = 0; i <list.length; i++ )
+    {
+        console.log("ID FROM LIST: "+ list[i]._id)
+        if(list[i]._id !== id ){
+            result.push(list[i])
+        }
+    }
+    console.log("Result from in func: "+ JSON.stringify(result))
+    return result; 
+
+}
 
 
 export const ingredientSlice = createSlice({
@@ -74,6 +104,7 @@ export const ingredientSlice = createSlice({
         })
         .addCase(getIngrs.pending, (state) =>{
             state.isLoading = true
+            
         })
         .addCase(getIngrs.fulfilled, (state, action) =>{
             state.isLoading = false
@@ -82,6 +113,20 @@ export const ingredientSlice = createSlice({
             //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
         })
         .addCase(getIngrs.rejected, (state, action )=>{
+            state.isLoading = false
+            state.isError = true; 
+            state.message = action.payload; 
+        })
+        .addCase(deleteIngr.pending, (state) =>{
+            state.isLoading = true
+        })
+        .addCase(deleteIngr.fulfilled, (state, action) =>{
+            state.isLoading = false
+            state.isSuccess = true; 
+            state.ingredients = filterIngredients(state.ingredients , action.payload) // remove the deleted ingredients 
+            
+        })
+        .addCase(deleteIngr.rejected, (state, action )=>{
             state.isLoading = false
             state.isError = true; 
             state.message = action.payload; 

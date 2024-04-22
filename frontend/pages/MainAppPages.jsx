@@ -38,6 +38,7 @@ function MainAppPages({navigation}) {
     }
     
     dispatch(getIngrs()); 
+    
     return () =>{
       dispatch(reset()) ; 
     }
