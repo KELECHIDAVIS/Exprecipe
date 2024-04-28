@@ -32,7 +32,7 @@ export const deleteIngr = createAsyncThunk('ingredients/deleteIngr', async(id, t
         // usertoken is in auth state 
         // use thunkapi to get auth state
         const token = thunkAPI.getState().auth.userToken;  
-        console.log("Id from async thunk: "+ id)
+        
         return await ingredientService.deleteIngr(id, token) 
     } catch (error) {
         const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
@@ -123,7 +123,23 @@ export const ingredientSlice = createSlice({
         .addCase(deleteIngr.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            state.ingredients = filterIngredients(state.ingredients , action.payload) // remove the deleted ingredients 
+            console.log("Whats return in payload: "+ action.payload.id+ " type: "+ (typeof action.payload.id))
+            console.log("State Ingredient id: "+ state.ingredients[0]._id+ " type: "+ (typeof  state.ingredients[0]._id))
+            console.log("Are they actually equal: "+ (action.payload.id == state.ingredients[0]._id))
+
+            // now add every ingr except the one where the ids are equal 
+            let result =[]; 
+            for (let i= 0; i< state.ingredients.length; i++)
+            {
+                if(state.ingredients[i]._id == action.payload.id)
+                {
+                    continue; 
+                }
+                //otherwise push the ingredients 
+                result.push(state.ingredients[i]); 
+            }
+            state.ingredients = result// remove the deleted ingredients 
+
             
         })
         .addCase(deleteIngr.rejected, (state, action )=>{

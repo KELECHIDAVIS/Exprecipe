@@ -22,7 +22,7 @@ const deleteIngr = async (id , token) =>{
             Authorization: `Bearer ${token}`
         }
     }
-    console.log("id from service: "+ id)
+    
     const response =await axios.delete("http://192.168.1.35:5000/api/ingredients/"+id,  config) 
     return response.data
 }
