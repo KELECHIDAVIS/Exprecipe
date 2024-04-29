@@ -49,9 +49,11 @@ function MainAppPages({navigation}) {
     dispatch(logout())
   }
   if(isLoading){
-    <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+    return(
+      <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
         <ActivityIndicator size='large'/>
-      </View>
+    </View>
+    )
   }
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'

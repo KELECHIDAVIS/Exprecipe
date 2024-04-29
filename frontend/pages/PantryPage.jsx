@@ -36,11 +36,7 @@ function PantryPage() {
     dispatch(deleteIngr(id))  // not working? 
   }
 
-  if(isLoading){
-    <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
-        <ActivityIndicator size='large'/>
-    </View>
-  }
+  
   return (
     <SafeAreaView style={styles.container}>
             <TextInput style={{alignSelf:'center'}}>Enter The Name of Your Ingredient</TextInput>
@@ -73,9 +69,10 @@ function PantryPage() {
               />
               ): 
               (
-                <Text>You Have No Ingredients</Text>
                 
-                )}
+                <Text style={styles.title}>You Have No Ingredients</Text>
+                
+              )}
     </SafeAreaView>
   )
 }
@@ -104,7 +101,12 @@ const styles = StyleSheet.create({
     width:'100%',
  
     paddingHorizontal:15,
-  }
+  },
+  title: {
+    fontSize: 24,
+    textAlign:'center',
+    
+  },
   
   
 }); 

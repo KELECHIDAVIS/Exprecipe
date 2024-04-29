@@ -33,11 +33,7 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     // Get list of ingredients (should be a list of objects)
     const ingredients = await Ingredient.find({user:req.user.id}); 
 
-    if(!ingredients || ingredients.length ==0 )
-    {
-        res.status(400)
-        throw new Error("No Ingredients, Please Enter Some In Your Pantry Page")
-    }
+
     // now we have to format into a long, comma separated string: apples,salt,water... 
     let ingrQuery = ""
     for(let i = 0 ; i< ingredients.length; i++ ){
@@ -46,8 +42,7 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
             ingrQuery+=','
     }
     
-    console.log(`Api Key: ${process.env.SPOONACULAR_API_KEY}`); 
-    console.log(`Ingredient query: ${ingrQuery}`)
+    
 
 
     // Recipe Returns should be altered here keepin simple for now 
