@@ -1,10 +1,11 @@
 import React from 'react'
-import { Text, TextInput, StyleSheet , Button, View, ViewStyle, TextStyle, TextInputProps} from 'react-native'
+import { Text, TextInput, StyleSheet , Button, View, ViewStyle, TextStyle, TextInputProps, ActivityIndicator} from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 import {useState,useEffect} from "react" // component level state and useeffect
 import {FaSignInAlt} from 'react-icons/fa'
 import {FaUser} from 'react-icons/fa'
 import Toast from 'react-native-root-toast';
+
 
 // bring in register and reset function (through redux) from slice
 import { login, reset } from '../features/auth/authSlice'
@@ -48,7 +49,9 @@ function Login({navigation}) {
   if(isLoading)
   {
     return (
-      <Text>Loading...</Text>
+      <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator size='large'/>
+      </View>
     )
   }
 

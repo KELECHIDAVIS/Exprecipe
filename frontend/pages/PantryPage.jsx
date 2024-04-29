@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, TouchableOpacity} from 'react-native'
+import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, TouchableOpacity, ActivityIndicator} from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import Toast from 'react-native-root-toast';
 import {createIngr, getIngrs, resetIngredientSlice, deleteIngr} from '../features/ingredients/ingredientSlice'
@@ -37,7 +37,9 @@ function PantryPage() {
   }
 
   if(isLoading){
-    return <Text>Loading...</Text>
+    <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator size='large'/>
+    </View>
   }
   return (
     <SafeAreaView style={styles.container}>

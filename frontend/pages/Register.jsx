@@ -1,6 +1,6 @@
 import React from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import { Text, TextInput, StyleSheet , Button, View, ViewStyle, TextStyle, TextInputProps} from 'react-native'
+import { Text, TextInput, StyleSheet , Button, View, ViewStyle, TextStyle, TextInputProps, ActivityIndicator} from 'react-native'
 import {useState,useEffect} from "react" // component level state and useeffect
 import Toast from 'react-native-root-toast';
 
@@ -68,7 +68,9 @@ function Register( {navigation}) {
   if(isLoading)
   {
     return(
-      <Text>Loading...</Text>
+      <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator size='large'/>
+      </View>
     )
   }
   return (

@@ -1,14 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PantryPage from './PantryPage';
 import ScannerPage from './ScannerPage';
-import RecipeGenerationPage from './RecipeGenerationPage';
+import ExprecipesPage from './ExprecipesPage';
 import SavedRecipesPage from './SavedRecipesPage';
 import SettingsPage from './SettingsPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkLoggedIn, logout, reset } from '../features/auth/authSlice';
 import { getIngrs } from '../features/ingredients/ingredientSlice';
-import { Text , Button, View, Image} from 'react-native';
+import { Text , Button, View, Image, ActivityIndicator} from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useWindowDimensions } from 'react-native';
 
@@ -49,7 +49,9 @@ function MainAppPages({navigation}) {
     dispatch(logout())
   }
   if(isLoading){
-    return <Text>Loading...</Text>
+    <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator size='large'/>
+      </View>
   }
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'
@@ -64,7 +66,7 @@ function MainAppPages({navigation}) {
             />
           ),
       }}/>
-      <Tab.Screen name="Recipes" options={{headerShown:false}} component={RecipeGenerationPage} />
+      <Tab.Screen name="Exprecipes" options={{headerShown:false}} component={ExprecipesPage} />
       <Tab.Screen name="Scanner" options={{headerShown:false}} component={ScannerPage} />
       <Tab.Screen name="Saved Recipes" options={{headerShown:false}} component={SavedRecipesPage} />
       <Tab.Screen name="Settings" options={{headerShown:false}} component={SettingsPage} />
