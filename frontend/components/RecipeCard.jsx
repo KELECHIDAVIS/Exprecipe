@@ -3,7 +3,7 @@ import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
 function RecipeCard({name, missingIngredientCount, imagePath}){
     return (
         <TouchableOpacity style={styles.container}>
-            <Image style={styles.image} source={{uri : imagePath , resizeMode:'cover', width : 100, height: 85}}/>
+            <Image style={styles.image} source={{uri : imagePath , resizeMode:'cover', width : 85, height: 60}}/>
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{name}</Text>
                 {missingIngredientCount==1 ? 
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     title: {
         flex:2, 
-      fontSize: 15,
+      fontSize: 14,
       textAlign:'center'
     },
 }); 
