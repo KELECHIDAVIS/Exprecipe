@@ -25,12 +25,50 @@ const getCommonIngrs = asyncHandler ( async (req, res) =>{
     res.status(200).json(ingredients) 
 })
 
+
+//@desc     Get user's possible recipes from spoonacular 
+//@route     GET /api/ingredients/recipes
+//@access     Private
+const getPossibleRecipes = asyncHandler ( async (req, res) =>{
+    // Get list of ingredients (should be a list of objects)
+    const ingredients = await Ingredient.find({user:req.user.id}); 
+
+    if(!ingredients || ingredients.length ==0 )
+    {
+        res.status(400)
+        throw new Error("No Ingredients, Please Enter Some In Your Pantry Page")
+    }
+    // now we have to format into a long, comma separated string: apples,salt,water... 
+    let ingrQuery = ""
+    for(let i = 0 ; i< ingredients.length; i++ ){
+        ingrQuery+= ingredients[i].name; 
+        if(i<ingredients.length-1)
+            ingrQuery+=','
+    }
+    
+    console.log(`Api Key: ${process.env.SPOONACULAR_API_KEY}`); 
+    console.log(`Ingredient query: ${ingrQuery}`)
+
+
+    // Recipe Returns should be altered here keepin simple for now 
+    const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_API_KEY}&ingredients=${ingrQuery}&ranking=2&ignorePantry=true`)
+    
+
+    const json = await response.json();  
+    console.log("Response Json: "+ json) ; 
+
+
+    res.status(response.status).json(json)
+    
+})
+
 //@desc     Set an ingredient for a user 
 //@route     POST /api/ingredients
 //@access     Private
 const setIngr = asyncHandler ( async (req, res) =>{
 
     if( !req.body.name ){
+        res.status(400)
         throw new Error("Please Give The Ingredient A Name")
     }
 
@@ -121,4 +159,5 @@ module.exports = {
     updateIngr,
     deleteIngr, 
     getCommonIngrs,
+    getPossibleRecipes,
 }

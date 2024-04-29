@@ -123,11 +123,8 @@ export const ingredientSlice = createSlice({
         .addCase(deleteIngr.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            console.log("Whats return in payload: "+ action.payload.id+ " type: "+ (typeof action.payload.id))
-            console.log("State Ingredient id: "+ state.ingredients[0]._id+ " type: "+ (typeof  state.ingredients[0]._id))
-            console.log("Are they actually equal: "+ (action.payload.id == state.ingredients[0]._id))
 
-            // now add every ingr except the one where the ids are equal 
+            // now add every ingr except the one where the ids are equal // May need to be changed later 
             let result =[]; 
             for (let i= 0; i< state.ingredients.length; i++)
             {
@@ -136,7 +133,7 @@ export const ingredientSlice = createSlice({
                     continue; 
                 }
                 //otherwise push the ingredients 
-                result.push(state.ingredients[i]); 
+                result.push(state.ingredients[i]);
             }
             state.ingredients = result// remove the deleted ingredients 
 
