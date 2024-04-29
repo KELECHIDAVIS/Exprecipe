@@ -86,7 +86,7 @@ export const ingredientSlice = createSlice({
             state.isSuccess = false; 
             state.isError = false; 
             state.message= ''; 
-            state.recipes = []; 
+            //state.recipes = [];  // might not need to be reset each reset slice 
         }  // reset everything but ingredients 
     },
     extraReducers:(builder) =>{

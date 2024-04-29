@@ -46,7 +46,7 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
 
 
     // Recipe Returns should be altered here keepin simple for now 
-    const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_API_KEY}&ingredients=${ingrQuery}&ranking=2&ignorePantry=true`)
+    const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_API_KEY}&ingredients=${ingrQuery}&ranking=2&number=20&ignorePantry=true`)
     
 
     const json = await response.json();  

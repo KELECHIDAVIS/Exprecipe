@@ -1,0 +1,48 @@
+
+import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
+function RecipeCard({name, missingIngredientCount, imagePath}){
+    return (
+        <TouchableOpacity style={styles.container}>
+            <Image style={styles.image} source={{uri : imagePath , resizeMode:'cover', width : 100, height: 85}}/>
+            <View style={styles.infoContainer}>
+                <Text style={styles.title}>{name}</Text>
+                {missingIngredientCount==1 ? 
+                (<Text style={styles.title}>{missingIngredientCount} missing ingredient</Text>): 
+                (<Text style={styles.title}>{missingIngredientCount} missing ingredients</Text>)}
+                
+            </View>
+        </TouchableOpacity>
+    )
+}
+
+export default RecipeCard; 
+
+const styles = StyleSheet.create({
+    container: {
+      flexDirection:'row',
+      justifyContent:'center',
+      alignContent:'center',
+      padding:10,
+      backgroundColor: 'tan',
+      borderRadius: 10,
+    },
+    infoContainer:{
+        flex:2, 
+        flexDirection:'column' ,
+
+    },
+    item: {
+      backgroundColor: '#f9c2ff',
+      padding: 20,
+      marginVertical: 8,
+      marginHorizontal: 16,
+    },
+    image:{
+        flex:1
+    },
+    title: {
+        flex:2, 
+      fontSize: 15,
+      textAlign:'center'
+    },
+}); 

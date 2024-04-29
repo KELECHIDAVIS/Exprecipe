@@ -10,7 +10,7 @@ const API_URL ='/api/user/'// proxy didn't work :*(
 // register user with Four backend api 
 const register = async (userData) =>{
 
-    const response =await axios.post("http://192.168.1.35:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    const response =await axios.post("http://172.17.53.6:5000/api/user/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
         if(response.data){
             //localStorage.setIteam('user', JSON.stringify(response.data))
@@ -22,7 +22,7 @@ const register = async (userData) =>{
 
 const login = async (userData) =>{
 
-    const response =await axios.post("http://192.168.1.35:5000/api/user/login/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
+    const response =await axios.post("http://172.17.53.6:5000/api/user/login/", userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
 
     if(response.data){

@@ -6,6 +6,7 @@ import { getRecipes, resetIngredientSlice } from '../features/ingredients/ingred
 
 import Toast from 'react-native-root-toast'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import RecipeCard from '../components/RecipeCard'
 function ExprecipesPage({navigation}) {
   const { ingredients , recipes , isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
   const dispatch = useDispatch(); 
@@ -42,7 +43,7 @@ function ExprecipesPage({navigation}) {
         renderItem={({item})=>{
           return(
             <View style= {styles.container}>
-              <Text >{item.title}</Text>
+              <RecipeCard name={item.title} imagePath={item.image} missingIngredientCount={item.missedIngredientCount}/>
             </View>
           )
         }}
