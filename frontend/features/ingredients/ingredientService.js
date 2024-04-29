@@ -38,10 +38,23 @@ const getIngrs = async ( token )=>{
     return response.data // list of ingredients 
 }
 
+// get possible recipes  
+const getPossibleRecipes = async ( token )=>{
+    // for protected routes 
+    const config ={
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get("http://192.168.1.35:5000/api/ingredients/recipes", config)
+    return response.data // list of recipes
+}
+
 const ingredientService = {
     createIngr, 
     getIngrs,
     deleteIngr,
+    getPossibleRecipes
 
 }
 

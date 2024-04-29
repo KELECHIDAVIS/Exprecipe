@@ -4,6 +4,7 @@ import ingredientService from './ingredientService'
 // for every redux resource we have they are all going to have the bottom four
 const initialState ={
     ingredients:[],
+    recipes:[],
     isError: false, 
     isSuccess: false,
     isLoading:false, 
@@ -57,21 +58,22 @@ export const getIngrs = createAsyncThunk('ingredients/getAll', async(_, thunkAPI
         return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
     }
 })
-
-const filterIngredients = (list, id) =>{
-    const result = []
-
-    for(let i = 0; i <list.length; i++ )
-    {
-        console.log("ID FROM LIST: "+ list[i]._id)
-        if(list[i]._id !== id ){
-            result.push(list[i])
-        }
+// get all user's ingredients 
+export const getRecipes = createAsyncThunk('ingredients/getRecipes', async(_, thunkAPI)=>{
+    try {
+        // have to send token since this is a protected route; 
+        // usertoken is in auth state 
+        // use thunkapi to get auth state
+        const token = thunkAPI.getState().auth.userToken;  
+        return await ingredientService.getPossibleRecipes( token) 
+    } catch (error) {
+        const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
+        //console.log(`Error In Getting Ingredient: ${message} `)
+        
+        return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
     }
-    console.log("Result from in func: "+ JSON.stringify(result))
-    return result; 
+})
 
-}
 
 
 export const ingredientSlice = createSlice({
@@ -84,6 +86,7 @@ export const ingredientSlice = createSlice({
             state.isSuccess = false; 
             state.isError = false; 
             state.message= ''; 
+            state.recipes = []; 
         }  // reset everything but ingredients 
     },
     extraReducers:(builder) =>{
@@ -113,6 +116,21 @@ export const ingredientSlice = createSlice({
             //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
         })
         .addCase(getIngrs.rejected, (state, action )=>{
+            state.isLoading = false
+            state.isError = true; 
+            state.message = action.payload; 
+        })
+        .addCase(getRecipes.pending, (state) =>{
+            state.isLoading = true
+            
+        })
+        .addCase(getRecipes.fulfilled, (state, action) =>{
+            state.isLoading = false
+            state.isSuccess = true; 
+            state.recipes=action.payload// set ingrs  
+            //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
+        })
+        .addCase(getRecipes.rejected, (state, action )=>{
             state.isLoading = false
             state.isError = true; 
             state.message = action.payload; 

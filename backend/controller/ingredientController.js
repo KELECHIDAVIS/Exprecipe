@@ -55,7 +55,7 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     
 
     const json = await response.json();  
-    console.log("Response Json: "+ json) ; 
+    
 
 
     res.status(response.status).json(json)

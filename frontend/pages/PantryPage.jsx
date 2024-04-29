@@ -18,8 +18,11 @@ function PantryPage() {
 
   
   useEffect(()=>{
-
-  }, [])
+    if(isError )
+    {
+      Toast.show(message, { duration: Toast.durations.LONG, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
+    }
+  }, [isError, isLoading , isSuccess, message])
 
   const addIngredient = () => {
       
@@ -31,6 +34,10 @@ function PantryPage() {
   
   const removeIngr = (id)  =>{
     dispatch(deleteIngr(id))  // not working? 
+  }
+
+  if(isLoading){
+    return <Text>Loading...</Text>
   }
   return (
     <SafeAreaView style={styles.container}>
