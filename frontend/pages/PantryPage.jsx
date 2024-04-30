@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
       
   },
   ingrContainer:{
-    backgroundColor:'#FFE5B4',
+    backgroundColor:'tan',
     margin:10,
     width:width, 
 }, 
