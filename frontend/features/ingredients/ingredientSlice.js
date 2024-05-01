@@ -127,7 +127,7 @@ export const ingredientSlice = createSlice({
         .addCase(getRecipes.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            state.recipes=action.payload// set ingrs  
+            state.recipes=action.payload// set recipes   
             //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
         })
         .addCase(getRecipes.rejected, (state, action )=>{

@@ -1,8 +1,8 @@
 
 import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
-function RecipeCard({name, missingIngredientCount, imagePath}){
+function RecipeCard({name, missingIngredientCount, imagePath, onPress}){
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress} >
             <Image style={styles.image} source={{uri : imagePath , resizeMode:'cover', width : 85, height: 60}}/>
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{name}</Text>
