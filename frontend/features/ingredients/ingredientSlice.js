@@ -5,6 +5,7 @@ import ingredientService from './ingredientService'
 const initialState ={
     ingredients:[],
     recipes:[],
+    currentRecipe: null, 
     isError: false, 
     isSuccess: false,
     isLoading:false, 
@@ -74,6 +75,21 @@ export const getRecipes = createAsyncThunk('ingredients/getRecipes', async(_, th
     }
 })
 
+// get currect recipe information  
+export const getRecipeInfo = createAsyncThunk('ingredients/getRecipeInfo', async( id , thunkAPI)=>{
+    try {
+        // have to send token since this is a protected route; 
+        // usertoken is in auth state 
+        // use thunkapi to get auth state
+        const token = thunkAPI.getState().auth.userToken;  
+        return await ingredientService.getRecipeInfo( id, token) 
+    } catch (error) {
+        const message = (error.response&& error.response.data&&error.response.data.message) || error.message || error.toString()
+        //console.log(`Error In Getting Ingredient: ${message} `)
+        
+        return thunkAPI.rejectWithValue(message) // rejects and sends error message as payload
+    }
+})
 
 
 export const ingredientSlice = createSlice({
@@ -131,6 +147,20 @@ export const ingredientSlice = createSlice({
             //console.log(`User ingredients list: ${JSON.stringify(action.payload)}`)
         })
         .addCase(getRecipes.rejected, (state, action )=>{
+            state.isLoading = false
+            state.isError = true; 
+            state.message = action.payload; 
+        })
+        .addCase(getRecipeInfo.pending, (state) =>{
+            state.isLoading = true
+            
+        })
+        .addCase(getRecipeInfo.fulfilled, (state, action) =>{
+            state.isLoading = false
+            state.isSuccess = true; 
+            state.currentRecipe=action.payload // set current recipe 
+        })
+        .addCase(getRecipeInfo.rejected, (state, action )=>{
             state.isLoading = false
             state.isError = true; 
             state.message = action.payload; 

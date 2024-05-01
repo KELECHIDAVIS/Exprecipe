@@ -57,6 +57,22 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     
 })
 
+
+
+
+//@desc     Get Recipe Info from spoonacular database
+//@route     GET /api/ingredients/recipes/:id
+//@access     Private
+const getRecipeInfo = asyncHandler ( async (req, res) =>{
+    
+    // make call by recipe id to spoonacular 
+    const response = await fetch(`https://api.spoonacular.com/recipes/${req.params.id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`)
+
+    const json = await response.json(); 
+
+    res.status(response.status).json(json); 
+})
+
 //@desc     Set an ingredient for a user 
 //@route     POST /api/ingredients
 //@access     Private
@@ -155,4 +171,5 @@ module.exports = {
     deleteIngr, 
     getCommonIngrs,
     getPossibleRecipes,
+    getRecipeInfo
 }

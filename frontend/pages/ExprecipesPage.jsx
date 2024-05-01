@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import { FlatList, Text, View, StyleSheet, ActivityIndicator, Button , Modal} from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { getRecipes, resetIngredientSlice } from '../features/ingredients/ingredientSlice'
+import { getRecipes, resetIngredientSlice, getRecipeInfo } from '../features/ingredients/ingredientSlice'
 import RecipeInfoModal from '../components/RecipeInfoModal'
 
 import Toast from 'react-native-root-toast'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RecipeCard from '../components/RecipeCard'
 function ExprecipesPage({navigation}) {
-  const { ingredients , recipes , isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
+  const { ingredients , recipes , currentRecipe, isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
   const dispatch = useDispatch(); 
   const [isModalVisible , setModalVisible ] = useState(false); 
-
+ 
   // // OPTIMIZE TO ONLY CALL WHEN INGREDIENTS CHANGE IN THE FUTURE
   // useEffect(()=>{
   //   const unsubscribe = navigation.addListener('focus', () => {
@@ -31,11 +31,12 @@ function ExprecipesPage({navigation}) {
 
   const fetchRecipes = () => {
     if(ingredients.length >0 )
-      dispatch(getRecipes())
+      dispatch(getRecipes()); 
   }
-  const launchRecipeInfo = () =>{
+  const launchRecipeInfo = (spoonacularId) =>{
     
     // first get recipe info from dispatch 
+    dispatch(getRecipeInfo(spoonacularId));  // get 
     // then set modal state
     setModalVisible(true)
     
@@ -60,7 +61,7 @@ function ExprecipesPage({navigation}) {
         renderItem={({item})=>{
           return(
             <View style= {styles.container}>
-              <RecipeCard name={item.title} imagePath={item.image} missingIngredientCount={item.missedIngredientCount} onPress = {launchRecipeInfo} />
+              <RecipeCard name={item.title} imagePath={item.image} missingIngredientCount={item.missedIngredientCount} onPress = {()=> launchRecipeInfo(item.id)} />
               <RecipeInfoModal recipeInfo={item} visible={isModalVisible} setModalVisible={setModalVisible} />
             </View>
           )
