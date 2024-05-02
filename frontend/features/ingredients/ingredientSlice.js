@@ -113,7 +113,7 @@ export const ingredientSlice = createSlice({
         .addCase(createIngr.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            state.ingredients.push (action.payload)// push ingredient to list 
+            state.ingredients.unshift (action.payload)// push ingredient to list 
             
         })
         .addCase(createIngr.rejected, (state, action )=>{

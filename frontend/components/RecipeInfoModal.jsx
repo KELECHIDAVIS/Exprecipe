@@ -1,9 +1,11 @@
-import { Modal, Text , Button} from "react-native";
+import { Modal, Text , Button, SafeAreaView} from "react-native";
 function RecipeInfoModal({recipeInfo, visible, setModalVisible}){ 
     return(
         <Modal visible ={visible} animationType='fade' >
-            <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
-            <Text>Modal</Text>
+            <SafeAreaView>
+                <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
+                <Text>{JSON.stringify(recipeInfo)}</Text>
+            </SafeAreaView>
         </Modal>
     )
 }

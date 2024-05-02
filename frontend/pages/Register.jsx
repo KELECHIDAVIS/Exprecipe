@@ -36,8 +36,10 @@ function Register( {navigation}) {
     {
       navigation.popToTop(); 
     }
+    return () =>{
 
-    dispatch(reset())
+      dispatch(reset())
+    }
   }, [userToken, isError, isSuccess, message, ])
 
   const onSubmit = (e)=>{

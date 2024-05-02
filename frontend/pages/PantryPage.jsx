@@ -7,7 +7,7 @@ import IngredientItem from '../components/IngredientItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const width =100
-function PantryPage() {
+function PantryPage({navigation}) {
 
   const { ingredients , isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
   const [name, setName] = useState('')
@@ -16,12 +16,25 @@ function PantryPage() {
   const numColumns = 3; 
 
 
-  
+  // when navigating to this page 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      dispatch(getIngrs()); // get user ingredients
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+
   useEffect(()=>{
     if(isError )
     {
-      Toast.show(message, { duration: Toast.durations.LONG, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
+      
+      Toast.show(message, { duration: Toast.durations.SHORT, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
     }
+
+    dispatch(resetIngredientSlice())
   }, [isError, isLoading , isSuccess, message])
 
   const addIngredient = () => {
@@ -43,7 +56,14 @@ function PantryPage() {
             <TextInput style={styles.input} onChangeText={setName} value={name} />
             <Button title='Add Ingredient' onPress={addIngredient} />
             {ingredients.length > 0 ? (
-              <FlatList
+              isLoading ? (
+                (
+                  <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+                      <ActivityIndicator size='large'/>
+                  </View>
+                )
+              ): (
+                <FlatList
                 style={styles.flatList}
                 data= {ingredients}
                 renderItem={({item}) => 
@@ -67,6 +87,7 @@ function PantryPage() {
                 numColumns={numColumns}
                 contentContainerStyle={{alignItems: 'center', justifyContent:'space-evenly'}}
               />
+              )
               ): 
               (
                 

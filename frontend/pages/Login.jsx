@@ -29,7 +29,10 @@ function Login({navigation}) {
       navigation.pop(); 
     }
 
-    dispatch(reset())
+    return () =>{
+
+      dispatch(reset())
+    }
   }, [userToken, isError, isSuccess, message])
 
   const onSubmit = ()=>{

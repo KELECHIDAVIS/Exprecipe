@@ -29,32 +29,17 @@ function MainAppPages({navigation}) {
   const {userToken, isError , isLoading , message} = useSelector((state)=>state.auth) // get token from state
 
   useEffect(() =>{
-    if(isError )
-    {
-      Toast.show(message, { duration: Toast.durations.LONG, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
-    }
     if(!userToken){
       navigation.push("Login")
     }
     
-    dispatch(getIngrs()); 
-    
-    return () =>{
-      dispatch(reset()) ; 
-    }
-  }, [userToken, navigation, isError, message , dispatch])
+  }, [userToken, navigation ])
 
 
   const logOut = () =>{
     dispatch(logout())
   }
-  if(isLoading){
-    return(
-      <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
-        <ActivityIndicator size='large'/>
-    </View>
-    )
-  }
+  
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'
       
