@@ -1,13 +1,15 @@
-import { Modal, Text , Button, SafeAreaView} from "react-native";
+import { Modal, Text , Button, SafeAreaView, View} from "react-native";
 import { useSelector } from 'react-redux'
 
 function RecipeInfoModal({ visible, setModalVisible}){ 
     const {currentRecipe} = useSelector((state)=> state.ingredients)
     return(
         <Modal visible ={visible} animationType='fade' >
-            <SafeAreaView>
-                <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
-                <Text>{JSON.stringify(currentRecipe)}</Text>
+            <SafeAreaView >
+                <View style={{padding:15, alignContent:'center'}}>
+                    <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
+                    <Text>{currentRecipe.instructions}</Text>
+                </View>
             </SafeAreaView>
         </Modal>
     )
