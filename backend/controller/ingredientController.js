@@ -1,6 +1,7 @@
 
 
 const asyncHandler = require("express-async-handler")
+const axios = require("axios");
 
 const CommonIngredients = require('../models/commonIngredientModel')
 const Ingredient = require("../models/ingredientModel")
@@ -43,14 +44,24 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     }
     
     
+    const fetch = require('node-fetch');
 
+    const ignorePantry= true; // assume user has basic ingredients like salt, flour, and other stuff like that 
+    const returnNum = 5 ; // how many recipes we are returning 
+    const ranking =2 ;  // 1) maximize ingredients 2) minimize missing ingredients 
 
-    // Recipe Returns should be altered here keepin simple for now 
-    const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_API_KEY}&ingredients=${ingrQuery}&ranking=2&number=20&ignorePantry=true`)
+    const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?ingredients=${ingrQuery}&number=${returnNum}&ignorePantry=${true}&ranking=${ranking}`;
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+        'X-RapidAPI-Host': process.env.RAPID_API_HOST
+      }
+    };
     
-
-    const json = await response.json();  
-    
+ 
+    const response = await fetch(url, options);
+    const json = await response.json();
 
 
     res.status(response.status).json(json)
@@ -66,9 +77,20 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
 const getRecipeInfo = asyncHandler ( async (req, res) =>{
     
     // make call by recipe id to spoonacular 
-    const response = await fetch(`https://api.spoonacular.com/recipes/${req.params.id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`)
 
-    const json = await response.json(); 
+    const fetch = require('node-fetch');
+
+    const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/${req.params.id}/information`;
+    const options = {
+    method: 'GET',
+    headers: {
+        'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+        'X-RapidAPI-Host': process.env.RAPID_API_HOST
+    }
+    };
+
+    const response = await fetch(url, options);
+    const json = await response.json();
 
     res.status(response.status).json(json); 
 })
