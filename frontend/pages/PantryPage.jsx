@@ -34,7 +34,7 @@ function PantryPage({navigation}) {
       Toast.show(message, { duration: Toast.durations.SHORT, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
     }
 
-    dispatch(resetIngredientSlice())
+    
   }, [isError, isLoading , isSuccess, message])
 
   const addIngredient = () => {
@@ -59,7 +59,7 @@ function PantryPage({navigation}) {
               isLoading ? (
                 (
                   <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
-                      <ActivityIndicator size='large'/>
+                      <ActivityIndicator size='small'/>
                   </View>
                 )
               ): (

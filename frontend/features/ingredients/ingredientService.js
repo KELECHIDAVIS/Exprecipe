@@ -58,7 +58,7 @@ const getRecipeInfo = async (id ,  token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get("http://172.17.53.6:5000/api/ingredients/recipes"+id, config)
+    const response = await axios.get("http://172.17.53.6:5000/api/ingredients/recipes/"+id, config)
     return response.data //specific info about that recipe 
 }
 

@@ -9,7 +9,7 @@ import Toast from 'react-native-root-toast'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RecipeCard from '../components/RecipeCard'
 function ExprecipesPage({navigation}) {
-  const { ingredients , recipes , currentRecipe, isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
+  const { ingredients , recipes , isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
   const dispatch = useDispatch(); 
   const [isModalVisible , setModalVisible ] = useState(false); 
  
@@ -62,7 +62,7 @@ function ExprecipesPage({navigation}) {
           return(
             <View style= {styles.container}>
               <RecipeCard name={item.title} imagePath={item.image} missingIngredientCount={item.missedIngredientCount} onPress = {()=> launchRecipeInfo(item.id)} />
-              <RecipeInfoModal recipeInfo={item} visible={isModalVisible} setModalVisible={setModalVisible} />
+              <RecipeInfoModal  visible={isModalVisible} setModalVisible={setModalVisible} />
             </View>
           )
         }}
