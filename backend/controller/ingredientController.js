@@ -1,7 +1,6 @@
 
 
 const asyncHandler = require("express-async-handler")
-const axios = require("axios");
 
 const CommonIngredients = require('../models/commonIngredientModel')
 const Ingredient = require("../models/ingredientModel")
