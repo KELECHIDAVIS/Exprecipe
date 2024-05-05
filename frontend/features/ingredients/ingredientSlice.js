@@ -159,7 +159,7 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
             state.currentRecipe=action.payload // set current recipe 
-            console.log(action.payload); 
+            
         })
         .addCase(getRecipeInfo.rejected, (state, action )=>{
             state.isLoading = false
