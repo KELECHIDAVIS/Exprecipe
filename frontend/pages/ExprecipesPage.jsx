@@ -10,27 +10,20 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import RecipeCard from '../components/RecipeCard'
 import {openBrowserAsync} from 'expo-web-browser'
 import RecipeModalContent from '../components/RecipeModalContent';
-
+import { saveRecipe } from '../features/recipes/recipeSlice';
 
 function ExprecipesPage({navigation}) {
-  const { ingredients , recipes , currentRecipe,  isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
+  const { ingredients , recipes , currentRecipe, isLoading} = useSelector((state)=>state.ingredients)
+  const recipeState = useSelector((state)=> state.recipes)
   const dispatch = useDispatch(); 
   const [isModalVisible , setModalVisible ] = useState(false); 
-  const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/";
   
   
-  //get Recipe instrcutions because sometimes the api returns a recipe without instructions 
-  const getRecipeInstructions = (currentRecipe)=>{
-    if(!currentRecipe.instructions)
-    {
-      return "Instructions can be found through this link: "+ currentRecipe.sourceUrl; 
-    }
-    return currentRecipe.instructions; 
-  }
+  
+  
   const returnModalContent= (currentRecipe) =>{
     if(!currentRecipe){
-      setModalVisible(false)
-      return
+      return null; 
     }
     
     return(
@@ -41,6 +34,9 @@ function ExprecipesPage({navigation}) {
     if(ingredients.length >0 )
       dispatch(getRecipes()); 
   }
+  const saveNewRecipe =(currentRecipe)=>{
+    dispatch(saveRecipe(currentRecipe))
+  }
   const launchRecipeInfo = (spoonacularId) =>{
     
     // first get recipe info from dispatch 
@@ -49,7 +45,7 @@ function ExprecipesPage({navigation}) {
     setModalVisible(true)
     
   }
-  if (isLoading){
+  if (isLoading || recipes.isLoading){
     return(
       <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
         <ActivityIndicator size='large'/>
@@ -74,6 +70,7 @@ function ExprecipesPage({navigation}) {
                 <SafeAreaView >
                     <View style={{paddingTop:30, alignContent:'center'}}>
                         <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
+                        <Button title = "Saved Recipe" onPress = {()=>saveNewRecipe(currentRecipe)}/> 
                         {returnModalContent(currentRecipe)}
                     </View>
                 </SafeAreaView>

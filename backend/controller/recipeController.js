@@ -33,7 +33,7 @@ const saveRecipe = asyncHandler ( async (req, res) =>{
         name,
         cookTime,
         apiID, 
-        ingredients: ["cereal", 'milk', 'bowl'],
+        ingredients,
         instructions, 
         sourceUrl, 
         user:req.user.id,

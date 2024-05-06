@@ -2,15 +2,16 @@ import { FlatList, Text, View, StyleSheet, Image, Button, ScrollView} from 'reac
 import { useSelector } from 'react-redux'
 import { AntDesign } from '@expo/vector-icons';
 import {openBrowserAsync} from 'expo-web-browser'
+
+
 function RecipeModalContent({currentRecipe}){ 
     const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/";
    return( 
     <ScrollView style={{padding:15, alignContent:'center'}}>
-      
           <Text style ={styles.title}>{currentRecipe.title}</Text>
           <View style = {styles.timeContainer}>
             <AntDesign name="clockcircle" size={18} color="black" />
-            <Text style={{fontSize: 18, fontWeight:'bold'}}>{currentRecipe.readyInMinutes}</Text>
+            <Text style={{fontSize: 18, fontWeight:'bold'}}>{currentRecipe.readyInMinutes} mins</Text>
           </View>
           <Text style={{fontSize:18 , marginTop:8}}>Ingredients:</Text>
           <FlatList 
