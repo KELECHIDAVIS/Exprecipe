@@ -92,7 +92,6 @@ export const recipeSlice = createSlice({
         .addCase(saveRecipe.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            console.log("Recipe saved successfully"); 
             // since you can only update when you're not on the page you don't need to update something here 
         })
         .addCase(saveRecipe.rejected, (state, action )=>{

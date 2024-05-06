@@ -27,7 +27,8 @@ const saveRecipe = async ( recipeData, token )=>{
         ingredients: recipeData.extendedIngredients,
         apiID:recipeData.id,
         instructions:recipeData.instructions,
-        sourceUrl:recipeData.sourceUrl
+        sourceUrl:recipeData.sourceUrl,
+        image:recipeData.image,
     }
     const response = await axios.post("http://192.168.1.35:5000/api/recipes/",formattedData,  config)
     return response.data 
