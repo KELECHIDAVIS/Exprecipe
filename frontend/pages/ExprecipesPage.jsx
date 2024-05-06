@@ -70,7 +70,7 @@ function ExprecipesPage({navigation}) {
                 <SafeAreaView style={{flex:1, padding:10}}>
                     <View style={{paddingTop:40, alignContent:'center'}}>
                         <Button title = "Close" onPress = {() => setModalVisible(false)}/> 
-                        <Button title = "Saved Recipe" onPress = {()=>saveNewRecipe(currentRecipe)}/> 
+                        <Button title = "Save Recipe" onPress = {()=>saveNewRecipe(currentRecipe)}/> 
                         {returnModalContent(currentRecipe)}
                     </View>
                 </SafeAreaView>
