@@ -20,11 +20,13 @@ const saveRecipe = async ( recipeData, token )=>{
             Authorization: `Bearer ${token}`
         }
     }
+
+    
     // change the recipe data into the correct format 
     const formattedData = {
         name:recipeData.title,
         cookTime:recipeData.readyInMinutes,
-        ingredients: recipeData.extendedIngredients,
+        ingredients: recipeData.extendedIngredients ,
         apiID:recipeData.id,
         instructions:recipeData.instructions,
         sourceUrl:recipeData.sourceUrl,
