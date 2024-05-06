@@ -15,8 +15,8 @@ const getSavedRecipes = asyncHandler ( async (req, res) =>{
 //@access     Private
 const saveRecipe = asyncHandler ( async (req, res) =>{
    
-    const {name , cookTime, ingredients, instructions, sourceUrl, apiID} = req.body ; 
-    if(!name || !cookTime || !ingredients || !instructions || !sourceUrl || !apiID){
+    const {name , cookTime, ingredients, instructions, sourceUrl, apiID, image} = req.body ; 
+    if(!name || !cookTime || !ingredients || !instructions || !sourceUrl || !apiID|| !image ){
         console.log(JSON.stringify(req.body))
         throw new Error("Please Add All Fields"); 
     }
@@ -36,6 +36,7 @@ const saveRecipe = asyncHandler ( async (req, res) =>{
         ingredients,
         instructions, 
         sourceUrl, 
+        image, 
         user:req.user.id,
     })
     res.status(200).json(recipe) 

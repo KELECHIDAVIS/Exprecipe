@@ -27,6 +27,10 @@ const recipeSchema = mongoose.Schema({
         type:String, 
         required:[true, "Please add a instructions "]
     },
+    image:{
+        type:String, 
+        required:[true, "Please add an image "]
+    },
     sourceUrl:{
         type:String, 
         required:[true, "Please add a website url  "]
