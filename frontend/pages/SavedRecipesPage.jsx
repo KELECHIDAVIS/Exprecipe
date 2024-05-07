@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet} from 'react-native';
+import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import { useDispatch } from 'react-redux';
 import { getSavedRecipes } from '../features/recipes/recipeSlice';
 import { useSelector } from 'react-redux';
@@ -7,7 +7,7 @@ import SavedRecipeCard from '../components/SavedRecipeCard';
 function SavedRecipesPage({navigation}) {
 
   const dispatch = useDispatch();
-  const {savedRecipes} = useSelector((state)=>state.recipes)
+  const {savedRecipes, isLoading} = useSelector((state)=>state.recipes)
   const baseRecipeImageURL = 
   // Dispatch the function to get saved recipes when the component mounts or when navigation focus changes
   useEffect(() => {
@@ -19,7 +19,14 @@ function SavedRecipesPage({navigation}) {
     return unsubscribe;
   }, [dispatch, navigation]);
 
-
+  if(isLoading)
+    {
+      return(
+        <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+          <ActivityIndicator size='large'/>
+      </View>
+      )
+    }
   return (
     <SafeAreaView style={{flex: 1,
       justifyContent:'center',

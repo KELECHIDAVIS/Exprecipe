@@ -9,7 +9,7 @@ const getSavedRecipes = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get("http://192.168.1.35:5000/api/recipes/", config)
+    const response = await axios.get("http://172.17.53.6:5000/api/recipes/", config)
     return response.data // list of user recipes  
 }
 
@@ -32,7 +32,8 @@ const saveRecipe = async ( recipeData, token )=>{
         sourceUrl:recipeData.sourceUrl,
         image:recipeData.image,
     }
-    const response = await axios.post("http://192.168.1.35:5000/api/recipes/",formattedData,  config)
+
+    const response = await axios.post("http://172.17.53.6:5000/api/recipes/",formattedData,  config)
     return response.data 
 }
 const deleteRecipe = async ( id, token )=>{
@@ -42,7 +43,7 @@ const deleteRecipe = async ( id, token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.delete("http://192.168.1.35:5000/api/recipes/"+id,  config)
+    const response = await axios.delete("http://172.17.53.6:5000/api/recipes/"+id,  config)
     return response.data 
 }
 

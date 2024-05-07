@@ -11,16 +11,25 @@ import RecipeCard from '../components/RecipeCard'
 import {openBrowserAsync} from 'expo-web-browser'
 import RecipeModalContent from '../components/RecipeModalContent';
 import { saveRecipe } from '../features/recipes/recipeSlice';
-
+import { useEffect } from 'react';
 function ExprecipesPage({navigation}) {
-  const { ingredients , recipes , currentRecipe, isLoading} = useSelector((state)=>state.ingredients)
+  const { ingredients , recipes , currentRecipe, isLoading, isError, isSuccess, message} = useSelector((state)=>state.ingredients)
   const recipeState = useSelector((state)=> state.recipes)
   const dispatch = useDispatch(); 
   const [isModalVisible , setModalVisible ] = useState(false); 
   
   
   
-  
+  useEffect(()=>{
+    if(isError )
+    {
+      
+      Toast.show(message, { duration: Toast.durations.SHORT, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
+    }
+
+    
+  }, [isError, isLoading , isSuccess, message])
+
   const returnModalContent= (currentRecipe) =>{
     if(!currentRecipe){
       return null; 
