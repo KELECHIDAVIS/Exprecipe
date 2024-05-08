@@ -81,6 +81,7 @@ export const getRecipeInfo = createAsyncThunk('ingredients/getRecipeInfo', async
         // have to send token since this is a protected route; 
         // usertoken is in auth state 
         // use thunkapi to get auth state
+        
         const token = thunkAPI.getState().auth.userToken;  
         return await ingredientService.getRecipeInfo( id, token) 
     } catch (error) {

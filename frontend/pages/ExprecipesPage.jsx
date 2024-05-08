@@ -70,7 +70,7 @@ function ExprecipesPage({navigation}) {
         <FlatList
         
         data={recipes}
-        ListHeaderComponent={<Button title="Fetch Exprecipes" onPress = {fetchRecipes} />}
+        ListHeaderComponent={<Button title="Reload Exprecipes" onPress = {fetchRecipes} />}
         renderItem={({item})=>{
           return(
             <View style= {styles.container}>

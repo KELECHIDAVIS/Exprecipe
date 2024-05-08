@@ -1,24 +1,31 @@
-import React, { useEffect } from 'react';
-import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator, Modal, Button} from 'react-native';
 import { useDispatch } from 'react-redux';
-import { getSavedRecipes } from '../features/recipes/recipeSlice';
+import { getSavedRecipes, setCurrentSavedRecipe } from '../features/recipes/recipeSlice';
 import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
 import SavedRecipeCard from '../components/SavedRecipeCard';
 function SavedRecipesPage({navigation}) {
 
   const dispatch = useDispatch();
   const {savedRecipes, isLoading} = useSelector((state)=>state.recipes)
-  const baseRecipeImageURL = 
+  const [currentRecipe ,setCurrentRecipe] = useState(null); 
+  const [isModalVisible, setModalVisible] = useState(false); 
+  const baseRecipeImageURL = "https://spoonacular.com/cdn/ingredients_100x100/"
   // Dispatch the function to get saved recipes when the component mounts or when navigation focus changes
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(getSavedRecipes()); // Dispatch your action to get saved recipes
     });
 
-    // Clean up the event listener
+    
     return unsubscribe;
   }, [dispatch, navigation]);
 
+  const launchSavedRecipeModal =(recipe) =>{
+    setCurrentRecipe(recipe); 
+    setModalVisible(true); 
+  }
   if(isLoading)
     {
       return(
@@ -37,11 +44,17 @@ function SavedRecipesPage({navigation}) {
         renderItem={({item}) => {
           return(
             <View style= {styles.container}>
-              <SavedRecipeCard name={item.name} image={item.image}/>
+              <SavedRecipeCard name={item.name} image={item.image} onPress= {()=>launchSavedRecipeModal(item)}/>
             </View>
           )
         }}
       />
+      <Modal visible={currentRecipe!==null}  >
+        <SafeAreaView>
+          <Button title="Close" onPress={()=> setCurrentRecipe(null)}/>
+          <Text>Saved Recipe Modal</Text>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   )
 }
