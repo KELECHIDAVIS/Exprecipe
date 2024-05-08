@@ -70,15 +70,15 @@ function PantryPage({navigation}) {
                 {
                   return(
                     <View style= {styles.ingrContainer}>
-                      <TouchableOpacity onPress={()=> removeIngr(item._id)}>
-                        <Text>Delete</Text>
+                      <TouchableOpacity style={{alignItems:'center', backgroundColor:'#CC6C6C', borderTopLeftRadius:10, borderTopRightRadius:10}} onPress={()=> removeIngr(item._id)}>
+                        <Text style={{color:'#fff', fontWeight:'bold'}}>x</Text>
                       </TouchableOpacity>
                       <Image
                           
                           source={{uri : item.imagePath , resizeMode:'cover', width : width, height: 85}}
 
                       />
-                      <Text>{item.name}</Text>
+                      <Text style={{textAlign:'center', color:"#fff"}}>{item.name}</Text>
                     </View>
                   )
                 }
@@ -109,13 +109,16 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   container:{
-      marginTop:20,
-      
+
+      backgroundColor:"#FFF8D6",
+      flex:1,
   },
   ingrContainer:{
-    backgroundColor:'tan',
+    backgroundColor:'#113611',
     margin:10,
     width:width, 
+    borderRadius:10,
+    
 }, 
   flatList:{
     marginVertical:20,
