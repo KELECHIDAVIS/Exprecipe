@@ -52,9 +52,9 @@ function PantryPage({navigation}) {
   
   return (
     <SafeAreaView style={styles.container}>
-            <TextInput style={{alignSelf:'center'}}>Enter The Name of Your Ingredient</TextInput>
+            <TextInput style={{alignSelf:'center', color:'#113611', fontWeight:'bold'}}>Enter The Name of Your Ingredient</TextInput>
             <TextInput style={styles.input} onChangeText={setName} value={name} />
-            <Button title='Add Ingredient' onPress={addIngredient} />
+            <Button title='Add Ingredient' onPress={addIngredient} color="#75A961"/>
             {ingredients.length > 0 ? (
               isLoading ? (
                 (
