@@ -5,6 +5,8 @@ import Toast from 'react-native-root-toast';
 import {createIngr, getIngrs, resetIngredientSlice, deleteIngr} from '../features/ingredients/ingredientSlice'
 import IngredientItem from '../components/IngredientItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AntDesign } from '@expo/vector-icons';
+import appColors from '../assets/appColors';
 
 const width =100
 function PantryPage({navigation}) {
@@ -49,12 +51,20 @@ function PantryPage({navigation}) {
     dispatch(deleteIngr(id))  // not working? 
   }
 
+  const capitalizeFirst = (name)=>{
+    return name.charAt(0).toUpperCase() + name.slice(1); 
+  }
+
   
   return (
     <SafeAreaView style={styles.container}>
-            <TextInput style={{alignSelf:'center', color:'#113611', fontWeight:'bold'}}>Enter The Name of Your Ingredient</TextInput>
-            <TextInput style={styles.input} onChangeText={setName} value={name} />
-            <Button title='Add Ingredient' onPress={addIngredient} color="#75A961"/>
+            <TextInput style={{alignSelf:'center', color: appColors.secondaryColor, fontWeight:'bold', fontSize:26}}>Enter Your Ingredients</TextInput>
+            <View style={styles.textInputContainer}>
+              <TextInput style={styles.input} onChangeText={setName} value={name} />
+              <TouchableOpacity title='Add Ingredient' onPress={addIngredient} color={appColors.accentColor} style ={styles.addIngrButton}>
+                <AntDesign name="plussquare" size={42} color={appColors.accentColor}/>
+              </TouchableOpacity>
+            </View>
             {ingredients.length > 0 ? (
               isLoading ? (
                 (
@@ -78,7 +88,7 @@ function PantryPage({navigation}) {
                           source={{uri : item.imagePath , resizeMode:'cover', width : width, height: 85}}
 
                       />
-                      <Text style={{textAlign:'center', color:"#fff"}}>{item.name}</Text>
+                      <Text style={{textAlign:'center', color:"#fff", fontWeight:'bold'}}>{capitalizeFirst(item.name)}</Text>
                     </View>
                   )
                 }
@@ -91,7 +101,7 @@ function PantryPage({navigation}) {
               ): 
               (
                 
-                <Text style={styles.title}>You Have No Ingredients</Text>
+                <Text style={{alignSelf:'center',marginTop:20,fontSize:16 , fontWeight:'bold'}}>You Have No Ingredients</Text>
                 
               )}
     </SafeAreaView>
@@ -100,6 +110,7 @@ function PantryPage({navigation}) {
 
 const styles = StyleSheet.create({
   input: {
+    flex:1,
     height: 40,
     width:300,
     margin: 12,
@@ -126,12 +137,15 @@ const styles = StyleSheet.create({
  
     paddingHorizontal:15,
   },
-  title: {
-    fontSize: 24,
-    textAlign:'center',
-    
-  },
   
+  textInputContainer:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginHorizontal:20,
+  },
+  addIngrButton:{
+
+  }
   
 }); 
 export default PantryPage

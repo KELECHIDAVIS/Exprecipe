@@ -1,6 +1,22 @@
 
 import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import appColors from "../assets/appColors";
 
+returnMissingIngredientText = (count)=>{
+    if(count <=1)
+    {
+        return(
+            <Text style={{...styles.bodyText, color:'green'}} >{count} missing ingredient(s)</Text>
+        )
+    }else if( count <=3){
+        return(
+            <Text style={{...styles.bodyText, color:'orange'}}>{count} missing ingredients</Text>
+        )
+    }
+    return (
+        <Text style={{...styles.bodyText, color:'orange'}}>{count} missing ingredients</Text>
+    )
+}
 function RecipeCard({name, missingIngredientCount, imagePath, onPress}){
     
     return (
@@ -8,9 +24,7 @@ function RecipeCard({name, missingIngredientCount, imagePath, onPress}){
             <Image style={styles.image} source={{uri : imagePath , resizeMode:'cover', width : 85, height: 60}}/>
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{name}</Text>
-                {missingIngredientCount==1 ? 
-                (<Text style={styles.title}>{missingIngredientCount} missing ingredient</Text>): 
-                (<Text style={styles.title}>{missingIngredientCount} missing ingredients</Text>)}
+                {returnMissingIngredientText(missingIngredientCount)}
                 
             </View>
         </TouchableOpacity>
@@ -25,7 +39,7 @@ const styles = StyleSheet.create({
       justifyContent:'center',
       alignContent:'center',
       padding:10,
-      backgroundColor: 'tan',
+      backgroundColor: appColors.primaryColor,
       borderRadius: 10,
     },
     infoContainer:{
@@ -43,8 +57,16 @@ const styles = StyleSheet.create({
         flex:1
     },
     title: {
-        flex:2, 
-      fontSize: 14,
-      textAlign:'center'
+    flex:2, 
+      fontSize: 16,
+      textAlign:'center',
+      color:appColors.secondaryColor,
+      fontWeight:'bold'
     },
+    bodyText: {
+        flex:2, 
+          fontSize: 10,
+          textAlign:'center',
+          fontWeight:'bold'
+        },
 }); 

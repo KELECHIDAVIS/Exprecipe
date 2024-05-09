@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkLoggedIn, logout, reset } from '../features/auth/authSlice';
 import { getIngrs } from '../features/ingredients/ingredientSlice';
-import { Text , Button, View, Image, ActivityIndicator} from 'react-native';
+import { Text , Button, View, Image, ActivityIndicator, TouchableOpacity} from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useWindowDimensions } from 'react-native';
-
+import appColors from '../assets/appColors';
+import { Entypo } from '@expo/vector-icons';
 function LogoTitle() {
   return (
     
@@ -46,30 +47,41 @@ function MainAppPages({navigation}) {
       screenOptions={{ tabBarStyle:{
         backgroundColor:"#F7E1AE"
         
-      }p}}
+      }}}
     >
       <Tab.Screen name="Pantry"  component={PantryPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       headerRight: () => (
-            <Button
+            <TouchableOpacity
               onPress={logOut}
-              title="Logout"
-              color='#75A961'
-            />
+              title="Log Out"
+              color={appColors.accentColor}
+              style={{alignSelf: 'flex-end',marginRight:16}}
+            >
+              <Entypo name="log-out" size={28} color={appColors.accentColor} />
+            </TouchableOpacity>
           ),
       headerBackground: ()=>(
-        <View style={{flex:1, backgroundColor:'#F7E1AE'}}>
+        <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 
         </View>
       )
       }}/>
       <Tab.Screen name="Exprecipes" component={ExprecipesPage}   options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       headerRight: () => (
-            <Button
+            <TouchableOpacity
               onPress={logOut}
-              title="Logout"
-              
-            />
+              title="Log Out"
+              color={appColors.accentColor}
+              style={{alignSelf: 'flex-end',marginRight:16}}
+            >
+              <Entypo name="log-out" size={28} color={appColors.accentColor} />
+            </TouchableOpacity>
           ),
+          headerBackground: ()=>(
+        <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
+
+        </View>
+      )
       }}/>
       <Tab.Screen name="Scanner" options={{headerShown:false}} component={ScannerPage} />
       <Tab.Screen name="Saved Recipes" options={{headerShown:false}} component={SavedRecipesPage} />
