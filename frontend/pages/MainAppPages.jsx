@@ -14,6 +14,7 @@ import { useWindowDimensions } from 'react-native';
 
 function LogoTitle() {
   return (
+    
     <Image
       style={{ width: 100, height: 50 }}
       source={require('../assets/exprecipeLogo.png')}
@@ -41,10 +42,27 @@ function MainAppPages({navigation}) {
   }
   
   return (
-    <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute'
-      
+    <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute' 
+      screenOptions={{ tabBarStyle:{
+        backgroundColor:"#F7E1AE"
+        
+      }p}}
     >
       <Tab.Screen name="Pantry"  component={PantryPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
+      headerRight: () => (
+            <Button
+              onPress={logOut}
+              title="Logout"
+              color='#75A961'
+            />
+          ),
+      headerBackground: ()=>(
+        <View style={{flex:1, backgroundColor:'#F7E1AE'}}>
+
+        </View>
+      )
+      }}/>
+      <Tab.Screen name="Exprecipes" component={ExprecipesPage}   options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       headerRight: () => (
             <Button
               onPress={logOut}
@@ -53,7 +71,6 @@ function MainAppPages({navigation}) {
             />
           ),
       }}/>
-      <Tab.Screen name="Exprecipes" options={{headerShown:false}} component={ExprecipesPage} />
       <Tab.Screen name="Scanner" options={{headerShown:false}} component={ScannerPage} />
       <Tab.Screen name="Saved Recipes" options={{headerShown:false}} component={SavedRecipesPage} />
       <Tab.Screen name="Settings" options={{headerShown:false}} component={SettingsPage} />

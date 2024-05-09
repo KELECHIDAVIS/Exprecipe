@@ -13,35 +13,37 @@ const getSavedRecipes = asyncHandler ( async (req, res) =>{
 //@desc     Save a new Recipe  
 //@route     POST /api/recipes
 //@access     Private
-const saveRecipe = asyncHandler ( async (req, res) =>{
-   
-    const {name , cookTime, ingredients, instructions, sourceUrl, apiID, image} = req.body ; // instructions can be null 
-    if(!name || !cookTime || !ingredients  || !sourceUrl || !apiID|| !image ){
-        console.log("Error in save recipe in recipe controller: ")
+const saveRecipe = asyncHandler(async (req, res) => {
+    const { name, cookTime, ingredients, instructions, sourceUrl, apiID, image } = req.body;
+    
+    if (!name || !cookTime || !ingredients || !sourceUrl || !apiID || !image) {
+        console.log("Error in save recipe in recipe controller: ");
         throw new Error("Please Add All Fields"); 
     }
-    console.log("Made it in backend ")
-    const recipeAlrSaved = await Recipe.findOne({apiID})    ; 
-
-    if(recipeAlrSaved){
+    
+    const recipeAlrSaved = await Recipe.findOne({ apiID }); 
+    
+    if (recipeAlrSaved) {
+        console.log("recipe was alr saved");
         res.status(400); 
         throw new Error("Recipe was already saved"); 
     }
-
+    
+    
+    
     // save recipe 
     const recipe = await Recipe.create({
-        name,
-        cookTime,
-        apiID, 
-        ingredients,
-        instructions, 
-        sourceUrl, 
-        image, 
-        user:req.user.id,
-    })
-    console.log('recipe saved to database')
-    res.status(200).json(recipe) 
-})
+        user: req.user.id,
+        name:name,
+        cookTime:cookTime,
+        apiID:apiID, 
+        ingredients:ingredients,
+        instructions: instructions !== undefined ? instructions : null,
+        image:image, 
+        sourceUrl:sourceUrl,
+    });
+    res.status(200).json(recipe);
+});
 
 //@desc     Get user's saved recipes  
 //@route     DELETE /api/recipes/:id

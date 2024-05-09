@@ -52,9 +52,9 @@ function PantryPage({navigation}) {
   
   return (
     <SafeAreaView style={styles.container}>
-            <TextInput style={{alignSelf:'center'}}>Enter The Name of Your Ingredient</TextInput>
+            <TextInput style={{alignSelf:'center', color:'#113611', fontWeight:'bold'}}>Enter The Name of Your Ingredient</TextInput>
             <TextInput style={styles.input} onChangeText={setName} value={name} />
-            <Button title='Add Ingredient' onPress={addIngredient} />
+            <Button title='Add Ingredient' onPress={addIngredient} color="#75A961"/>
             {ingredients.length > 0 ? (
               isLoading ? (
                 (
@@ -70,15 +70,15 @@ function PantryPage({navigation}) {
                 {
                   return(
                     <View style= {styles.ingrContainer}>
-                      <TouchableOpacity onPress={()=> removeIngr(item._id)}>
-                        <Text>Delete</Text>
+                      <TouchableOpacity style={{alignItems:'center', backgroundColor:'#CC6C6C', borderTopLeftRadius:10, borderTopRightRadius:10}} onPress={()=> removeIngr(item._id)}>
+                        <Text style={{color:'#fff', fontWeight:'bold'}}>x</Text>
                       </TouchableOpacity>
                       <Image
                           
                           source={{uri : item.imagePath , resizeMode:'cover', width : width, height: 85}}
 
                       />
-                      <Text>{item.name}</Text>
+                      <Text style={{textAlign:'center', color:"#fff"}}>{item.name}</Text>
                     </View>
                   )
                 }
@@ -109,13 +109,16 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   container:{
-      marginTop:20,
-      
+
+      backgroundColor:"#FFF8D6",
+      flex:1,
   },
   ingrContainer:{
-    backgroundColor:'tan',
+    backgroundColor:'#113611',
     margin:10,
     width:width, 
+    borderRadius:10,
+    
 }, 
   flatList:{
     marginVertical:20,

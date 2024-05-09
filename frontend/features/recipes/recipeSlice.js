@@ -7,7 +7,8 @@ const initialState ={
     isError: false, 
     isSuccess: false,
     isLoading:false, 
-    message:''
+    message:'',
+
 }
 
 // get user's saved recipes 
@@ -68,7 +69,11 @@ export const recipeSlice = createSlice({
             state.isError = false; 
             state.message= ''; 
             state.savedRecipes= []; 
-        }  
+
+        },
+        setCurrentSavedRecipe:(state)=>{
+
+        }
     },
     extraReducers:(builder) =>{
         builder
@@ -129,6 +134,6 @@ export const recipeSlice = createSlice({
 
 
 
-export const {resetRecipeSlice}  = recipeSlice.actions
+export const {resetRecipeSlice, setCurrentSavedRecipe}  = recipeSlice.actions
 
 export default recipeSlice.reducer 

@@ -1,10 +1,10 @@
 
 import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
 
-function SavedRecipeCard({name ,image}){
+function SavedRecipeCard({name ,image, onPress}){
     
     return (
-        <TouchableOpacity style={styles.container}  >
+        <TouchableOpacity style={styles.container} onPress = {onPress} >
             <Image style={styles.image} source={{uri : image , resizeMode:'cover', width : 85, height: 60}}/>
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{name}</Text>
