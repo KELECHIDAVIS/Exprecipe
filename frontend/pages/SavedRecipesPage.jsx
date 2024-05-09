@@ -7,6 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import SavedRecipeCard from '../components/SavedRecipeCard';
 import {openBrowserAsync} from 'expo-web-browser'
+import appColors from '../assets/appColors';
 const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/"
 const returnModalContent= (currentRecipe) =>{
   if(!currentRecipe){
@@ -14,6 +15,7 @@ const returnModalContent= (currentRecipe) =>{
   }
   
   return(
+    
     <ScrollView style={{padding:15, alignContent:'center'}}>
           <Text style ={styles.title}>{currentRecipe.name}</Text>
           <View style = {styles.timeContainer}>
@@ -28,7 +30,7 @@ const returnModalContent= (currentRecipe) =>{
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item})=>{
               return(
-                <View style= {{ margin:10}}>
+                <View style= {{ margin:10, backgroundColor:appColors.primaryColor}}>
                   <Image
                     source={{ uri: baseImageURL + item.image }}
                     style={{ width: 85, height: 85 , resizeMode:'stretch'}} // Adjust dimensions as needed
@@ -73,7 +75,7 @@ function SavedRecipesPage({navigation}) {
   if(isLoading)
     {
       return(
-        <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
+        <View style = {{flex:1 , justifyContent:'center', alignItems:'center', backgroundColor:appColors.bgColor}}>
           <ActivityIndicator size='large'/>
       </View>
       )
@@ -82,7 +84,9 @@ function SavedRecipesPage({navigation}) {
     <SafeAreaView style={{flex: 1,
       justifyContent:'center',
       alignContent:'center',
-      padding:10,}}>
+      padding:10,
+      backgroundColor:appColors.bgColor
+      }}>
       <FlatList
         data= {savedRecipes}
         renderItem={({item}) => {

@@ -1,5 +1,6 @@
 
 import { Text , StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import appColors from "../assets/appColors";
 
 function SavedRecipeCard({name ,image, onPress}){
     
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
       justifyContent:'center',
       alignContent:'center',
       padding:10,
-      backgroundColor: 'tan',
+      backgroundColor: appColors.primaryColor,
       borderRadius: 10,
     },
     infoContainer:{
