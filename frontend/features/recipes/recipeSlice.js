@@ -110,18 +110,9 @@ export const recipeSlice = createSlice({
         .addCase(deleteRecipe.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            // now add every recipe except the one where the ids are equal // May need to be changed later 
-            let result =[]; 
-            for (let i= 0; i< state.savedRecipes.length; i++)
-            {
-                if(state.savedRecipes[i]._id == action.payload.id)
-                {
-                    continue; 
-                }
-                //otherwise push the ingredients 
-                result.push(state.savedRecipes[i]);
-            }
-            state.savedRecipes = result// remove the deleted recipes 
+            state.recipes = state.recipes.filter(
+                (rec) => rec._id !== action.payload.id
+            )
         })
         .addCase(deleteRecipe.rejected, (state, action )=>{
             state.isLoading = false

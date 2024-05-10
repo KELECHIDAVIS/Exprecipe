@@ -46,7 +46,7 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     const fetch = require('node-fetch');
 
     const ignorePantry= true; // assume user has basic ingredients like salt, flour, and other stuff like that 
-    const returnNum = 15 ; // how many recipes we are returning 
+    const returnNum = 25 ; // how many recipes we are returning 
     const ranking =2 ;  // 1) maximize ingredients 2) minimize missing ingredients 
 
     const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?ingredients=${ingrQuery}&number=${returnNum}&ignorePantry=${true}&ranking=${ranking}`;

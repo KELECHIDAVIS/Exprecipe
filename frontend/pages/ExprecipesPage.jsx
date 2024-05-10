@@ -57,8 +57,8 @@ function ExprecipesPage({navigation}) {
   }
   if (isLoading ){
     return(
-      <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
-        <ActivityIndicator size='large'/>
+      <View style = {{flex:1 , justifyContent:'center', alignItems:'center', backgroundColor:appColors.bgColor}}>
+        <ActivityIndicator size='large' color={appColors.accentColor}/>
     </View>
     )
   }
@@ -66,8 +66,8 @@ function ExprecipesPage({navigation}) {
     <SafeAreaView style={styles.container}>
       {ingredients.length>0 ? (
         <View style = {styles.container}>
-
-        <TouchableOpacity title="Reload Exprecipes" onPress = {fetchRecipes}  style={{alignItems:'center', paddingBottom:5,}}>
+        <Text style ={styles.pageTitle}>Find Possible Recipes!</Text>
+        <TouchableOpacity  onPress = {fetchRecipes}  style={{alignItems:'center', paddingBottom:5,}}>
             <Feather name="refresh-cw" size={40} color={appColors.accentColor} />
          </TouchableOpacity>
         
@@ -145,5 +145,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign:'center',
     fontWeight:'bold'
+  },
+  pageTitle: {
+    fontSize: 26,
+    textAlign:'center',
+    fontWeight:'bold',
+    color:appColors.secondaryColor,
+    paddingBottom:5
   },
 });

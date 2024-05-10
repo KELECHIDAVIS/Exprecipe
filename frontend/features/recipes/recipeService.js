@@ -51,7 +51,7 @@ const deleteRecipe = async ( id, token )=>{
  const recipeService = {
     getSavedRecipes, 
     saveRecipe,
-    deleteRecipe
+    deleteRecipe,
 }
 
 export default recipeService; 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator, Modal, Button, ScrollView} from 'react-native';
 import { useDispatch } from 'react-redux';
-import { getSavedRecipes, setCurrentSavedRecipe } from '../features/recipes/recipeSlice';
+import { deleteRecipe, getSavedRecipes, setCurrentSavedRecipe } from '../features/recipes/recipeSlice';
 import { useSelector } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -72,39 +72,52 @@ function SavedRecipesPage({navigation}) {
     setModalVisible(true); 
   }
  
+  const deleteSavedRecipe =(id)=>{
+    dispatch(deleteRecipe(id))
+  }
   if(isLoading)
     {
       return(
         <View style = {{flex:1 , justifyContent:'center', alignItems:'center', backgroundColor:appColors.bgColor}}>
-          <ActivityIndicator size='large'/>
+          <ActivityIndicator size='large' color={appColors.accentColor}/>
       </View>
       )
     }
-  return (
-    <SafeAreaView style={{flex: 1,
-      justifyContent:'center',
-      alignContent:'center',
-      padding:10,
-      backgroundColor:appColors.bgColor
-      }}>
-      <FlatList
-        data= {savedRecipes}
-        renderItem={({item}) => {
-          return(
-            <View style= {styles.container}>
-              <SavedRecipeCard name={item.name} image={item.image} onPress= {()=>launchSavedRecipeModal(item)}/>
-            </View>
-          )
-        }}
-      />
-      <Modal visible={currentRecipe!== null}  >
-        <SafeAreaView>
-          <Button title="Close" onPress={()=> setCurrentRecipe(null)}/>
-          {returnModalContent(currentRecipe)}
-        </SafeAreaView>
-      </Modal>
-    </SafeAreaView>
-  )
+
+  if(savedRecipes.length!==0){
+    return (
+      <SafeAreaView style={{flex: 1,
+        justifyContent:'center',
+        alignContent:'center',
+        padding:10,
+        backgroundColor:appColors.bgColor
+        }}>
+        <Text style={{...styles.title , margin:5}}>Swipe Left To Remove Recipes!</Text>
+        <FlatList
+          data= {savedRecipes}
+          renderItem={({item}) => {
+            return(
+              <View style= {styles.container}>
+                <SavedRecipeCard name={item.name} image={item.image} onPress= {()=>launchSavedRecipeModal(item)} deleteFunction = {()=> deleteSavedRecipe(item._id)}/>
+              </View>
+            )
+          }}
+        />
+        
+        <Modal visible={currentRecipe!== null}  >
+          <SafeAreaView>
+            <Button title="Close" onPress={()=> setCurrentRecipe(null)}/>
+            {returnModalContent(currentRecipe)}
+          </SafeAreaView>
+        </Modal>
+      </SafeAreaView>)
+  }else{
+    return (
+      <Text>Save Recipes You Like Through Your Exprecipes Page!</Text>
+    )
+  }
+  
+   
 }
 
 export default SavedRecipesPage
@@ -131,7 +144,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     textAlign:'center',
     fontWeight:'bold'
   },

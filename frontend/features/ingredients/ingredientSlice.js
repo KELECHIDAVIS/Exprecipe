@@ -174,18 +174,10 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
 
-            // now add every ingr except the one where the ids are equal // May need to be changed later 
-            let result =[]; 
-            for (let i= 0; i< state.ingredients.length; i++)
-            {
-                if(state.ingredients[i]._id == action.payload.id)
-                {
-                    continue; 
-                }
-                //otherwise push the ingredients 
-                result.push(state.ingredients[i]);
-            }
-            state.ingredients = result// remove the deleted ingredients 
+           
+            state.ingredients = state.ingredients.filter(
+                (ingr) => ingr._id !== action.payload.id
+            )// remove the deleted ingredients 
 
             
         })

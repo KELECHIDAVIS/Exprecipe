@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {Provider} from 'react-redux'
 import {  store } from './app/store';
 import AppStack from './pages/AppStack';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler'; 
 import 'react-native-reanimated'; 
 
 // if the user is logged in:
@@ -18,9 +18,11 @@ const Stack = createNativeStackNavigator();
 function App() {
 
   return(
-    <Provider store={store}>
-      <AppStack/>
-    </Provider>
+    <GestureHandlerRootView style = {{flex:1}}>
+      <Provider store={store}>
+        <AppStack/>
+      </Provider>
+    </GestureHandlerRootView>
   )
  // THIS WOULD BE THE APP STACK COULD MAKE A PAGE FOR THAT 
  
