@@ -92,7 +92,7 @@ function SavedRecipesPage({navigation}) {
         padding:10,
         backgroundColor:appColors.bgColor
         }}>
-        <Text style={{...styles.title , margin:5}}>Swipe Left To Remove Recipes!</Text>
+        
         <FlatList
           data= {savedRecipes}
           renderItem={({item}) => {
