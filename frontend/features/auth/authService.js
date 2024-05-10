@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // the url has to consist of the devices local ip 
 const API_URL ='/api/user/'// proxy didn't work :*(
-const host ='172.17.53.6'
+const host ='192.168.1.35'
 // register user with Four backend api 
 const register = async (userData) =>{
 

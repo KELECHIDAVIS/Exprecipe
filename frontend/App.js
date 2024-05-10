@@ -8,6 +8,7 @@ import {Provider} from 'react-redux'
 import {  store } from './app/store';
 import AppStack from './pages/AppStack';
 
+import 'react-native-reanimated'; 
 
 // if the user is logged in:
 // show tabbed page 

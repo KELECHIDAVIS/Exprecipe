@@ -1,7 +1,7 @@
 // handles http requests 
 import axios from 'axios' 
 
-const host ='172.17.53.6'
+const host ='192.168.1.35'
 // get saved recipes  
 const getSavedRecipes = async ( token )=>{
     // for protected routes 

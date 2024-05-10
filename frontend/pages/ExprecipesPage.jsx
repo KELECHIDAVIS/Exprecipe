@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 import appColors from '../assets/appColors';
 function ExprecipesPage({navigation}) {
   const { ingredients , recipes , currentRecipe, isLoading, isError, isSuccess, message} = useSelector((state)=>state.ingredients)
-  const recipeState = useSelector((state)=> state.recipes)
+  
   const dispatch = useDispatch(); 
   const [isModalVisible , setModalVisible ] = useState(false); 
   
@@ -29,7 +29,7 @@ function ExprecipesPage({navigation}) {
     }
 
     
-  }, [isError, isLoading , isSuccess, message])
+  }, [isError , isSuccess, message])
 
   const returnModalContent= (currentRecipe) =>{
     if(!currentRecipe){

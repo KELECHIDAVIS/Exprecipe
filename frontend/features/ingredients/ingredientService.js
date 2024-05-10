@@ -1,7 +1,7 @@
 // handles http requests 
 import axios from 'axios' 
 
-const host ="172.17.53.6"
+const host ="192.168.1.35"
 // setIngr from our backend api 
 const createIngr = async (ingrData , token) =>{
     // for protected routes 
