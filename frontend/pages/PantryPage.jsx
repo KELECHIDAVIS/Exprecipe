@@ -58,7 +58,7 @@ function PantryPage({navigation}) {
   
   return (
     <SafeAreaView style={styles.container}>
-            <TextInput style={{alignSelf:'center', color: appColors.secondaryColor, fontWeight:'bold', fontSize:26}}>Enter Your Ingredients</TextInput>
+            <Text style={{alignSelf:'center', color: appColors.secondaryColor, fontWeight:'bold', fontSize:26}}>Enter Your Ingredients</Text>
             <View style={styles.textInputContainer}>
               <TextInput style={styles.input} onChangeText={setName} value={name} />
               <TouchableOpacity title='Add Ingredient' onPress={addIngredient} color={appColors.accentColor} style ={styles.addIngrButton}>
