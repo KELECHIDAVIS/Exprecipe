@@ -71,9 +71,6 @@ export const recipeSlice = createSlice({
             state.savedRecipes= []; 
 
         },
-        setCurrentSavedRecipe:(state)=>{
-
-        }
     },
     extraReducers:(builder) =>{
         builder
@@ -110,7 +107,8 @@ export const recipeSlice = createSlice({
         .addCase(deleteRecipe.fulfilled, (state, action) =>{
             state.isLoading = false
             state.isSuccess = true; 
-            state.recipes = state.recipes.filter(
+            
+            state.savedRecipes = state.savedRecipes.filter(
                 (rec) => rec._id !== action.payload.id
             )
         })

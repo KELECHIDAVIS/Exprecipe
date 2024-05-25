@@ -174,7 +174,6 @@ export const ingredientSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true; 
 
-           
             state.ingredients = state.ingredients.filter(
                 (ingr) => ingr._id !== action.payload.id
             )// remove the deleted ingredients 
