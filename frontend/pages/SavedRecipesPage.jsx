@@ -16,13 +16,13 @@ const returnModalContent= (currentRecipe) =>{
   
   return(
     
-    <ScrollView style={{padding:15, alignContent:'center'}}>
+    <ScrollView style={{padding:15, alignContent:'center', backgroundColor:appColors.bg}}>
           <Text style ={styles.title}>{currentRecipe.name}</Text>
           <View style = {styles.timeContainer}>
             <AntDesign name="clockcircle" size={18} color="black" />
-            <Text style={{fontSize: 18, fontWeight:'bold'}}>{currentRecipe.cookTime} mins</Text>
+            <Text style={{fontSize: 18, fontWeight:'bold', color:appColors.secondaryColor}}>{currentRecipe.cookTime} mins</Text>
           </View>
-          <Text style={{fontSize:18 , marginTop:8}}>Ingredients:</Text>
+          <Text style={{fontSize:18 , fontWeight:'bold',marginTop:8, color:appColors.secondaryColor}}>Ingredients:</Text>
           <FlatList 
             horizontal
             contentContainerStyle={{alignItems: 'center', justifyContent:'space-evenly'}}
@@ -35,16 +35,16 @@ const returnModalContent= (currentRecipe) =>{
                     source={{ uri: baseImageURL + item.image }}
                     style={{ width: 85, height: 85 , resizeMode:'stretch'}} // Adjust dimensions as needed
                   />
-                  <Text style={{fontSize:14,backgroundColor:'tan'}}>{item.name}</Text>
+                  <Text style={{fontSize:14,backgroundColor:appColors.primaryColor, color:appColors.secondaryColor}}>{item.name}</Text>
                 </View>
               )
             }}
           />
-          <Text style={{fontSize:18 , marginTop:8}}>Instructions:</Text>
+          <Text style={{fontSize:18 , fontWeight:'bold', color:appColors.secondaryColor,marginTop:8}}>Instructions:</Text>
           {currentRecipe.instructions ? (
-            <Text style={{fontSize:16 , marginTop:8, alignSelf:'center'}}>{currentRecipe.instructions}</Text>
+            <Text style={{fontSize:16 , marginTop:8, alignSelf:'center', backgroundColor:appColors.primaryColor, color:appColors.secondaryColor}}>{currentRecipe.instructions}</Text>
           ) : (
-            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} /> 
+            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} color={appColors.accentColor} /> 
           )}
           
 
@@ -105,15 +105,21 @@ function SavedRecipesPage({navigation}) {
         />
         
         <Modal visible={currentRecipe!== null}  >
-          <SafeAreaView>
-            <Button title="Close" onPress={()=> setCurrentRecipe(null)}/>
+          <SafeAreaView style={{flex:1, backgroundColor:appColors.bgColor}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', paddingHorizontal:15}}>
+              <TouchableOpacity  onPress = {() => setCurrentRecipe(null)} style={{flex:1}}> 
+                <AntDesign name="closesquare" size={42} color={appColors.accentColor} />
+              </TouchableOpacity>
+            </View>
             {returnModalContent(currentRecipe)}
           </SafeAreaView>
         </Modal>
       </SafeAreaView>)
   }else{
     return (
-      <Text>Save Recipes You Like Through Your Exprecipes Page!</Text>
+      <SafeAreaView style={{flex:1 , justifyContent:'center', paddingHorizontal:20, backgroundColor:appColors.bgColor}}>
+        <Text style = {styles.title}>Save Recipes You Like Through Your Exprecipes Page!</Text>
+      </SafeAreaView>
     )
   }
   
@@ -144,8 +150,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 22,
+    fontSize: 21,
     textAlign:'center',
-    fontWeight:'bold'
+    fontWeight:'bold',
+    color:appColors.secondaryColor,
   },
 }); 

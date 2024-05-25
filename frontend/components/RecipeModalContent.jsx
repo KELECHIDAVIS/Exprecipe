@@ -36,7 +36,7 @@ function RecipeModalContent({currentRecipe}){
           {currentRecipe.instructions ? (
             <Text style={styles.bodyText}>{currentRecipe.instructions}</Text>
           ) : (
-            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} /> 
+            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} color={appColors.accentColor} /> 
           )}
           
 
