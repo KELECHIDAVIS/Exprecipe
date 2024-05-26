@@ -1,19 +1,22 @@
 
 import React from 'react'
-import { Text , View, Button, ActivityIndicator, SafeAreaView, TouchableOpacity, StyleSheet} from 'react-native'
+import { Text , View, Button, ActivityIndicator, SafeAreaView, TouchableOpacity, StyleSheet, Modal} from 'react-native'
 import { useDispatch } from 'react-redux'
 import {useEffect, useState} from "react"
 import { logout, reset } from '../features/auth/authSlice';
 import appColors from "../assets/appColors"
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import * as MailComposer from 'expo-mail-composer';
 const bugReportEmail = 'service.exprecipe@gmail.com'
 const emailSubject= 'Bug'
+
 function SettingsPage({navigation}) {
   const [isAvail, setAvail] = useState(false); 
+  const [modalVisible, setModalVisible] = useState(false);
 
-
+  const modalBodyText = "1)\tEnter Your Ingredients on the Pantry Page \n\n2)\tSee Possible Recipes on the Exprecipes Page\n\n3)\tClick on each Exprecipe to view recipe ingredients, and instructions, and possibly save the recipe\n\n4)\tSaved “Exprecipes” will be shown on the Saved Recipes Page"
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       async function checkAvailability(){
@@ -49,11 +52,31 @@ function SettingsPage({navigation}) {
       </View>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>User Guide</Text>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity style={styles.btn} onPress={() => setModalVisible(true)}>
           <Entypo name="book" size={42} color={appColors.secondaryColor} style={{alignSelf:'center'}}/>
           <Text style={{alignSelf:'center' , paddingHorizontal:20, fontSize:20}}>How To Use Exprecipe</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+            {modalBodyText}
+            </Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <AntDesign name="closesquare" size={40} color={appColors.accentColor}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -77,5 +100,38 @@ const styles = StyleSheet.create({
     color:appColors.secondaryColor,
     padding:20,
     fontWeight:'bold',
-  }
+  },centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: appColors.primaryColor,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+
+    fontWeight:'500',
+    fontSize:18,
+    color:appColors.secondaryColor,
+    paddingBottom:10,
+  },
+  textStyle: {
+    color: appColors.accentColor,
+    fontWeight: 'bold',
+
+  },
 })

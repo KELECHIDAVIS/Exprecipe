@@ -30,7 +30,7 @@ function LogoTitle() {
 
 
 const getTabBarIcon = (focused, iconName) => {
-  const iconSize = focused ? 28 : 24; // Adjust the size based on focused state
+  const iconSize = focused ?   28 : 24; // Adjust the size based on focused state
   const iconColor = focused? appColors.accentColor : appColors.secondaryColor; 
 
   
