@@ -84,7 +84,11 @@ function Login({navigation}) {
         <AntDesign name="login" size={32} color="white" />
       </TouchableOpacity>
 
-      <Button title = 'New To Exprecipe? Register' onPress={goToRegisterPage} color={appColors.accentColor}/>
+
+      <TouchableOpacity  onPress={goToRegisterPage} style={{alignSelf:'center', paddingVertical:10, }}>
+        <Text style={{color:appColors.accentColor, fontSize:18}}>New to Exprecipe? Register!</Text>
+      </TouchableOpacity>
+      
     </SafeAreaView>
   )
 }

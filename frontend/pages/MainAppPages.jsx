@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkLoggedIn, logout, reset } from '../features/auth/authSlice';
 import { getIngrs } from '../features/ingredients/ingredientSlice';
-import { Text , Button, View, Image, ActivityIndicator,StyleSheet,  TouchableOpacity} from 'react-native';
+import { Text , Button, View, Image, ActivityIndicator,StyleSheet,  TouchableOpacity, SafeAreaView} from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useWindowDimensions } from 'react-native';
 import appColors from '../assets/appColors';
@@ -30,7 +30,7 @@ function LogoTitle() {
 
 
 const getTabBarIcon = (focused, iconName) => {
-  const iconSize = focused ? 32 : 28; // Adjust the size based on focused state
+  const iconSize = focused ? 28 : 24; // Adjust the size based on focused state
   const iconColor = focused? appColors.accentColor : appColors.secondaryColor; 
 
   
@@ -38,10 +38,10 @@ const getTabBarIcon = (focused, iconName) => {
   if(iconName == "Pantry")
   {
     return (
-      <View style = {styles.iconViewStyle}>
+      <SafeAreaView style = {styles.iconViewStyle}>
           <FontAwesome name="shopping-basket" size={iconSize} color={iconColor} />
           <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-      </View>
+      </SafeAreaView>
     ); 
     
   }else if ( iconName == "Scanner")
@@ -133,7 +133,7 @@ function MainAppPages({navigation}) {
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute' 
       screenOptions={{ tabBarStyle:{
-        backgroundColor:"#F7E1AE"
+        backgroundColor:appColors.primaryColor
         
       },
       tabBarShowLabel:false
