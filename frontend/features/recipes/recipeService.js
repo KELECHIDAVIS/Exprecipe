@@ -1,7 +1,7 @@
 // handles http requests 
 import axios from 'axios' 
-
-const host ='192.168.1.35'
+import {BACKEND_SERVER_API} from '@env'
+const apiURL = BACKEND_SERVER_API+'recipes/'
 // get saved recipes  
 const getSavedRecipes = async ( token )=>{
     // for protected routes 
@@ -10,7 +10,7 @@ const getSavedRecipes = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(`http://${host}:5000/api/recipes/`, config)
+    const response = await axios.get(apiURL, config)
     return response.data // list of user recipes  
 }
 

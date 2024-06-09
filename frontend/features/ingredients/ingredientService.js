@@ -1,7 +1,7 @@
 // handles http requests 
 import axios from 'axios' 
-
-const host ="192.168.1.35"
+import {BACKEND_SERVER_API} from '@env'
+const apiURL = BACKEND_SERVER_API+'ingredients/'
 // setIngr from our backend api 
 const createIngr = async (ingrData , token) =>{
     // for protected routes 
@@ -11,7 +11,7 @@ const createIngr = async (ingrData , token) =>{
         }
     }
     
-    const response =await axios.post(`http://${host}:5000/api/ingredients/`, ingrData, config) 
+    const response =await axios.post(apiURL, ingrData, config) 
     return response.data
 }
 // deleteIngr from our backend api 
@@ -23,7 +23,7 @@ const deleteIngr = async (id , token) =>{
         }
     }
     
-    const response =await axios.delete(`http://${host}:5000/api/ingredients/`+id,  config) 
+    const response =await axios.delete(apiURL+id,  config) 
     return response.data
 }
 // get ingredients  
@@ -34,7 +34,7 @@ const getIngrs = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(`http://${host}:5000/api/ingredients/`, config)
+    const response = await axios.get(apiURL, config)
     return response.data // list of ingredients 
 }
 
@@ -46,7 +46,7 @@ const getPossibleRecipes = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(`http://${host}:5000/api/ingredients/recipes`, config)
+    const response = await axios.get(apiUrl+'recipes', config)
     return response.data // list of recipes
 }
 
@@ -58,7 +58,7 @@ const getRecipeInfo = async (id ,  token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(`http://${host}:5000/api/ingredients/recipes/`+id, config)
+    const response = await axios.get(apiUrl+'recipes/'+id, config)
     return response.data //specific info about that recipe 
 }
 
