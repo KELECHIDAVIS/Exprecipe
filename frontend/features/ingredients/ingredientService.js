@@ -1,7 +1,7 @@
 // handles http requests 
 import axios from 'axios' 
-import {BACKEND_SERVER_API} from '@env'
-const apiURL = BACKEND_SERVER_API+'ingredients/'
+import {REACT_APP_BACKEND_SERVER_API} from '@env'
+const apiURL = REACT_APP_BACKEND_SERVER_API+'ingredients/'
 // setIngr from our backend api 
 const createIngr = async (ingrData , token) =>{
     // for protected routes 
@@ -46,7 +46,7 @@ const getPossibleRecipes = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(apiUrl+'recipes', config)
+    const response = await axios.get(apiURL+'recipes', config)
     return response.data // list of recipes
 }
 
@@ -58,7 +58,7 @@ const getRecipeInfo = async (id ,  token )=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(apiUrl+'recipes/'+id, config)
+    const response = await axios.get(apiURL+'recipes/'+id, config)
     return response.data //specific info about that recipe 
 }
 

@@ -1,10 +1,10 @@
 //service files are strictly for making http requests, sending data back, and sending any data in local storage 
 import axios from 'axios' 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {BACKEND_SERVER_API} from '@env'
+import {REACT_APP_BACKEND_SERVER_API} from '@env'
 
 // the url has to consist of the devices local ip 
-const apiURL = BACKEND_SERVER_API+'user/'
+const apiURL = REACT_APP_BACKEND_SERVER_API+'user/'
 // register user with Four backend api 
 const register = async (userData) =>{
 
@@ -20,7 +20,7 @@ const register = async (userData) =>{
 
 const login = async (userData) =>{
 
-    console.log(BACKEND_SERVER_API); 
+    console.log(REACT_APP_BACKEND_SERVER_API); 
     const response =await axios.post(apiURL+'login', userData) // await axios.post(API_URL, userData) // HERE IS THE ERROR 
 
 

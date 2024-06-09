@@ -30,10 +30,10 @@ function SettingsPage({navigation}) {
     return unsubscribe;
   }, [ navigation]);
   
-  const sendEmail = ()  =>{
-    MailComposer.composeAsync({
+  const  sendEmail = async ()  =>{
+    await MailComposer.composeAsync({
       subject:emailSubject,
-      recipients:[bugReportEmail]
+      recipients:[bugReportEmail],
     }); 
   }
   return (
