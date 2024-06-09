@@ -15,6 +15,9 @@
     "mongoose": "^8.2.1",
     "nodemon": "^3.1.0"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "name": "exprecipev1",
   "version": "1.0.0",
   "main": "server.js",
