@@ -35,7 +35,6 @@ function SavedRecipesPage({navigation}) {
         const recipeLst =await getSavedRecipes();
         setSavedRecipes(recipeLst);  
       };
-      console.log("use effect called")
   
       isLoading(true); 
       onNavigation();
