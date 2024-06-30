@@ -7,7 +7,7 @@ import appColors from '../assets/appColors';
 
 function RecipeModalContent({currentRecipe}){ 
     const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/";
-
+    console.log(currentRecipe)
     const handleInstruction = (recipe)=> {
       if (recipe.instructions){
         return(
@@ -22,17 +22,17 @@ function RecipeModalContent({currentRecipe}){
    return( 
     <ScrollView style={{padding:15, alignContent:'center'}}>
           <TouchableOpacity onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)}>
-          <Text style ={styles.title}>{currentRecipe.title}  <Feather name="external-link" size={24} color={appColors.secondaryColor} /></Text>
+          <Text style ={styles.title}>{currentRecipe.title || currentRecipe.name}  <Feather name="external-link" size={24} color={appColors.secondaryColor} /></Text>
           </TouchableOpacity>
           <View style = {styles.timeContainer}>
             <AntDesign name="clockcircle" size={16} color={appColors.secondaryColor} />
-            <Text style={styles.subHeader}>{currentRecipe.readyInMinutes} mins</Text>
+            <Text style={styles.subHeader}>{currentRecipe.readyInMinutes || currentRecipe.cookTime} mins</Text>
           </View>
           <Text style={styles.subHeader}>Ingredients:</Text>
           <FlatList 
             horizontal
             contentContainerStyle={{alignItems: 'center', justifyContent:'space-evenly'}}
-            data={currentRecipe.extendedIngredients}
+            data={currentRecipe.extendedIngredients|| currentRecipe.ingredients}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item})=>{
               return(

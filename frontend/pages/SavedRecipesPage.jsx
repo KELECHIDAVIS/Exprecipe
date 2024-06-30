@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator, Modal, Button, ScrollView} from 'react-native';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
 import SavedRecipeCard from '../components/SavedRecipeCard';
 import {openBrowserAsync} from 'expo-web-browser'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import appColors from '../assets/appColors';
+import { getSavedRecipes, deleteRecipe } from '../features/recipes/recipeService';
+import RecipeModalContent from '../components/RecipeModalContent';
 const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/"
 const returnModalContent= (currentRecipe) =>{
   if(!currentRecipe){
@@ -14,66 +15,52 @@ const returnModalContent= (currentRecipe) =>{
   
   return(
     
-    <ScrollView style={{padding:15, alignContent:'center', backgroundColor:appColors.bg}}>
-          <Text style ={styles.title}>{currentRecipe.name}</Text>
-          <View style = {styles.timeContainer}>
-            <AntDesign name="clockcircle" size={18} color="black" />
-            <Text style={{fontSize: 18, fontWeight:'bold', color:appColors.secondaryColor}}>{currentRecipe.cookTime} mins</Text>
-          </View>
-          <Text style={{fontSize:18 , fontWeight:'bold',marginTop:8, color:appColors.secondaryColor}}>Ingredients:</Text>
-          <FlatList 
-            horizontal
-            contentContainerStyle={{alignItems: 'center', justifyContent:'space-evenly'}}
-            data={currentRecipe.ingredients}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item})=>{
-              return(
-                <View style= {{ margin:10, backgroundColor:appColors.primaryColor}}>
-                  <Image
-                    source={{ uri: baseImageURL + item.image }}
-                    style={{ width: 85, height: 85 , resizeMode:'stretch'}} // Adjust dimensions as needed
-                  />
-                  <Text style={{fontSize:14,backgroundColor:appColors.primaryColor, color:appColors.secondaryColor}}>{item.name}</Text>
-                </View>
-              )
-            }}
-          />
-          <Text style={{fontSize:18 , fontWeight:'bold', color:appColors.secondaryColor,marginTop:8}}>Instructions:</Text>
-          {currentRecipe.instructions ? (
-            <Text style={{fontSize:16 , marginTop:8, alignSelf:'center', backgroundColor:appColors.primaryColor, color:appColors.secondaryColor}}>{currentRecipe.instructions}</Text>
-          ) : (
-            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} color={appColors.accentColor} /> 
-          )}
-          
-
-      </ScrollView>
+    <RecipeModalContent currentRecipe={currentRecipe}/>
   )
 }
 function SavedRecipesPage({navigation}) {
 
-  const dispatch = useDispatch();
-  const {savedRecipes, isLoading} = useSelector((state)=>state.recipes)
+  const [savedRecipes, setSavedRecipes]  = useState([])
+  const [loading ,  isLoading]=useState(false); 
   const [currentRecipe ,setCurrentRecipe] = useState(null); 
   const [isModalVisible, setModalVisible] = useState(false); 
   // Dispatch the function to get saved recipes when the component mounts or when navigation focus changes
+ 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(getSavedRecipes()); // Dispatch your action to get saved recipes
+      // The screen is focused
+      const onNavigation= async ()=>{
+        const token = await AsyncStorage.getItem("token"); 
+        // get recipes 
+        const recipeLst =await getSavedRecipes();
+        setSavedRecipes(recipeLst);  
+      };
+      console.log("use effect called")
+  
+      isLoading(true); 
+      onNavigation();
+      isLoading(false)
     });
 
-    
+    // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
-  }, [dispatch, navigation]);
-
+  }, [navigation]);
   const launchSavedRecipeModal =(recipe) =>{
     setCurrentRecipe(recipe); 
     setModalVisible(true); 
   }
  
-  const deleteSavedRecipe =(id)=>{
-    dispatch(deleteRecipe(id))
+  const deleteSavedRecipe =async (id)=>{
+    const deletedRecipeID = await deleteRecipe(id); 
+    console.log("Deleted Button Pressed")
+    setSavedRecipes((prevState)=>{
+      prevState= prevState.filter(
+        (recipe) => recipe._id !== deletedRecipeID
+      );
+      return [...prevState]; 
+    })
   }
-  if(isLoading)
+  if(loading)
     {
       return(
         <View style = {{flex:1 , justifyContent:'center', alignItems:'center', backgroundColor:appColors.bgColor}}>
@@ -93,6 +80,7 @@ function SavedRecipesPage({navigation}) {
         
         <FlatList
           data= {savedRecipes}
+          extraData={savedRecipes}
           renderItem={({item}) => {
             return(
               <View style= {styles.container}>

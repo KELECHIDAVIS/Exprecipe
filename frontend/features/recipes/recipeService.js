@@ -52,6 +52,7 @@ export const deleteRecipe = async ( id )=>{
         }
     }
     const response = await axios.delete(apiURL+id,  config)
-    return response.data 
+
+    return response.data.id
 }
 
