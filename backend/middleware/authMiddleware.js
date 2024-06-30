@@ -17,6 +17,7 @@ const protect = asyncHandler(async (req, res, next) => {
     
                 // get user from token
                 req.user = await User.findOne({token}) 
+                console.log("User from auth middleware: ", req.user); 
                 
             }
 

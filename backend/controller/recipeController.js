@@ -15,14 +15,16 @@ const getSavedRecipes = asyncHandler ( async (req, res) =>{
 //@access     Private
 const saveRecipe = asyncHandler(async (req, res) => {
     const { name, cookTime, ingredients, instructions, sourceUrl, apiID, image } = req.body;
+    console.log("saveRecipe- enter function, recipeinfo: ", { name, cookTime, ingredients, instructions, sourceUrl, apiID, image })
     
     if (!name || !cookTime || !ingredients || !sourceUrl || !apiID || !image) {
         console.log("Error in save recipe in recipe controller: ");
         res.status(400); 
         throw new Error("Please Add All Fields"); 
     }
-    
-    const recipeAlrSaved = await Recipe.findOne({ apiID }); 
+    console.log("saveRecipe- before recipe alr save check")
+    const recipeAlrSaved = await Recipe.findOne({ apiID : apiID}); 
+    console.log("saveRecipe- after recipe alr save check: ", recipeAlrSaved)
     
     if (recipeAlrSaved) {
         console.log("recipe was alr saved");
@@ -31,7 +33,7 @@ const saveRecipe = asyncHandler(async (req, res) => {
     }
     
     
-    
+    console.log("saveRecipe- before recipe create")
     // save recipe 
     const recipe = await Recipe.create({
         user: req.user._id,
@@ -43,6 +45,7 @@ const saveRecipe = asyncHandler(async (req, res) => {
         image:image, 
         sourceUrl:sourceUrl,
     });
+    console.log("saveRecipe- after recipe create, recipe: ", recipe)
     res.status(200).json(recipe);
 });
 
