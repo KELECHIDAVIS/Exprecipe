@@ -1,22 +1,19 @@
 import React, { useState } from 'react'
-import { FlatList, Text, View, StyleSheet, Image,  ActivityIndicator, Button , Modal, ScrollView, TouchableOpacity} from 'react-native'
+import { FlatList, Text, View, StyleSheet,  ActivityIndicator,  Modal, TouchableOpacity} from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { MaterialIcons } from '@expo/vector-icons';
-import { getRecipes, getRecipeInfo } from '../features/ingredients/ingredientSlice'
-
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RecipeCard from '../components/RecipeCard'
-import {openBrowserAsync} from 'expo-web-browser'
 import RecipeModalContent from '../components/RecipeModalContent';
-import { saveRecipe } from '../features/recipes/recipeSlice';
+
 import { useEffect } from 'react';
 import appColors from '../assets/appColors';
 function ExprecipesPage({navigation}) {
   const { ingredients , recipes , currentRecipe, isLoading, isError, isSuccess, message} = useSelector((state)=>state.ingredients)
   
-  const dispatch = useDispatch(); 
+
   const [isModalVisible , setModalVisible ] = useState(false); 
   
   

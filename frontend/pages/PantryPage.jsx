@@ -1,54 +1,68 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, TouchableOpacity, ActivityIndicator} from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import Toast from 'react-native-root-toast';
-import {createIngr, getIngrs, resetIngredientSlice, deleteIngr} from '../features/ingredients/ingredientSlice'
-import IngredientItem from '../components/IngredientItem';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import appColors from '../assets/appColors';
+import "react-native-get-random-values"
+import {v4 as uuidv4} from 'uuid'; 
+import { getIngrs,createIngr, deleteIngr } from '../features/ingredients/ingredientService';
+import {register , login} from '../features/auth/authService'; 
 
 const width =100
 function PantryPage({navigation}) {
-
-  const { ingredients , isError, isLoading, isSuccess, message} = useSelector((state)=>state.ingredients)
-  const [name, setName] = useState('')
-  // check for errors and stuff with toast 
-  const dispatch  = useDispatch()
+ 
+  const [name, setName] = useState("")
+  const [ingredients , setIngredientList] = useState([]); 
+  const [loading , setLoading]= useState(false); 
   const numColumns = 3; 
-
-
-  // when navigating to this page 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // The screen is focused
-      dispatch(getIngrs()); // get user ingredients
-    });
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
-
+  // check if they have a user token saved: if they do use it to retreive their ingredients, if not then create one 
+   // MIGHT NEED TO USE USE CALLBACK SO IT DOESNT CALL MULTIPLE TIMES
+  
   useEffect(()=>{
-    if(isError )
-    {
+    const onNavigation= async ()=>{
+      token = await AsyncStorage.getItem("token"); 
+      if(token){
+        // retrieve user ingredients 
+        await login({token}); 
+        const list = await getIngrs(token); 
+        setIngredientList(list); 
+      }else{
+        const token = uuidv4(); 
+        console.log("First Time User: "+ token )
+        await AsyncStorage.setItem("token", token)
+        // register user in our db 
+        await register({token}); 
+      }
       
-      Toast.show(message, { duration: Toast.durations.SHORT, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
-    }
+    };
+    setLoading(true); 
+    onNavigation();
+    setLoading(false);  
+  }, [])
 
-    
-  }, [isError, isLoading , isSuccess, message])
 
-  const addIngredient = () => {
-      
+  
+  const addIngredient = async() => {
       if(name == '')
       {return}
-      dispatch(createIngr({name}))
+      const newIngredient = await createIngr({name}); 
       setName('')
+      //update ingredients
+      setIngredientList((prevState)=>{
+        return [...prevState, newIngredient]; 
+      })
   }
   
-  const removeIngr = (id)  =>{
-    dispatch(deleteIngr(id))  // not working? 
+  const removeIngr = async (id)  =>{
+    const deletedIngredientID = await deleteIngr(id); 
+    setIngredientList((prevState)=>{
+      prevState= prevState.filter(
+        (ingr) => ingr._id !== deletedIngredientID
+      );
+      return [...prevState]; 
+    })
   }
 
   const capitalizeFirst = (name)=>{
@@ -66,7 +80,7 @@ function PantryPage({navigation}) {
               </TouchableOpacity>
             </View>
             {ingredients.length > 0 ? (
-              isLoading ? (
+              loading ? (
                 (
                   <View style = {{flex:1 , justifyContent:'center', alignItems:'center'}}>
                       <ActivityIndicator size='small' color={appColors.accentColor}/>
@@ -76,6 +90,7 @@ function PantryPage({navigation}) {
                 <FlatList
                 style={styles.flatList}
                 data= {ingredients}
+                extraData={ingredients}
                 renderItem={({item}) => 
                 {
                   return(

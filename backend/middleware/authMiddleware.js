@@ -1,5 +1,4 @@
 // protects our routes 
-const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const User= require('../models/userModel')
 
@@ -14,10 +13,10 @@ const protect = asyncHandler(async (req, res, next) => {
             // verify token 
             if(token !== 'null' && token){
 
-                const decoded = jwt.verify(token, process.env.JWT_SECRET)   
+                
     
                 // get user from token
-                req.user = await User.findById(decoded.id).select('-password')  
+                req.user = await User.findOne({token}) 
                 
             }
 

@@ -4,11 +4,10 @@ import * as React from 'react';
 import { View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {Provider} from 'react-redux'
-import {  store } from './app/store';
-import AppStack from './pages/AppStack';
+
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; 
 import 'react-native-reanimated'; 
+import MainAppPages from './pages/MainAppPages';
 
 // if the user is logged in:
 // show tabbed page 
@@ -19,9 +18,11 @@ function App() {
 
   return(
     <GestureHandlerRootView style = {{flex:1}}>
-      <Provider store={store}>
-        <AppStack/>
-      </Provider>
+      
+      <NavigationContainer>
+        <MainAppPages/>
+      </NavigationContainer>
+     
     </GestureHandlerRootView>
   )
  // THIS WOULD BE THE APP STACK COULD MAKE A PAGE FOR THAT 

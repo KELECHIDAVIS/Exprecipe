@@ -4,18 +4,12 @@ import ScannerPage from './ScannerPage';
 import ExprecipesPage from './ExprecipesPage';
 import SavedRecipesPage from './SavedRecipesPage';
 import SettingsPage from './SettingsPage';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { checkLoggedIn, logout, reset } from '../features/auth/authSlice';
-import { getIngrs } from '../features/ingredients/ingredientSlice';
-import { Text , Button, View, Image, ActivityIndicator,StyleSheet,  TouchableOpacity, SafeAreaView} from 'react-native';
-import Toast from 'react-native-root-toast';
+import { Text , View, Image,StyleSheet,  TouchableOpacity, SafeAreaView} from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import appColors from '../assets/appColors';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 function LogoTitle() {
@@ -115,21 +109,6 @@ function MainAppPages({navigation}) {
   const Tab = createBottomTabNavigator();
   const {height , width }  = useWindowDimensions();  
 
-  const dispatch = useDispatch()
-  const {userToken, isError , isLoading , message} = useSelector((state)=>state.auth) // get token from state
-
-  useEffect(() =>{
-    if(!userToken){
-      navigation.push("Login")
-    }
-    
-  }, [userToken, navigation ])
-
-
-  const logOut = () =>{
-    dispatch(logout())
-  }
-  
   return (
     <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute' 
       screenOptions={{ tabBarStyle:{
@@ -141,16 +120,7 @@ function MainAppPages({navigation}) {
       }
     >
       <Tab.Screen name="Pantry"  component={PantryPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
-      headerRight: () => (
-            <TouchableOpacity
-              onPress={logOut}
-              title="Log Out"
-              color={appColors.accentColor}
-              style={{alignSelf: 'flex-end',marginRight:16}}
-            >
-              <Entypo name="log-out" size={28} color={appColors.accentColor} />
-            </TouchableOpacity>
-          ),
+     
       headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 

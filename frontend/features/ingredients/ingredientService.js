@@ -1,10 +1,12 @@
 // handles http requests 
 import axios from 'axios' 
 import {REACT_APP_BACKEND_SERVER_API} from '@env'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'ingredients/'
 // setIngr from our backend api 
-const createIngr = async (ingrData , token) =>{
+export const createIngr = async (ingrData ) =>{
     // for protected routes 
+    const token = await AsyncStorage.getItem("token"); 
     const config ={
         headers:{
             Authorization: `Bearer ${token}`
@@ -12,10 +14,12 @@ const createIngr = async (ingrData , token) =>{
     }
     
     const response =await axios.post(apiURL, ingrData, config) 
+    
     return response.data
 }
 // deleteIngr from our backend api 
-const deleteIngr = async (id , token) =>{
+export const deleteIngr = async (id ) =>{
+    const token = await AsyncStorage.getItem("token"); 
     // for protected routes 
     const config ={
         headers:{
@@ -24,10 +28,10 @@ const deleteIngr = async (id , token) =>{
     }
     
     const response =await axios.delete(apiURL+id,  config) 
-    return response.data
+    return response.data.id
 }
 // get ingredients  
-const getIngrs = async ( token )=>{
+export const getIngrs = async ( token )=>{
     // for protected routes 
     const config ={
         headers:{
@@ -35,11 +39,12 @@ const getIngrs = async ( token )=>{
         }
     }
     const response = await axios.get(apiURL, config)
+
     return response.data // list of ingredients 
 }
 
 // get possible recipes  
-const getPossibleRecipes = async ( token )=>{
+export const getPossibleRecipes = async ( token )=>{
     // for protected routes 
     const config ={
         headers:{
@@ -51,7 +56,7 @@ const getPossibleRecipes = async ( token )=>{
 }
 
 // get possible recipes  
-const getRecipeInfo = async (id ,  token )=>{
+ export const getRecipeInfo = async (id ,  token )=>{
     // for protected routes 
     const config ={
         headers:{
@@ -62,13 +67,4 @@ const getRecipeInfo = async (id ,  token )=>{
     return response.data //specific info about that recipe 
 }
 
-const ingredientService = {
-    createIngr, 
-    getIngrs,
-    deleteIngr,
-    getPossibleRecipes,
-    getRecipeInfo,
 
-}
-
-export default ingredientService; 

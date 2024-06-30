@@ -1,14 +1,13 @@
 const express = require("express")
 const router = express.Router()
-const {getMe, registerUser , loginUser} = require("../controller/userController")
+const { registerUser, loginUser } = require("../controller/userController")
 
-const {protect}  = require("../middleware/authMiddleware")
+
 
 
 router.post("/", registerUser) // add user
-router.post("/login", loginUser) // login user 
-// protect this route because it pertains to a certain user 
-router.get("/me", protect,  getMe) // get user  and protect the route 
+router.post("/login", loginUser) // add user
+
 
 
 module.exports = router

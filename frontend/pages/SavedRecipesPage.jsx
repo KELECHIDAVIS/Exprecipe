@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView,FlatList,  View, Text, Image , TouchableOpacity, StyleSheet, ActivityIndicator, Modal, Button, ScrollView} from 'react-native';
 import { useDispatch } from 'react-redux';
-import { deleteRecipe, getSavedRecipes, setCurrentSavedRecipe } from '../features/recipes/recipeSlice';
 import { useSelector } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
 import SavedRecipeCard from '../components/SavedRecipeCard';
 import {openBrowserAsync} from 'expo-web-browser'
 import appColors from '../assets/appColors';

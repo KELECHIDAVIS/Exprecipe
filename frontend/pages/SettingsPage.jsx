@@ -1,9 +1,7 @@
 
 import React from 'react'
-import { Text , View, Button, ActivityIndicator, SafeAreaView, TouchableOpacity, StyleSheet, Modal} from 'react-native'
-import { useDispatch } from 'react-redux'
+import { Text , View,SafeAreaView, TouchableOpacity, StyleSheet, Modal} from 'react-native'
 import {useEffect, useState} from "react"
-import { logout, reset } from '../features/auth/authSlice';
 import appColors from "../assets/appColors"
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';

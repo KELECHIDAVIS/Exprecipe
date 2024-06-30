@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 9.2.0"
+    "version": ">= 9.2.0",
+    "appVersionSource":"remote"
   },
   "build": {
     "development": {
@@ -10,9 +11,18 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "autoIncrement":true
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios":{
+        "appleId":"kboss16058@gmail.com",
+        "ascAppId":"6504161884",
+        "appleTeamId":"PHX9V644M7"
+      }
+    }
   }
+  
 }

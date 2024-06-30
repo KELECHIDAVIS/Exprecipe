@@ -16,7 +16,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kboss.exprecipe"
+      "bundleIdentifier": "com.kboss.exprecipe",
+
     },
     "android": {
       "adaptiveIcon": {
