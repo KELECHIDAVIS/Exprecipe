@@ -51,7 +51,6 @@ function SavedRecipesPage({navigation}) {
  
   const deleteSavedRecipe =async (id)=>{
     const deletedRecipeID = await deleteRecipe(id); 
-    console.log("Deleted Button Pressed")
     setSavedRecipes((prevState)=>{
       prevState= prevState.filter(
         (recipe) => recipe._id !== deletedRecipeID

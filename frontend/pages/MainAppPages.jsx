@@ -23,85 +23,8 @@ function LogoTitle() {
 }
 
 
-const getTabBarIcon = (focused, iconName) => {
-  const iconSize = focused ?   28 : 24; // Adjust the size based on focused state
-  const iconColor = focused? appColors.accentColor : appColors.secondaryColor; 
 
-  
 
-  if(iconName == "Pantry")
-  {
-    return (
-      <SafeAreaView style = {styles.iconViewStyle}>
-          <FontAwesome name="shopping-basket" size={iconSize} color={iconColor} />
-          <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-      </SafeAreaView>
-    ); 
-    
-  }else if ( iconName == "Scanner")
-  {
-    return (
-      <View style = {styles.iconViewStyle}>
-          <FontAwesome name="camera" size={iconSize} color={iconColor} />
-          <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-
-      </View>
-    ); 
-  }else if ( iconName == "Exprecipes")
-  {
-    return (
-      <View style = {styles.iconViewStyle}>
-          <FontAwesome5 name="scroll" size={iconSize} color={iconColor} />
-          <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-
-      </View>
-    ); 
-  }else if ( iconName == "Saved")
-  {
-    return (
-      <View style = {styles.iconViewStyle}>
-          <FontAwesome name="heart" size={iconSize} color={iconColor} />
-          <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-
-      </View>
-    ); 
-  }else{
-    return (
-      <View style = {styles.iconViewStyle}>
-          <Ionicons name="settings" size={iconSize} color={iconColor} />
-          <Text style={{color:iconColor, fontWeight:'500', fontSize:iconSize/2.5}}>{iconName}</Text>
-      </View>
-    ); 
-  }
-
-  
- 
-  
-};
-
-const CustomTabBarButton = ({children , onPress}) =>(
-
-  <TouchableOpacity
-  style ={{
-    top:-30,
-    justifyContent:"center",
-    alignItems:"center",
-    ...styles.shadow
-  }}
-  onPress={onPress}
-  >
-    <View
-    style={{
-      width:70, 
-      height:70,
-      borderRadius: 35,
-      backgroundColor: appColors.accentColor
-    }}
-    >
-      {children}
-    </View>
-  </TouchableOpacity>
-); 
 
 
 
@@ -110,14 +33,40 @@ function MainAppPages({navigation}) {
   const {height , width }  = useWindowDimensions();  
 
   return (
-    <Tab.Navigator initialRouteName='Pantry' backBehavior='initialRoute' 
-      screenOptions={{ tabBarStyle:{
-        backgroundColor:appColors.primaryColor
-        
-      },
-      tabBarShowLabel:false
-      }
-      }
+    <Tab.Navigator initialRouteName={PantryPage} backBehavior='initialRoute' 
+      screenOptions={({route}) => ({ 
+        tabBarStyle:{
+          backgroundColor:appColors.primaryColor,
+        },
+        tabBarActiveTintColor:appColors.accentColor,
+        tabBarInactiveTintColor:appColors.secondaryColor,
+       
+        tabBarIcon:({focused, size})=>{
+            let iconName; 
+            let rn = route.name; 
+            let color; 
+
+            if(rn === "Pantry"){
+              iconName = focused ? 'basket': 'basket-outline' ; 
+              color = focused ? appColors.accentColor : appColors.secondaryColor; 
+            }else if (rn=== "Exprecipes"){
+              iconName = focused ? 'receipt': 'receipt-outline' ; 
+              color = focused ? appColors.accentColor : appColors.secondaryColor; 
+            }else if (rn=== "Scanner"){
+              iconName = focused ? 'camera': 'camera-outline' ; 
+              color = focused ? appColors.accentColor : appColors.secondaryColor; 
+            }else if (rn=== "Saved"){
+              iconName = focused ? 'heart': 'heart-outline' ; 
+              color = focused ? appColors.accentColor : appColors.secondaryColor; 
+            }else if (rn=== "Settings"){
+              iconName = focused ? 'person-circle': 'person-circle-outline' ; 
+              color = focused ? appColors.accentColor : appColors.secondaryColor; 
+            }
+
+            return <Ionicons name={iconName} size={size} color={color}/>
+          },
+      })}
+
     >
       <Tab.Screen name="Pantry"  component={PantryPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
      
@@ -126,7 +75,7 @@ function MainAppPages({navigation}) {
 
         </View>
       ),
-      tabBarIcon:({focused }) => getTabBarIcon(focused, "Pantry") 
+      
       }}/>
       <Tab.Screen name="Exprecipes" component={ExprecipesPage}   options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
 
@@ -135,7 +84,7 @@ function MainAppPages({navigation}) {
 
         </View>
       ),
-      tabBarIcon:({focused }) => getTabBarIcon(focused, "Exprecipes") 
+     
       }}/>
       <Tab.Screen name="Scanner" component={ScannerPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       
@@ -144,16 +93,14 @@ function MainAppPages({navigation}) {
 
         </View>
       ),
-      tabBarIcon:({focused }) => getTabBarIcon(focused, "Scanner") 
       }}/>
-      <Tab.Screen name="Saved Recipes"  component={SavedRecipesPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
+      <Tab.Screen name="Saved"  component={SavedRecipesPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       
           headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 
         </View>
       ),
-      tabBarIcon:({focused }) => getTabBarIcon(focused, "Saved") 
       }}/>
       <Tab.Screen name="Settings"  component={SettingsPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
       
@@ -162,7 +109,6 @@ function MainAppPages({navigation}) {
 
         </View>
       ),
-      tabBarIcon:({focused }) => getTabBarIcon(focused, "Settings") 
       }}/>
     </Tab.Navigator>
   );

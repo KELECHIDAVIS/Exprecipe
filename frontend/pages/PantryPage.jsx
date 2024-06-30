@@ -26,8 +26,7 @@ function PantryPage({navigation}) {
       if(token){
         // retrieve user ingredients 
         await login({token}); 
-        const list = await getIngrs(token); 
-        setIngredientList(list); 
+        
       }else{
         const token = uuidv4(); 
         console.log("First Time User: "+ token )
@@ -35,6 +34,8 @@ function PantryPage({navigation}) {
         // register user in our db 
         await register({token}); 
       }
+      const list = await getIngrs(token); 
+      setIngredientList(list); 
       
     };
     setLoading(true); 

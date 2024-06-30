@@ -7,7 +7,6 @@ import appColors from '../assets/appColors';
 
 function RecipeModalContent({currentRecipe}){ 
     const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/";
-    console.log(currentRecipe)
     const handleInstruction = (recipe)=> {
       if (recipe.instructions){
         return(
