@@ -1,6 +1,5 @@
 //service files are strictly for making http requests, sending data back, and sending any data in local storage 
 import axios from 'axios' 
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import {REACT_APP_BACKEND_SERVER_API} from '@env'
 
 // the url has to consist of the devices local ip 
