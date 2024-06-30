@@ -10,7 +10,7 @@ const User = require("../models/userModel")
 //@access     Private
 const getIngrs = asyncHandler ( async (req, res) =>{
     // find this user's specific ingredients
-    const ingredients = await Ingredient.find({user: req.user.id}); 
+    const ingredients = await Ingredient.find({user: req.user._id}); 
 
     res.status(200).json(ingredients) 
 })
@@ -31,7 +31,7 @@ const getCommonIngrs = asyncHandler ( async (req, res) =>{
 //@access     Private
 const getPossibleRecipes = asyncHandler ( async (req, res) =>{
     // Get list of ingredients (should be a list of objects)
-    const ingredients = await Ingredient.find({user:req.user.id}); 
+    const ingredients = await Ingredient.find({user:req.user._id}); 
 
 
     // now we have to format into a long, comma separated string: apples,salt,water... 
@@ -124,36 +124,6 @@ const setIngr = asyncHandler ( async (req, res) =>{
     
 })
 
-//@desc     Update an ingredient
-//@route     PUT /api/ingredients/:id // THIS IS THE INGREDIENT ID 
-//@access     Private
-const updateIngr = asyncHandler ( async (req, res) =>{
-
-    const ingredient = await Ingredient.findById(req.params.id)
-    if(!ingredient){
-        res.status(400)
-        throw new Error("Ingredient Not Found")
-    }
-    
-    // check for user 
-    if(!req.user){
-        res.status(401)
-        throw new Error("User Not Found")
-    }
-
-    // make sure the logged in user matches the ingredient user 
-    if(ingredient.user.toString() !== req.user.id){
-        res.status(401)
-        throw new Error("User not authorized")
-    }
-    
-    
-    const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, req.body, {
-        new:true
-    })
-
-    res.status(200).json(updatedIngredient)
-})
 
 //@desc     Delete an ingredient from user data
 //@route     DELETE /api/ingredients/:id
@@ -188,7 +158,7 @@ const deleteIngr = asyncHandler ( async (req, res) =>{
 module.exports = {
     getIngrs,
     setIngr,
-    updateIngr,
+
     deleteIngr, 
     getCommonIngrs,
     getPossibleRecipes,

@@ -39,8 +39,9 @@ export const getIngrs = async ( token )=>{
             Authorization: `Bearer ${token}`
         }
     }
+    console.log("Token before backend get ingrs call: "+ token)
     const response = await axios.get(apiURL, config)
-
+    
     return response.data // list of ingredients 
 }
 

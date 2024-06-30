@@ -7,7 +7,6 @@ const apiURL = REACT_APP_BACKEND_SERVER_API+'user/'
 // register user with Four backend api 
 
 export const login = async (token) =>{
- 
     const response =await axios.post(apiURL +"login", {token}) 
  
     return response.data.token; 

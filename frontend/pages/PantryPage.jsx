@@ -23,35 +23,37 @@ function PantryPage({navigation}) {
 
   useEffect(() => {
     const onNavigation= async ()=>{
-      try {
-        token = await AsyncStorage.getItem("token"); 
-      } catch (error) {
-        console.error("Failed getting token from async")
-      }
+      // try {
+      //   token = await AsyncStorage.getItem("token"); 
+      // } catch (error) {
+      //   console.error("Failed getting token from async")
+      // }
       
 
       if(!token){ // first time user 
         token = uuidv4();  
       }
       try {
-        token = await login(token); // since it returns a token
+        const returnedTok = await login(token); // since it returns a token
+        console.log("Returned Tok: "+returnedTok); 
+        token = returnedTok; 
       } catch (error) {
         console.error("Failed logging in ")
       }
 
 
-      
+      console.log("Token before getting ingrs: "+ token); 
       // get user ingredients 
       try {
         const ingrList = await getIngrs(token); 
-        if(ingrList.length>0){
-          console.log(ingrlist)
+        console.log("Ingrlist after get ingrs: ", ingrList)
+        if(ingrList && ingrList.length>0){
           setIngredientList((prevState)=>{
             return [...prevState, ingrList]
           })
         }
       } catch (error) {
-        console.error("Failed getting userIngredients"); 
+        console.warn("Failed getting userIngredients"); 
       }
     };
     setLoading(true); 
@@ -63,6 +65,8 @@ function PantryPage({navigation}) {
       if(name == '')
       {return}
       const newIngredient = await createIngr({name}); 
+      console.log("New Ingredient response")
+      console.log(newIngredient)
       setName('')
       //update ingredients
       setIngredientList((prevState)=>{

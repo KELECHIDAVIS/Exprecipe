@@ -18,6 +18,7 @@ const saveRecipe = asyncHandler(async (req, res) => {
     
     if (!name || !cookTime || !ingredients || !sourceUrl || !apiID || !image) {
         console.log("Error in save recipe in recipe controller: ");
+        res.status(400); 
         throw new Error("Please Add All Fields"); 
     }
     
@@ -33,7 +34,7 @@ const saveRecipe = asyncHandler(async (req, res) => {
     
     // save recipe 
     const recipe = await Recipe.create({
-        user: req.user.id,
+        user: req.user._id,
         name:name,
         cookTime:cookTime,
         apiID:apiID, 
@@ -63,7 +64,7 @@ const deleteRecipe = asyncHandler ( async (req, res) =>{
     }
 
     // make sure the logged in user matches the ingredient user 
-    if(recipe.user.toString() !== req.user.id){
+    if(recipe.user.toString() !== req.user._id){
         res.status(401)
         throw new Error("User not authorized")
     }

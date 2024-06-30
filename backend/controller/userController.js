@@ -15,7 +15,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     
     if(user){// user exists
         res.status(201).json({
-            _id:user.id,
+            _id:user._id,
             token: userToken,
         })
     }else{ // create new user 
@@ -23,7 +23,7 @@ const loginUser = asyncHandler(async (req, res) =>{
         if(newUser){
             
             res.status(201).json({
-                _id:newUser.id,
+                _id:newUser._id,
                 token: userToken,
             })
         }else{ // failed to create user 
