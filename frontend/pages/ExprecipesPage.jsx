@@ -1,58 +1,70 @@
 import React, { useState } from 'react'
-import { FlatList, Text, View, StyleSheet,  ActivityIndicator,  Modal, TouchableOpacity} from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
+import { FlatList, Text, View, StyleSheet,  ActivityIndicator,  Modal, TouchableOpacity, Alert} from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RecipeCard from '../components/RecipeCard'
 import RecipeModalContent from '../components/RecipeModalContent';
-
 import { useEffect } from 'react';
 import appColors from '../assets/appColors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getIngrs, getPossibleRecipes,getRecipeInfo} from '../features/ingredients/ingredientService';
+import {saveRecipe} from '../features/recipes/recipeService'
 function ExprecipesPage({navigation}) {
-  const { ingredients , recipes , currentRecipe, isLoading, isError, isSuccess, message} = useSelector((state)=>state.ingredients)
-  
-
   const [isModalVisible , setModalVisible ] = useState(false); 
-  
-  
-  
+  const [loading , isLoading] = useState(false);
+  const [ingredients , setIngredientList] = useState([])
+  const [recipes, setRecipeList]   = useState([]); 
+  const [currentRecipeInfo , setRecipeInfo] = useState({}); 
+
   useEffect(()=>{
-    if(isError )
-    {
-      
-      Toast.show(message, { duration: Toast.durations.SHORT, position: Toast.positions.TOP,shadow: true, animation: true, hideOnPress: true,delay: 0,}); 
-    }
+    const onNavigation= async ()=>{
+      const token = await AsyncStorage.getItem("token"); 
+      // get ingredients 
+      const ingrList =await getIngrs(token);
+      setIngredientList(ingrList);  
+    };
 
-    
-  }, [isError , isSuccess, message])
-
-  const returnModalContent= (currentRecipe) =>{
-    if(!currentRecipe){
+    isLoading(true); 
+    onNavigation();
+    isLoading(false);  
+  },[]); 
+  const returnModalContent= () =>{
+    if(!currentRecipeInfo){
       return null; 
     }
     
     return(
-      <RecipeModalContent currentRecipe={currentRecipe}/>
+      <RecipeModalContent currentRecipe={currentRecipeInfo}/>
     )
   }
-  const fetchRecipes = () => {
-    if(ingredients.length >0 )
-      dispatch(getRecipes()); 
+  const fetchRecipes =async () => {
+    if(ingredients.length >0 ){
+      isLoading(true); 
+      const  newList = await getPossibleRecipes(); 
+      setRecipeList((prevState)=>{
+      prevState = newList ; 
+      return [...prevState]; 
+      });  
+      isLoading(false); 
+      
+    }
   }
-  const saveNewRecipe =(currentRecipe)=>{
-    dispatch(saveRecipe(currentRecipe))
+  const saveNewRecipe = async ()=>{
+    await saveRecipe(currentRecipeInfo) ; 
+    Alert.alert("Recipe Saved!"); 
   }
-  const launchRecipeInfo = (spoonacularId) =>{
-    
+  const launchRecipeInfo = async (spoonacularId) =>{
+    isLoading(true); 
     // first get recipe info from dispatch 
-    dispatch(getRecipeInfo(spoonacularId));  // get 
+    const info = await getRecipeInfo(spoonacularId);  // get 
+    setRecipeInfo(info);
     // then set modal state
     setModalVisible(true)
-    
+    isLoading(false); 
   }
-  if (isLoading ){
+  if (loading ){
     return(
       <View style = {{flex:1 , justifyContent:'center', alignItems:'center', backgroundColor:appColors.bgColor}}>
         <ActivityIndicator size='large' color={appColors.accentColor}/>
@@ -76,7 +88,11 @@ function ExprecipesPage({navigation}) {
           return(
             <View style= {styles.recipeContainer}>
               <RecipeCard name={item.title} imagePath={item.image} missingIngredientCount={item.missedIngredientCount} onPress = {()=> launchRecipeInfo(item.id)} />
-              <Modal visible ={isModalVisible} animationType='fade' >
+            </View>
+          )
+        }}
+      /> 
+      <Modal visible ={isModalVisible} animationType='fade' >
                 <SafeAreaView style={{flex:1, padding:10, backgroundColor:appColors.bgColor}} >
                     <View style={{paddingTop:40, alignContent:'center'}}>
                       <View style={{flexDirection:'row', justifyContent:'space-between'}}>
@@ -84,18 +100,14 @@ function ExprecipesPage({navigation}) {
                           <AntDesign name="closesquare" size={42} color={appColors.accentColor} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity  onPress = {()=>saveNewRecipe(currentRecipe)} > 
+                        <TouchableOpacity  onPress = {()=>saveNewRecipe()} > 
                           <MaterialIcons name="save-alt" size={42} color={appColors.accentColor} />
                         </TouchableOpacity>
                       </View>
-                        {returnModalContent(currentRecipe)}
+                        {returnModalContent()}
                     </View>
                 </SafeAreaView>
               </Modal>
-            </View>
-          )
-        }}
-      /> 
         </View>
       ) :
       (

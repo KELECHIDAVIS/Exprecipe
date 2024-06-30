@@ -44,9 +44,10 @@ export const getIngrs = async ( token )=>{
 }
 
 // get possible recipes  
-export const getPossibleRecipes = async ( token )=>{
+export const getPossibleRecipes = async ( )=>{
     // for protected routes 
-    const config ={
+    const token = await AsyncStorage.getItem('token'); 
+    const config ={                                         
         headers:{
             Authorization: `Bearer ${token}`
         }
@@ -56,8 +57,9 @@ export const getPossibleRecipes = async ( token )=>{
 }
 
 // get possible recipes  
- export const getRecipeInfo = async (id ,  token )=>{
+ export const getRecipeInfo = async (id )=>{
     // for protected routes 
+    const token = await AsyncStorage.getItem('token'); 
     const config ={
         headers:{
             Authorization: `Bearer ${token}`

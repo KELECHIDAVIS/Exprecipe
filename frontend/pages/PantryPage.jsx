@@ -22,7 +22,7 @@ function PantryPage({navigation}) {
   
   useEffect(()=>{
     const onNavigation= async ()=>{
-      token = await AsyncStorage.getItem("token"); 
+      const token = await AsyncStorage.getItem("token"); 
       if(token){
         // retrieve user ingredients 
         await login({token}); 

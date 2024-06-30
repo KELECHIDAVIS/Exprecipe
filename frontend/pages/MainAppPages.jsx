@@ -129,16 +129,7 @@ function MainAppPages({navigation}) {
       tabBarIcon:({focused }) => getTabBarIcon(focused, "Pantry") 
       }}/>
       <Tab.Screen name="Exprecipes" component={ExprecipesPage}   options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
-      headerRight: () => (
-            <TouchableOpacity
-              onPress={logOut}
-              title="Log Out"
-              color={appColors.accentColor}
-              style={{alignSelf: 'flex-end',marginRight:16}}
-            >
-              <Entypo name="log-out" size={28} color={appColors.accentColor} />
-            </TouchableOpacity>
-          ),
+
           headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 
@@ -147,16 +138,7 @@ function MainAppPages({navigation}) {
       tabBarIcon:({focused }) => getTabBarIcon(focused, "Exprecipes") 
       }}/>
       <Tab.Screen name="Scanner" component={ScannerPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
-      headerRight: () => (
-            <TouchableOpacity
-              onPress={logOut}
-              title="Log Out"
-              color={appColors.accentColor}
-              style={{alignSelf: 'flex-end',marginRight:16}}
-            >
-              <Entypo name="log-out" size={28} color={appColors.accentColor} />
-            </TouchableOpacity>
-          ),
+      
           headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 
@@ -165,16 +147,7 @@ function MainAppPages({navigation}) {
       tabBarIcon:({focused }) => getTabBarIcon(focused, "Scanner") 
       }}/>
       <Tab.Screen name="Saved Recipes"  component={SavedRecipesPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
-      headerRight: () => (
-            <TouchableOpacity
-              onPress={logOut}
-              title="Log Out"
-              color={appColors.accentColor}
-              style={{alignSelf: 'flex-end',marginRight:16}}
-            >
-              <Entypo name="log-out" size={28} color={appColors.accentColor} />
-            </TouchableOpacity>
-          ),
+      
           headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 
@@ -183,16 +156,7 @@ function MainAppPages({navigation}) {
       tabBarIcon:({focused }) => getTabBarIcon(focused, "Saved") 
       }}/>
       <Tab.Screen name="Settings"  component={SettingsPage} options={{ headerTitle: (props) => <LogoTitle {...props} /> ,
-      headerRight: () => (
-            <TouchableOpacity
-              onPress={logOut}
-              title="Log Out"
-              color={appColors.accentColor}
-              style={{alignSelf: 'flex-end',marginRight:16}}
-            >
-              <Entypo name="log-out" size={28} color={appColors.accentColor} />
-            </TouchableOpacity>
-          ),
+      
           headerBackground: ()=>(
         <View style={{flex:1, backgroundColor:appColors.primaryColor}}>
 

@@ -1,9 +1,12 @@
 // handles http requests 
 import axios from 'axios' 
 import {REACT_APP_BACKEND_SERVER_API} from '@env'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'recipes/'
 // get saved recipes  
-const getSavedRecipes = async ( token )=>{
+export const getSavedRecipes = async (  )=>{
+
+    const token = await AsyncStorage.getItem('token'); 
     // for protected routes 
     const config ={
         headers:{
@@ -14,7 +17,9 @@ const getSavedRecipes = async ( token )=>{
     return response.data // list of user recipes  
 }
 
-const saveRecipe = async ( recipeData, token )=>{
+export const saveRecipe = async ( recipeData )=>{
+    const token = await AsyncStorage.getItem('token'); 
+
     // for protected routes 
     const config ={
         headers:{
@@ -37,8 +42,10 @@ const saveRecipe = async ( recipeData, token )=>{
     const response = await axios.post(apiURL,formattedData,  config)
     return response.data 
 }
-const deleteRecipe = async ( id, token )=>{
+export const deleteRecipe = async ( id )=>{
     // for protected routes 
+    const token = await AsyncStorage.getItem('token'); 
+
     const config ={
         headers:{
             Authorization: `Bearer ${token}`
@@ -48,10 +55,3 @@ const deleteRecipe = async ( id, token )=>{
     return response.data 
 }
 
- const recipeService = {
-    getSavedRecipes, 
-    saveRecipe,
-    deleteRecipe,
-}
-
-export default recipeService; 

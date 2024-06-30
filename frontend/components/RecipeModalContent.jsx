@@ -1,5 +1,5 @@
-import { FlatList, Text, View, StyleSheet, Image, Button, ScrollView} from 'react-native'
-import { useSelector } from 'react-redux'
+import { FlatList, Text, View, StyleSheet, Image, Button, ScrollView, TouchableOpacity} from 'react-native'
+import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import {openBrowserAsync} from 'expo-web-browser'
 import appColors from '../assets/appColors';
@@ -7,9 +7,23 @@ import appColors from '../assets/appColors';
 
 function RecipeModalContent({currentRecipe}){ 
     const baseImageURL = "https://spoonacular.com/cdn/ingredients_100x100/";
+
+    const handleInstruction = (recipe)=> {
+      if (recipe.instructions){
+        return(
+          <Text style={styles.bodyText}>{recipe.instructions}</Text>
+        )
+      }else{
+        return(
+          <Button title= "View Instructions On Recipe's Website" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} color={appColors.accentColor} />
+        )
+      }
+    }
    return( 
     <ScrollView style={{padding:15, alignContent:'center'}}>
-          <Text style ={styles.title}>{currentRecipe.title}</Text>
+          <TouchableOpacity onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)}>
+          <Text style ={styles.title}>{currentRecipe.title}  <Feather name="external-link" size={24} color={appColors.secondaryColor} /></Text>
+          </TouchableOpacity>
           <View style = {styles.timeContainer}>
             <AntDesign name="clockcircle" size={16} color={appColors.secondaryColor} />
             <Text style={styles.subHeader}>{currentRecipe.readyInMinutes} mins</Text>
@@ -27,17 +41,13 @@ function RecipeModalContent({currentRecipe}){
                     source={{ uri: baseImageURL + item.image }}
                     style={{ width: 85, height: 85 , resizeMode:'stretch', borderTopLeftRadius:10,borderTopRightRadius:10}} // Adjust dimensions as needed
                   />
-                  <Text style={{...styles.bodyText}}>{item.name}</Text>
+                  <Text style={{...styles.bodyText}}>{item.measures.us.amount+ " " +item.measures.us.unitShort+" "+item.name}</Text>
                 </View>
               )
             }}
           />
           <Text style={styles.subHeader}>Instructions:</Text>
-          {currentRecipe.instructions ? (
-            <Text style={styles.bodyText}>{currentRecipe.instructions}</Text>
-          ) : (
-            <Button title= "Instructions Can Be Found Here" onPress={()=>openBrowserAsync(currentRecipe.sourceUrl)} color={appColors.accentColor} /> 
-          )}
+          {handleInstruction(currentRecipe)}
           
 
       </ScrollView>
@@ -69,7 +79,6 @@ const styles = StyleSheet.create({
       fontSize: 26,
       textAlign:'center',
       fontWeight:'bold',
-      color:appColors.secondaryColor,
     },
     subHeader: {
       fontSize: 18,
