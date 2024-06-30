@@ -3,68 +3,37 @@ const User = require("../models/userModel")
 
 
 
-//@desc      Create new user 
-//@route     POST /api/user/
-//@access     Public
-const registerUser = asyncHandler(async (req, res) =>{
-    
-    const {token} = req.body
-    
-    if(!token){
-        throw new Error("Token Isn't Present"); 
-    }
 
-    // check if user exists alr 
-    const userExists = await User.findOne({token})
-
-    if(userExists)
-    {
-        res.status(400)
-        throw new Error("User already exists under that token")
-    }
-
-    
-
-    //create user 
-    const user = await User.create({
-        token,
-    })
-
-    if(user){
-        res.status(201).json({
-            _id:user.id,
-            token:token,
-        })
-    }else{
-        res.status(400)
-        throw new Error("Invalid User Data")
-    }
-    
-})
 //@desc     Login User
 //@route     POST /api/user/login
 //@access     Private
 const loginUser = asyncHandler(async (req, res) =>{
-    const {token} = req.body 
+    const userToken = req.body.token
     
-    if(!token){
-        throw new Error("Token Isn't Present"); 
-    }
-    //check for user email 
-    const user = await User.findOne({token})
-    if(user){
-        res.status(200).json({
+    // find user
+    const user = await User.findOne({token: userToken});
+    
+    if(user){// user exists
+        res.status(201).json({
             _id:user.id,
-            token: user.token,
+            token: userToken,
         })
-    }else{
-        
-        res.status(400); 
-        throw new Error("Invalid User"); 
-    }
+    }else{ // create new user 
+        const newUser = await User.create({token: userToken}); 
+        if(newUser){
+            
+            res.status(201).json({
+                _id:newUser.id,
+                token: userToken,
+            })
+        }else{ // failed to create user 
+            res.status(500).json({message: "Failed To Create User"})
+            throw new Error("Failed To Create User")
+        }
+    }   
+    
 })
 
 module.exports = {
-    registerUser, 
     loginUser, 
 }

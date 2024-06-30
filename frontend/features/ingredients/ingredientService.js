@@ -4,7 +4,7 @@ import {REACT_APP_BACKEND_SERVER_API} from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'ingredients/'
 // setIngr from our backend api 
-export const createIngr = async (ingrData ) =>{
+export const createIngr = async (ingrData) =>{
     // for protected routes 
     const token = await AsyncStorage.getItem("token"); 
     const config ={
@@ -12,7 +12,8 @@ export const createIngr = async (ingrData ) =>{
             Authorization: `Bearer ${token}`
         }
     }
-    
+    // console.log(token); 
+    // console.log(apiURL); 
     const response =await axios.post(apiURL, ingrData, config) 
     
     return response.data

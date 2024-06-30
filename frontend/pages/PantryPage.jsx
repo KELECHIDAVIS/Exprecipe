@@ -3,13 +3,12 @@ import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, Touchable
 import { useSelector, useDispatch } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign } from '@expo/vector-icons';
 import appColors from '../assets/appColors';
 import "react-native-get-random-values"
 import {v4 as uuidv4} from 'uuid'; 
 import { getIngrs,createIngr, deleteIngr } from '../features/ingredients/ingredientService';
-import {register , login} from '../features/auth/authService'; 
-
+import {login} from '../features/auth/authService'; 
+import { Ionicons } from '@expo/vector-icons';
 const width =100
 function PantryPage({navigation}) {
  
@@ -17,33 +16,48 @@ function PantryPage({navigation}) {
   const [ingredients , setIngredientList] = useState([]); 
   const [loading , setLoading]= useState(false); 
   const numColumns = 3; 
+  var token; 
   // check if they have a user token saved: if they do use it to retreive their ingredients, if not then create one 
    // MIGHT NEED TO USE USE CALLBACK SO IT DOESNT CALL MULTIPLE TIMES
   
-  useEffect(()=>{
+
+  useEffect(() => {
     const onNavigation= async ()=>{
-      const token = await AsyncStorage.getItem("token"); 
-      if(token){
-        // retrieve user ingredients 
-        await login({token}); 
-        
-      }else{
-        const token = uuidv4(); 
-        console.log("First Time User: "+ token )
-        await AsyncStorage.setItem("token", token)
-        // register user in our db 
-        await register({token}); 
+      try {
+        token = await AsyncStorage.getItem("token"); 
+      } catch (error) {
+        console.error("Failed getting token from async")
       }
-      const list = await getIngrs(token); 
-      setIngredientList(list); 
       
+
+      if(!token){ // first time user 
+        token = uuidv4();  
+      }
+      try {
+        token = await login(token); // since it returns a token
+      } catch (error) {
+        console.error("Failed logging in ")
+      }
+
+
+      
+      // get user ingredients 
+      try {
+        const ingrList = await getIngrs(token); 
+        if(ingrList.length>0){
+          console.log(ingrlist)
+          setIngredientList((prevState)=>{
+            return [...prevState, ingrList]
+          })
+        }
+      } catch (error) {
+        console.error("Failed getting userIngredients"); 
+      }
     };
     setLoading(true); 
     onNavigation();
-    setLoading(false);  
-  }, [])
-
-
+    setLoading(false);
+  }, []);
   
   const addIngredient = async() => {
       if(name == '')
@@ -67,7 +81,8 @@ function PantryPage({navigation}) {
   }
 
   const capitalizeFirst = (name)=>{
-    return name.charAt(0).toUpperCase() + name.slice(1); 
+    if(name)
+      return name.charAt(0).toUpperCase() + name.slice(1); 
   }
 
   
@@ -77,7 +92,7 @@ function PantryPage({navigation}) {
             <View style={styles.textInputContainer}>
               <TextInput style={styles.input} onChangeText={setName} value={name} />
               <TouchableOpacity title='Add Ingredient' onPress={addIngredient} color={appColors.accentColor} style ={styles.addIngrButton}>
-                <AntDesign name="plussquare" size={42} color={appColors.accentColor}/>
+              <Ionicons name="add-circle" size={36} color={appColors.accentColor}></Ionicons>
               </TouchableOpacity>
             </View>
             {ingredients.length > 0 ? (

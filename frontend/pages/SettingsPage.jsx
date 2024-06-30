@@ -14,7 +14,7 @@ function SettingsPage({navigation}) {
   const [isAvail, setAvail] = useState(false); 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const modalBodyText = "1)\tEnter Your Ingredients on the Pantry Page \n\n2)\tSee Possible Recipes on the Exprecipes Page\n\n3)\tClick on each Exprecipe to view recipe ingredients and instructions. You also have ability to save recipes for later use and go to recipe's original website by clicking it's title \n\n4)\tSaved “Exprecipes” will be shown on the Saved Page"
+  const modalBodyText = "1)\tEnter Your Ingredients on the Pantry Page \n\n2)\tSee Possible Recipes on the Exprecipes Page\n\n3)\tClick on each Exprecipe to view recipe ingredients and instructions. You also have ability to save recipes for later use and go to recipe's original website by clicking its title \n\n4)\tSaved “Exprecipes” will be shown on the Saved Page"
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       async function checkAvailability(){
