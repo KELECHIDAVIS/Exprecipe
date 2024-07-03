@@ -10,7 +10,9 @@ function RecipeModalContent({currentRecipe}){
     const handleInstruction = (recipe)=> {
       if (recipe.instructions){
         return(
-          <Text style={styles.bodyText}>{recipe.instructions}</Text>
+          <View style ={{backgroundColor:appColors.primaryColor , borderRadius:10, padding:10}}>
+           <Text style={styles.bodyText}>{recipe.instructions}</Text>
+          </View>
         )
       }else{
         return(
@@ -40,7 +42,10 @@ function RecipeModalContent({currentRecipe}){
                     source={{ uri: baseImageURL + item.image }}
                     style={{ width: 85, height: 85 , resizeMode:'stretch', borderTopLeftRadius:10,borderTopRightRadius:10}} // Adjust dimensions as needed
                   />
-                  <Text style={{...styles.bodyText}}>{item.measures.us.amount+ " " +item.measures.us.unitShort+" "+item.name}</Text>
+                  <View style ={{backgroundColor:appColors.primaryColor , borderRadius:10, padding:3.5}}>
+                    <Text style={{...styles.bodyText}}>{item.measures.us.amount+ " " +item.measures.us.unitShort+" "+item.name}</Text>
+                  </View>
+                  
                 </View>
               )
             }}
@@ -84,13 +89,13 @@ const styles = StyleSheet.create({
       textAlign:'left',
       fontWeight:'600',
       color:appColors.secondaryColor,
+      paddingVertical:10,
     },
     bodyText: {
       fontSize: 14,
       textAlign:'center',
       fontWeight:'400',
       color:appColors.secondaryColor,
-      backgroundColor:appColors.primaryColor,
       borderBottomLeftRadius:10,
       borderBottomRightRadius:10
     },

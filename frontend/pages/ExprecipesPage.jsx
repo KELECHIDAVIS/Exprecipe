@@ -17,12 +17,16 @@ function ExprecipesPage({navigation}) {
   const [ingredients , setIngredientList] = useState([])
   const [recipes, setRecipeList]   = useState([]); 
   const [currentRecipeInfo , setRecipeInfo] = useState({}); 
+  const [uuid , setUUID] = useState(""); 
 
   useEffect(()=>{
     const onNavigation= async ()=>{
-      const token = await AsyncStorage.getItem("token"); 
+      const uuid1 = await AsyncStorage.getItem("uuid"); 
+
       // get ingredients 
-      const ingrList =await getIngrs(token);
+      const ingrList =await getIngrs(uuid1);
+
+      setUUID(uuid1); 
       setIngredientList(ingrList);  
     };
 
@@ -42,7 +46,7 @@ function ExprecipesPage({navigation}) {
   const fetchRecipes =async () => {
     if(ingredients.length >0 ){
       isLoading(true); 
-      const  newList = await getPossibleRecipes(); 
+      const  newList = await getPossibleRecipes(uuid); 
       setRecipeList((prevState)=>{
       prevState = newList ; 
       return [...prevState]; 
@@ -52,7 +56,7 @@ function ExprecipesPage({navigation}) {
     }
   }
   const saveNewRecipe = async ()=>{
-    await saveRecipe(currentRecipeInfo) ; 
+    await saveRecipe(currentRecipeInfo, uuid) ; 
     Alert.alert("Recipe Saved!"); 
   }
   const launchRecipeInfo = async (spoonacularId) =>{

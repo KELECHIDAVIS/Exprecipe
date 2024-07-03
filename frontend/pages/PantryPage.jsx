@@ -7,7 +7,6 @@ import appColors from '../assets/appColors';
 import "react-native-get-random-values"
 import {v4 as uuidv4} from 'uuid'; 
 import { getIngrs,createIngr, deleteIngr } from '../features/ingredients/ingredientService';
-import {login} from '../features/auth/authService'; 
 import { Ionicons } from '@expo/vector-icons';
 const width =100
 function PantryPage({navigation}) {
@@ -15,6 +14,7 @@ function PantryPage({navigation}) {
   const [name, setName] = useState("")
   const [ingredients , setIngredientList] = useState([]); 
   const [loading , setLoading]= useState(false); 
+  const [uuid , setUUID] = useState(""); 
   const numColumns = 3; 
   var token; 
   // check if they have a user token saved: if they do use it to retreive their ingredients, if not then create one 
@@ -23,38 +23,23 @@ function PantryPage({navigation}) {
 
   useEffect(() => {
     const onNavigation= async ()=>{
-      // try {
-      //   token = await AsyncStorage.getItem("token"); 
-      // } catch (error) {
-      //   console.error("Failed getting token from async")
-      // }
-      
-
-      if(!token){ // first time user 
-        token = uuidv4();  
-      }
       try {
-        const returnedTok = await login(token); // since it returns a token
-        console.log("Returned Tok: "+returnedTok); 
-        token = returnedTok; 
-      } catch (error) {
-        console.error("Failed logging in ")
-      }
+        let uuid1 = await AsyncStorage.getItem("uuid"); 
 
-
-      console.log("Token before getting ingrs: "+ token); 
-      // get user ingredients 
-      try {
-        const ingrList = await getIngrs(token); 
-        console.log("Ingrlist after get ingrs: ", ingrList)
-        if(ingrList && ingrList.length>0){
-          setIngredientList((prevState)=>{
-            return [...prevState, ingrList]
-          })
+        if(!uuid1){
+          uuid1 = uuidv4(); // create and save
+          await AsyncStorage.setItem("uuid", uuid1); 
         }
+        
+        setUUID(uuid1); 
+        const ingrList  = await getIngrs(uuid1); 
+        
+        setIngredientList(ingrList)
+        
       } catch (error) {
-        console.warn("Failed getting userIngredients"); 
+        console.error(error)
       }
+      
     };
     setLoading(true); 
     onNavigation();
@@ -64,18 +49,17 @@ function PantryPage({navigation}) {
   const addIngredient = async() => {
       if(name == '')
       {return}
-      const newIngredient = await createIngr({name}); 
-      console.log("New Ingredient response")
-      console.log(newIngredient)
+      const newIngredient = await createIngr({name, uuid}); 
+      
       setName('')
       //update ingredients
       setIngredientList((prevState)=>{
-        return [...prevState, newIngredient]; 
+        return [newIngredient, ...prevState]; 
       })
   }
   
   const removeIngr = async (id)  =>{
-    const deletedIngredientID = await deleteIngr(id); 
+    const deletedIngredientID = await deleteIngr({id, uuid}); 
     setIngredientList((prevState)=>{
       prevState= prevState.filter(
         (ingr) => ingr._id !== deletedIngredientID

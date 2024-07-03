@@ -5,9 +5,13 @@ const Recipe = require("../models/recipeModel")
 //@route     GET /api/recipes
 //@access     Private
 const getSavedRecipes = asyncHandler ( async (req, res) =>{
-    const recipes = await Recipe.find({user: req.user.id}); 
+    try {
+        const recipes = await Recipe.find({uuid: req.query.uuid}); 
 
-    res.status(200).json(recipes) 
+        res.status(200).json(recipes) 
+    } catch (error) {
+        res.status(500).json({message:"Error in getSavedRecipes"}) ; 
+    }
 })
 
 //@desc     Save a new Recipe  
@@ -15,16 +19,15 @@ const getSavedRecipes = asyncHandler ( async (req, res) =>{
 //@access     Private
 const saveRecipe = asyncHandler(async (req, res) => {
     const { name, cookTime, ingredients, instructions, sourceUrl, apiID, image } = req.body;
-    console.log("saveRecipe- enter function, recipeinfo: ", { name, cookTime, ingredients, instructions, sourceUrl, apiID, image })
+    // console.log("saveRecipe- enter function, recipeinfo: ", { name, cookTime, ingredients, instructions, sourceUrl, apiID, image })
     
-    if (!name || !cookTime || !ingredients || !sourceUrl || !apiID || !image) {
+    if ( !name || !cookTime || !ingredients || !sourceUrl || !apiID || !image) {
         console.log("Error in save recipe in recipe controller: ");
         res.status(400); 
         throw new Error("Please Add All Fields"); 
     }
-    console.log("saveRecipe- before recipe alr save check")
-    const recipeAlrSaved = await Recipe.findOne({ apiID : apiID}); 
-    console.log("saveRecipe- after recipe alr save check: ", recipeAlrSaved)
+    
+    const recipeAlrSaved = await Recipe.findOne({ apiID : apiID, uuid:req.body.uuid});  // have to make it personalized to user 
     
     if (recipeAlrSaved) {
         console.log("recipe was alr saved");
@@ -33,10 +36,9 @@ const saveRecipe = asyncHandler(async (req, res) => {
     }
     
     
-    console.log("saveRecipe- before recipe create")
     // save recipe 
     const recipe = await Recipe.create({
-        user: req.user._id,
+        uuid: req.body.uuid,
         name:name,
         cookTime:cookTime,
         apiID:apiID, 
@@ -45,7 +47,6 @@ const saveRecipe = asyncHandler(async (req, res) => {
         image:image, 
         sourceUrl:sourceUrl,
     });
-    console.log("saveRecipe- after recipe create, recipe: ", recipe)
     res.status(200).json(recipe);
 });
 
@@ -53,6 +54,7 @@ const saveRecipe = asyncHandler(async (req, res) => {
 //@route     DELETE /api/recipes/:id
 //@access     Private
 const deleteRecipe = asyncHandler ( async (req, res) =>{
+   
     const recipe = await Recipe.findById(req.params.id) ;
 
     if(!recipe){
@@ -61,13 +63,13 @@ const deleteRecipe = asyncHandler ( async (req, res) =>{
     }
 
     // check for user 
-     if(!req.user){
+     if(!req.body.uuid){
         res.status(401)
-        throw new Error("User Not Found")
+        throw new Error("User uuid Not Found")
     }
 
     // make sure the logged in user matches the ingredient user 
-    if(recipe.user.toString() !== req.user._id){
+    if(recipe.uuid !== req.body.uuid){
         res.status(401)
         throw new Error("User not authorized")
     }

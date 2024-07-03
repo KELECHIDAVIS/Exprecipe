@@ -23,16 +23,21 @@ function SavedRecipesPage({navigation}) {
   const [savedRecipes, setSavedRecipes]  = useState([])
   const [loading ,  isLoading]=useState(false); 
   const [currentRecipe ,setCurrentRecipe] = useState(null); 
-  const [isModalVisible, setModalVisible] = useState(false); 
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [uuid , setUUID] = useState(""); 
+
   // Dispatch the function to get saved recipes when the component mounts or when navigation focus changes
  
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
       const onNavigation= async ()=>{
-        const token = await AsyncStorage.getItem("token"); 
+        const uuid1 = await AsyncStorage.getItem("uuid"); 
+        setUUID(uuid1); 
+
+
         // get recipes 
-        const recipeLst =await getSavedRecipes();
+        const recipeLst =await getSavedRecipes(uuid1);
         setSavedRecipes(recipeLst);  
       };
   
@@ -50,7 +55,7 @@ function SavedRecipesPage({navigation}) {
   }
  
   const deleteSavedRecipe =async (id)=>{
-    const deletedRecipeID = await deleteRecipe(id); 
+    const deletedRecipeID = await deleteRecipe(id, uuid); 
     setSavedRecipes((prevState)=>{
       prevState= prevState.filter(
         (recipe) => recipe._id !== deletedRecipeID

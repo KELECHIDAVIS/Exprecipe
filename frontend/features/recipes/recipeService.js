@@ -4,52 +4,58 @@ import {REACT_APP_BACKEND_SERVER_API} from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'recipes/'
 // get saved recipes  
-export const getSavedRecipes = async (  )=>{
+export const getSavedRecipes = async ( uuid )=>{
 
-    const token = await AsyncStorage.getItem('token'); 
+    
     // for protected routes 
     const config ={
-        headers:{
-            Authorization: `Bearer ${token}`
+        params:{
+            uuid: uuid
         }
     }
     const response = await axios.get(apiURL, config)
     return response.data // list of user recipes  
 }
 
-export const saveRecipe = async ( recipeData )=>{
-    const token = await AsyncStorage.getItem('token'); 
+export const saveRecipe = async ( recipeData , uuid)=>{
+
 
     // for protected routes 
-    const config ={
-        headers:{
-            Authorization: `Bearer ${token}`
-        }
-    }
 
-    
     // change the recipe data into the correct format 
     const formattedData = {
-        name:recipeData.title,
-        cookTime:recipeData.readyInMinutes,
-        ingredients: recipeData.extendedIngredients ,
-        apiID:recipeData.id,
-        instructions:recipeData.instructions,
-        sourceUrl:recipeData.sourceUrl,
-        image:recipeData.image,
+        
     }
 
-    const response = await axios.post(apiURL,formattedData,  config)
+    const response = await axios({
+        method: "POST",
+        url: apiURL,
+        headers:{},
+        data:{
+            name:recipeData.title,
+            cookTime:recipeData.readyInMinutes,
+            ingredients: recipeData.extendedIngredients ,
+            apiID:recipeData.id,
+            instructions:recipeData.instructions,
+            sourceUrl:recipeData.sourceUrl,
+            image:recipeData.image,
+            uuid:uuid
+        }
+    })
+
     return response.data 
 }
-export const deleteRecipe = async ( id )=>{
-    // for protected routes 
-    const token = await AsyncStorage.getItem('token'); 
+export const deleteRecipe = async ( id ,uuid)=>{
 
+
+    // for protected routes 
     const config ={
-        headers:{
-            Authorization: `Bearer ${token}`
+        data:{
+            uuid:uuid
         }
+    }
+    const recipeData ={
+        
     }
     const response = await axios.delete(apiURL+id,  config)
 

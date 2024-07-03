@@ -2,10 +2,9 @@ const mongoose = require("mongoose")
 
 // every ingredient is associated with a user so this is how were gonna have to do it 
 const recipeSchema = mongoose.Schema({
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"User", // refering to the user model we made 
+    uuid:{
+        type:String, 
+        required:[true, "Please add a uuid val "]
     },
     name:{
         type:String, 

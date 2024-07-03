@@ -16,7 +16,7 @@ app.use(express.urlencoded({extended:false}))
 
 app.use('/api/ingredients', require("./routes/ingredientRoutes"))
 app.use('/api/recipes', require("./routes/recipeRoutes"))
-app.use('/api/user', require("./routes/userRoutes"))
+
 app.use(errorHandler) // error middleware 
 app.listen(port, ()=> console.log(`Server Started On Port ${port}`))    
 
