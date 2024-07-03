@@ -1,7 +1,6 @@
 // handles http requests 
 import axios from 'axios' 
 import {REACT_APP_BACKEND_SERVER_API} from '@env'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'recipes/'
 // get saved recipes  
 export const getSavedRecipes = async ( uuid )=>{

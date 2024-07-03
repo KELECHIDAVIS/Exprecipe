@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, TouchableOpacity, ActivityIndicator} from 'react-native'
+import { FlatList, Text ,StyleSheet, View , Button , TextInput, Image, TouchableOpacity, ActivityIndicator, Alert} from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -52,20 +52,28 @@ function PantryPage({navigation}) {
       const newIngredient = await createIngr({name, uuid}); 
       
       setName('')
-      //update ingredients
-      setIngredientList((prevState)=>{
-        return [newIngredient, ...prevState]; 
-      })
+      if(newIngredient){
+        //update ingredients
+        setIngredientList((prevState)=>{
+          return [newIngredient, ...prevState]; 
+        })
+      }else{
+        Alert.alert("Ingredient Not Found, Please Try Again"); 
+      }
+      
   }
   
   const removeIngr = async (id)  =>{
     const deletedIngredientID = await deleteIngr({id, uuid}); 
-    setIngredientList((prevState)=>{
-      prevState= prevState.filter(
-        (ingr) => ingr._id !== deletedIngredientID
-      );
-      return [...prevState]; 
-    })
+    if(deletedIngredientID){
+      setIngredientList((prevState)=>{
+        prevState= prevState.filter(
+          (ingr) => ingr._id !== deletedIngredientID
+        );
+        return [...prevState]; 
+      })
+    }
+    
   }
 
   const capitalizeFirst = (name)=>{

@@ -52,13 +52,8 @@ export const getPossibleRecipes = async (uuid)=>{
 // get possible recipes  
  export const getRecipeInfo = async (id )=>{
     // for protected routes 
-    const token = await AsyncStorage.getItem('token'); 
-    const config ={
-        headers:{
-            Authorization: `Bearer ${token}`
-        }
-    }
-    const response = await axios.get(apiURL+'recipes/'+id, config)
+    
+    const response = await axios.get(apiURL+'recipes/'+id)
     return response.data //specific info about that recipe 
 }
 

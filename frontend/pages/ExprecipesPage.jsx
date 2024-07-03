@@ -62,7 +62,7 @@ function ExprecipesPage({navigation}) {
   const launchRecipeInfo = async (spoonacularId) =>{
     isLoading(true); 
     // first get recipe info from dispatch 
-    const info = await getRecipeInfo(spoonacularId);  // get 
+    const info = await getRecipeInfo(spoonacularId, uuid);  // get 
     setRecipeInfo(info);
     // then set modal state
     setModalVisible(true)
