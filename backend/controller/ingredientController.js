@@ -10,9 +10,9 @@ const Ingredient = require("../models/ingredientModel")
 const getIngrs = asyncHandler ( async (req, res) =>{
     // find this user's specific ingredients
         
+    console.log("Reached get ingrs from frontend")
     try {
         const ingredients = await Ingredient.find({uuid: req.query.uuid}); 
-
         if(ingredients){
             res.status(200).json(ingredients) 
         }else{
