@@ -29,8 +29,8 @@ yarn-error.*
 *.pem
 
 # local env files only ignore for github builds release for apple build
-# .env*.local 
-# .env
+.env*.local 
+.env
 
 # typescript
 *.tsbuildinfo

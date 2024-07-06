@@ -16,8 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kboss.exprecipe",
-
+      "bundleIdentifier": "com.kboss.exprecipe"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,6 +34,12 @@
       "eas": {
         "projectId": "626d6479-e65e-4e8b-b66c-4c5c9833b7ab"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/626d6479-e65e-4e8b-b66c-4c5c9833b7ab"
     }
   }
 }

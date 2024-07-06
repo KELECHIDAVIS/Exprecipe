@@ -35,9 +35,9 @@ function PantryPage({navigation}) {
         const ingrList  = await getIngrs(uuid1); 
         
         setIngredientList(ingrList)
-        
+        console.log("ingrlist, ", ingrList); 
       } catch (error) {
-        console.error(error)
+       console.error(error.message); 
       }
       
     };

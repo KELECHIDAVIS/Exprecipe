@@ -19,7 +19,8 @@ const getIngrs = asyncHandler ( async (req, res) =>{
             res.status(200).json([]) 
         }
     } catch (error) {
-        res.status(500).json({message: "Couldn't Get Ingrs"}) 
+        res.status(500)
+        throw new Error("Couldn't get ingrs")
     }
 })
 
@@ -73,7 +74,8 @@ const getPossibleRecipes = asyncHandler ( async (req, res) =>{
 
         res.status(response.status).json(json)
     } catch (error) {
-        res.status(500).json({message: "Error in getPossibleRecipes"})
+        res.status(500)
+        throw new Error("Couldn't get ingrs")
     }
     
 })

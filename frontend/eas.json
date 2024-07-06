@@ -1,28 +1,37 @@
 {
   "cli": {
     "version": ">= 9.2.0",
-    "appVersionSource":"remote"
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     },
     "production": {
-      "autoIncrement":true
+      "autoIncrement": true,
+      "env": {
+      },
+      "channel": "production"
+    },
+    "test": {
+      "env": {
+      },
+      "channel": "test"
     }
   },
   "submit": {
     "production": {
-      "ios":{
-        "appleId":"kboss16058@gmail.com",
-        "ascAppId":"6504161884",
-        "appleTeamId":"PHX9V644M7"
+      "ios": {
+        "appleId": "kboss16058@gmail.com",
+        "ascAppId": "6504161884",
+        "appleTeamId": "PHX9V644M7"
       }
     }
   }
-  
 }

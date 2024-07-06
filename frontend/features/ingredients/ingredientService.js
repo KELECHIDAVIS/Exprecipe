@@ -2,6 +2,7 @@
 import axios from 'axios' 
 import {REACT_APP_BACKEND_SERVER_API} from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Alert } from 'react-native'
 const apiURL = REACT_APP_BACKEND_SERVER_API+'ingredients/'
 // setIngr from our backend api 
 export const createIngr = async (ingrData) =>{
@@ -24,16 +25,22 @@ export const deleteIngr = async (info ) =>{
 }
 // get ingredients  
 export const getIngrs = async (uuid )=>{
-    // for protected routes 
+    try {
+        // for protected routes 
 
     const config ={
         params:{
             uuid:uuid
         }
     }
+    
     const response = await axios.get(apiURL, config)
     
+
     return response.data // list of ingredients 
+    } catch (error) {
+        console.error(error.message)
+    }
 }
 
 // get possible recipes  
