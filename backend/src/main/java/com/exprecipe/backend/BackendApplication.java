@@ -1,13 +1,13 @@
-package exprecipe_backend;
+package com.exprecipe.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ExprecipeBackendApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ExprecipeBackendApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }

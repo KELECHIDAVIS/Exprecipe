@@ -1,10 +1,10 @@
-package exprecipe_backend;
+package com.exprecipe.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ExprecipeBackendApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
