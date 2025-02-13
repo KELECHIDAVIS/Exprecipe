@@ -26,9 +26,8 @@ public class IngredientController {
      * @return list of ingredients
      */
     @GetMapping("/ingredients")
-    public ResponseEntity<String> getUserIngredients(@RequestParam String uuid) {
-        return ResponseEntity.ok(uuid);
-        //return ResponseEntity.ok().body(service.findUserIngredients(uuid));
+    public ResponseEntity<List<Ingredient>> getUserIngredients(@RequestParam String uuid) {
+        return ResponseEntity.ok().body(service.findUserIngredients(uuid));
     }
 
     /**
