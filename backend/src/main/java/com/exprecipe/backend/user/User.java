@@ -1,15 +1,15 @@
 package com.exprecipe.backend.user;
 
+import com.exprecipe.backend.ingredient.Ingredient;
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "\"user\"")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
 
@@ -20,6 +20,8 @@ public class User {
     private boolean premiumUser;
     private Date createdAt;
 
+    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ingredient> ingredients = new ArrayList<Ingredient>();
 
     public Integer getId() {
         return id;

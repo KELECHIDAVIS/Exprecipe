@@ -18,12 +18,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Object> createUser(@RequestBody User user){
         return userService.newUser(user);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -33,4 +33,8 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id)   ;
+    }
 }

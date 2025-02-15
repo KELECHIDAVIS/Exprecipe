@@ -37,4 +37,8 @@ public class UserService {
         return new ResponseEntity<>(userRepo.findAll(), HttpStatus.OK);
     }
 
+    public ResponseEntity<User> deleteUser(int id) {
+        userRepo.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
