@@ -31,8 +31,9 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok:1.18.36'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 
-	compileOnly 'com.google.cloud:google-cloud-aiplatform:3.35.0'
-	
+	// https://mvnrepository.com/artifact/com.google.cloud/google-cloud-vertexai
+	implementation group: 'com.google.cloud', name: 'google-cloud-vertexai', version: '1.18.0'
+
 
 }
 
