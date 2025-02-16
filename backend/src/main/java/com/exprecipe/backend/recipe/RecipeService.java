@@ -4,6 +4,7 @@ import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.ingredient.IngredientRepo;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RecipeSevice {
+public class RecipeService {
     private final RecipeRepo recipeRepo;
     private final IngredientRepo ingredientRepo; // to get possible Recipes
     private final UserRepo userRepo; // get recipes associated w/ users
 
-    public RecipeSevice(RecipeRepo recipeRepo, IngredientRepo ingredientRepo, UserRepo userRepo) {
+    @Value("${api.key}")
+    private String apiKey;
+
+    public RecipeService(RecipeRepo recipeRepo, IngredientRepo ingredientRepo, UserRepo userRepo) {
         this.recipeRepo = recipeRepo;
         this.ingredientRepo = ingredientRepo;
         this.userRepo = userRepo;
@@ -75,7 +79,7 @@ public class RecipeSevice {
             String formattedIngredients = formatIngredientList(ingrList);
 
             // api request
-            String apiKey = System.getenv("SP_API_KEY");
+
             String apiURL = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+apiKey+"&ingredients="+formattedIngredients+"&number="+numberOfRecipes+"&ranking="+ranking+"&ignorePantry="+ignorePantry;
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiURL, String.class);
