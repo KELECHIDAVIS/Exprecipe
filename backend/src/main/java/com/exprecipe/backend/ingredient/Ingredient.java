@@ -36,10 +36,37 @@ public class Ingredient {
     private Recipe recipe; // if coming from recipe, user will be null
 
 
+    public int getAmount() {
+        return amount;
+    }
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
+    public String getUnit() {
+        return unit;
+    }
 
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
+    public List<String> getPossibleUnits() {
+        return possibleUnits;
+    }
+
+    public void setPossibleUnits(List<String> possibleUnits) {
+        this.possibleUnits = possibleUnits;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
 
     public int getId() {
         return id;

@@ -2,6 +2,7 @@ package com.exprecipe.backend.ingredient;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,53 @@ public class IngredientController {
         return ingredientService.getUserIngredients(userId);
     }
 
+    /*
+    POST create ingredient associated with inputted user
+    @returns created ingredient
+     */
     @PostMapping("/{userId}/ingredient")
     public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody Ingredient ingredient) {
         return ingredientService.addIngredient(userId, ingredient);
     }
+    /*
+    DELETE specified ingredient
+    @returns a string confirming deletion
+     */
     @DeleteMapping("/{userId}/ingredient/{ingredientId}")
     public ResponseEntity<String> deleteUserIngredient(@PathVariable(value= "userId") int userId, @PathVariable(value= "ingredientId") int ingredientId) {
         return ingredientService.deleteIngredient(ingredientId);
     }
+
+    /*
+    PUT update specified ingredient
+     */
+    @PutMapping("/{userId}/ingredient/{ingredientId}")
+    public ResponseEntity<Ingredient> updateIngredient( @RequestBody Ingredient ingredient) {
+        return ingredientService.updateIngredient(ingredient);
+    }
+
+    /*
+    PUT update specified ingredient's amount
+     */
+    @PutMapping("/{userId}/ingredient/{ingredientId}/amount")
+    public ResponseEntity<Ingredient> updateIngredientAmount(@PathVariable int ingredientId, @RequestParam("amount") int amount) {
+        return ingredientService.updateIngredientAmount(ingredientId, amount);
+    }
+    /*
+    PUT update specified ingredient's unit
+     */
+    @PutMapping("/{userId}/ingredient/{ingredientId}/unit")
+    public ResponseEntity<Ingredient> updateIngredientUnit(@PathVariable int ingredientId, @RequestParam("unit") String unit) {
+        return ingredientService.updateIngredientUnit(ingredientId, unit);
+    }
+
+    /*
+    PUT update specified ingredient's amount
+     */
+    @PutMapping("/{userId}/ingredient/{ingredientId}/possible+units")
+    public ResponseEntity<Ingredient> updateIngredientPossibleUnits(@PathVariable int ingredientId, @RequestBody List<String> possibleUnits) {
+        return ingredientService.updateIngredientPossibleUnits(ingredientId, possibleUnits);
+    }
+
+
 }
