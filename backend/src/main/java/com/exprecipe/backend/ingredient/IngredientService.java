@@ -3,7 +3,9 @@ package com.exprecipe.backend.ingredient;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +34,18 @@ public class IngredientService {
         // if user is present save ingredient
         if(userOpt.isPresent()){
             ingredientRepo.save(ingredient);
-            return ResponseEntity.ok(ingredient);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ingredient);
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     public ResponseEntity<String> deleteIngredient(int ingrId) {
-        ingredientRepo.deleteById(ingrId);
-
+        try {
+            ingredientRepo.deleteById(ingrId);
+        }catch (EmptyResultDataAccessException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Ingredient With That Id Exists");
+        }
         return ResponseEntity.ok().body("Ingredient deleted");
     }
 
