@@ -1,10 +1,11 @@
 package com.exprecipe.backend.ingredient;
 
+import com.exprecipe.backend.recipe.Recipe;
 import com.exprecipe.backend.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+
+import java.util.List;
 
 
 @Entity
@@ -12,14 +13,33 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int spID; // api given ingredient id
     private String name;
     private String imageURL;
-    private int spID; // api given ingredient id
+    private int amount;
+    private String unit;
+
+    @ElementCollection
+    @CollectionTable(name = "possible_unit", joinColumns = @JoinColumn(name = "id")) // 2
+    @Column(name = "possible_units") // 3
+    private List<String> possibleUnits; // some ingrs have different possiblites. ex: 3 slices for pineapple or pinch of salt
+
+
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user; // if inputted by user, recipe will be null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe; // if coming from recipe, user will be null
+
+
+
+
+
+
 
     public int getId() {
         return id;

@@ -1,6 +1,7 @@
 package com.exprecipe.backend.user;
 
 import com.exprecipe.backend.ingredient.Ingredient;
+import com.exprecipe.backend.recipe.Recipe;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -22,6 +23,9 @@ public class User {
 
     @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<Ingredient>();
+
+    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes = new ArrayList<Recipe>();
 
     public Integer getId() {
         return id;
