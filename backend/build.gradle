@@ -30,6 +30,10 @@ dependencies {
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.36'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+	compileOnly 'com.google.cloud:google-cloud-aiplatform:3.35.0'
+	
+
 }
 
 tasks.named('test') {
