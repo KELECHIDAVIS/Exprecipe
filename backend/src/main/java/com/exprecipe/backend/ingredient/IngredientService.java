@@ -21,9 +21,8 @@ public class IngredientService {
 
 
     public ResponseEntity<List<Ingredient>> getUserIngredients(Integer userId) {
-        List<Ingredient> ingredients = ingredientRepo.findByUserId(userId);
 
-        return ResponseEntity.ok(ingredients);
+        return ResponseEntity.ok(ingredientRepo.findIngredientsByUser_Id(userId));
     }
     public ResponseEntity<Ingredient> addIngredient(Integer userId, Ingredient ingredient) {
 

@@ -6,5 +6,5 @@ import java.util.List;
 
 
 public interface IngredientRepo extends JpaRepository<Ingredient, Integer> {
-    List<Ingredient> findByUserId(int userId);
+    List<Ingredient> findIngredientsByUser_Id(int userId);
 }
