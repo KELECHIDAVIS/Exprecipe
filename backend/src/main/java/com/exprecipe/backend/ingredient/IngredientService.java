@@ -37,9 +37,10 @@ public class IngredientService {
         return ResponseEntity.ok(ingredient);
     }
 
-    public ResponseEntity<Object> deleteIngredient(Ingredient ingredient) {
-        ingredientRepo.delete(ingredient);
-        return ResponseEntity.ok(ingredient);
+    public ResponseEntity<String> deleteIngredient(int ingrId) {
+        ingredientRepo.deleteById(ingrId);
+
+        return ResponseEntity.ok().body("Ingredient deleted");
     }
 
 }

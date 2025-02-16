@@ -31,4 +31,8 @@ public class IngredientController {
     public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody Ingredient ingredient) {
         return ingredientService.addIngredient(userId, ingredient);
     }
+    @DeleteMapping("/{userId}/ingredient/{ingredientId}")
+    public ResponseEntity<String> deleteUserIngredient(@PathVariable(value= "userId") int userId, @PathVariable(value= "ingredientId") int ingredientId) {
+        return ingredientService.deleteIngredient(ingredientId);
+    }
 }
