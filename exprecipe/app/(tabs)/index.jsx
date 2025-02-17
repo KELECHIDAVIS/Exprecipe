@@ -3,6 +3,7 @@ import { Text, View, SafeAreaView, StyleSheet} from "react-native";
 import { Pressable, TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
+
 export default function PantryPage() {
   const [loaded, setLoaded] = useState(false); // should only get ingredients on app launch, so only do if if not loaded
   const [ingredients, setIngredients] = useState([])
@@ -45,6 +46,32 @@ export default function PantryPage() {
     findUser(); // call function
   }, []); 
 
+
+  // load the user ingredients the first time they open the pantry page
+  useEffect(()=>{
+    const getIngrs=  async () =>{
+        if(!loaded&&user){
+          try {
+              // retrieve user ingredients 
+
+            console.log("Current User:" ,user); 
+
+            const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
+            
+            const ingrList = response.data; // returns as a list 
+
+            console.log("retrieved ingrlist: ",ingrList); 
+
+            setIngredients(ingrList);
+          } catch (error) {
+            console.log("Error When Loading User Ingredients: "+error)
+          } 
+
+          setLoaded(true); // ingredients have been loaded 
+        }
+    }
+    getIngrs();
+  }, [user ,loaded]) // only call when not alr loaded and user is updated 
 
 
 
