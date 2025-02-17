@@ -59,26 +59,32 @@ public class IngredientService {
     // number is the amount of ingredients return
     public ResponseEntity<Object[]> ingredientSearch(String search, int number) {
 
-        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number;
+        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number+"&metaInformation=true";
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.getForEntity(apiURL,Object[].class );
     };
 
     // Using the ingredient name, make a request to external api and get corresponding ingredient
-    public ResponseEntity<Ingredient> addIngredient(Integer userId, String ingredientName) {
+    public ResponseEntity<Ingredient> addIngredient(Integer userId, SpoonacularIngredient spIngredient) {
 
         Optional<User> userOpt = userRepo.findById(userId);
 
         // if user is present save ingredient
         if(userOpt.isPresent()){
-            // make request to spoonacular with name
+           // map sp ingr to our type
+           Ingredient ingr = new Ingredient();
+           ingr.setUser(userOpt.get());
+           ingr.setName(spIngredient.getName());
+           ingr.setPossibleUnits(spIngredient.getPossibleUnits());
+           ingr.setSpID(spIngredient.getId());
+           ingr.setImageURL("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
 
-
-
+            ingredientRepo.save(ingr);
+            return ResponseEntity.ok(ingr);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
     }
 
     public ResponseEntity<String> deleteIngredient(int ingrId) {

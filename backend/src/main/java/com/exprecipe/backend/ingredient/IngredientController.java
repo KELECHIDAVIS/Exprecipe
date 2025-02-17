@@ -34,8 +34,8 @@ public class IngredientController {
     @returns created ingredient
      */
     @PostMapping("/{userId}/ingredient")
-    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody String ingredientName) {
-        return ingredientService.addIngredient(userId, ingredientName);
+    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody SpoonacularIngredient spIngredient) {
+        return ingredientService.addIngredient(userId, spIngredient);
     }
     /*
     DELETE specified ingredient
