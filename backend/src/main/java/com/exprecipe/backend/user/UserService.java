@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +25,13 @@ public class UserService {
 
 
     public ResponseEntity<Object> newUser() {
-        //Create A new user
+        //Create and empty new user
         User user = new User();
+
+        user.setPremiumUser(false);
+        user.setDietRestrictions(new HashSet<>());
+        user.setCreatedAt(LocalDate.now());
+
         User savedUser = userRepo.save(user);
         return ResponseEntity.ok(savedUser);
     }

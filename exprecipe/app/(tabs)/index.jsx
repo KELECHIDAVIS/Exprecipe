@@ -11,61 +11,48 @@ export default function PantryPage() {
  
 
 
-const testGET = async ()=> {
-  try{
-    const response = await axios.get(apiUrl); 
-    
-    console.log("Request has been made"); 
-    console.log(response.data)
-  }catch(error){
-    console.log("Error: "+error)
-  }
-}
 
-useEffect(()=>{
-  testGET(); 
-},[])
-  // if this is the first time the user is opening the app, create a new user in the backend
-  // useEffect(()=>{
-  //   const findUser = async () => {
-  //     console.log("ENTERING FUNCTION")
-  //     // first check if user exist in local storage
-  //     try{
-  //       const storedUser = await AsyncStorage.getItem("user"); 
+  if this is the first time the user is opening the app, create a new user in the backend
+  useEffect(()=>{
+    const findUser = async () => {
+      console.log("ENTERING FUNCTION")
+      // first check if user exist in local storage
+      try{
+        const storedUser = await AsyncStorage.getItem("user"); 
 
-  //       if(storedUser){// set user if exists 
+        if(storedUser){// set user if exists 
           
-  //         setUser(JSON.parse(storedUser));  // parse from string to object form 
+          setUser(JSON.parse(storedUser));  // parse from string to object form 
         
-  //       }else{ // first time user 
+        }else{ // first time user 
           
-  //         // call backed to create new user 
+          // call backed to create new user 
           
           
-  //         console.log("api url: "+ apiUrl)
+          console.log("api url: "+ apiUrl)
 
-  //         const response = await fetch("http://"+apiUrl, { method: 'POST'})
+          const response = await fetch("http://"+apiUrl, { method: 'POST'})
 
-  //         if(!response.ok){
-  //           throw new Error ("HTTP ERROR! status: "+response.status)
-  //         }
-  //         // retrieve user from response
-  //         const userData = await response.json()
+          if(!response.ok){
+            throw new Error ("HTTP ERROR! status: "+response.status)
+          }
+          // retrieve user from response
+          const userData = await response.json()
 
-  //         // save new user 
-  //         await AsyncStorage.setItem("user",  JSON.stringify(userData))
+          // save new user 
+          await AsyncStorage.setItem("user",  JSON.stringify(userData))
 
-  //         // set user 
-  //         setUser(userData); 
-  //       }
-  //     } catch(error){
-  //       console.error("Error initializing user: "+error)
-  //     }
-  //   }
+          // set user 
+          setUser(userData); 
+        }
+      } catch(error){
+        console.error("Error initializing user: "+error)
+      }
+    }
 
-  //   findUser(); // call function
-  //   console.log(JSON.stringify(user))
-  // }, []); 
+    findUser(); // call function
+    console.log(JSON.stringify(user))
+  }, []); 
 
 
 

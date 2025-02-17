@@ -4,6 +4,7 @@ import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.recipe.Recipe;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class User {
     @Column(name = "diet_restrictions") // 3
     private Set<String> dietRestrictions;
     private boolean premiumUser;
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<Ingredient>();
@@ -51,11 +52,11 @@ public class User {
         this.premiumUser = premiumUser;
     }
 
-    public Date getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
