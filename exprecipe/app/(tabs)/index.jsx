@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, View, SafeAreaView, StyleSheet} from "react-native";
-import { Pressable, TextInput } from "react-native-gesture-handler";
+import { FlatList, Pressable, TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 
@@ -78,12 +78,21 @@ export default function PantryPage() {
    
   return (
     <SafeAreaView style= {styles.page}>
-
+      <View><Text>{"User "+ user.id}</Text></View>
       <View style={styles.subcontainer}>
         <TextInput style={{backgroundColor:'white'}}></TextInput>
         <Pressable>Enter</Pressable>
         <Pressable>Scan</Pressable>
       </View>
+
+      <View style={styles.subcontainer}>
+        <FlatList 
+        data = {ingredients}
+        renderItem=  {({ingr}) => <Text>{ingr.name}</Text>}
+        keyExtractor={ingr => ingr.id} 
+        />
+      </View>
+
 
     </SafeAreaView>
 

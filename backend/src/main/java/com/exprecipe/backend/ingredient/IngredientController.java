@@ -34,8 +34,8 @@ public class IngredientController {
     @returns created ingredient
      */
     @PostMapping("/{userId}/ingredient")
-    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody Ingredient ingredient) {
-        return ingredientService.addIngredient(userId, ingredient);
+    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody String ingredientName) {
+        return ingredientService.addIngredient(userId, ingredientName);
     }
     /*
     DELETE specified ingredient
@@ -87,6 +87,11 @@ public class IngredientController {
         }catch (Exception e) {
             return "Error Detecting Ingredients: "+e.getMessage();
         }
+    }
+
+    @GetMapping("/{user}/ingredient/search")
+    public ResponseEntity<Object[]> searchIngredients( @RequestParam String search, @RequestParam Integer number) {
+       return ingredientService.ingredientSearch(search, number);
     }
 
 

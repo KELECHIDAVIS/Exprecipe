@@ -18,6 +18,7 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class IngredientService {
     private String bucketName;
     @Value("${ggl.project.id}")
     private String projectId;
+    @Value("${api.key}")
+    private String apiKey;
 
     @Autowired
     public IngredientService(IngredientRepo ingredientRepo, UserRepo userRepo) {
@@ -47,14 +50,32 @@ public class IngredientService {
 
         return ResponseEntity.ok(ingredientRepo.findIngredientsByUser_Id(userId));
     }
-    public ResponseEntity<Ingredient> addIngredient(Integer userId, Ingredient ingredient) {
+
+
+
+
+
+    // searches api based on inputted ingredient name and return's a list of spoonac ingrs to choose from
+    // number is the amount of ingredients return
+    public ResponseEntity<Object[]> ingredientSearch(String search, int number) {
+
+        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number;
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.getForEntity(apiURL,Object[].class );
+    };
+
+    // Using the ingredient name, make a request to external api and get corresponding ingredient
+    public ResponseEntity<Ingredient> addIngredient(Integer userId, String ingredientName) {
 
         Optional<User> userOpt = userRepo.findById(userId);
 
         // if user is present save ingredient
         if(userOpt.isPresent()){
-            ingredientRepo.save(ingredient);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ingredient);
+            // make request to spoonacular with name
+
+
+
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
