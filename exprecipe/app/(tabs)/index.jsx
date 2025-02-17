@@ -10,34 +10,26 @@ export default function PantryPage() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL
  
 
-
-
-  if this is the first time the user is opening the app, create a new user in the backend
+  //if this is the first time the user is opening the app, create a new user in the backend
   useEffect(()=>{
     const findUser = async () => {
-      console.log("ENTERING FUNCTION")
+
       // first check if user exist in local storage
       try{
         const storedUser = await AsyncStorage.getItem("user"); 
-
         if(storedUser){// set user if exists 
           
           setUser(JSON.parse(storedUser));  // parse from string to object form 
-        
+          
         }else{ // first time user 
           
           // call backed to create new user 
-          
-          
-          console.log("api url: "+ apiUrl)
 
-          const response = await fetch("http://"+apiUrl, { method: 'POST'})
+          const response = await axios.post(apiUrl) // creates new  user 
 
-          if(!response.ok){
-            throw new Error ("HTTP ERROR! status: "+response.status)
-          }
           // retrieve user from response
-          const userData = await response.json()
+          const userData = response.data
+
 
           // save new user 
           await AsyncStorage.setItem("user",  JSON.stringify(userData))
@@ -51,7 +43,6 @@ export default function PantryPage() {
     }
 
     findUser(); // call function
-    console.log(JSON.stringify(user))
   }, []); 
 
 
