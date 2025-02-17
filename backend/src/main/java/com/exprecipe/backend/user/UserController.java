@@ -18,9 +18,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    //When starting the app, this creates a new user with a unique id
     @PostMapping("")
-    public ResponseEntity<Object> createUser(@RequestBody User user){
-        return userService.newUser(user);
+    public ResponseEntity<Object> createUser(){
+        return userService.newUser();
     }
 
     @GetMapping("")

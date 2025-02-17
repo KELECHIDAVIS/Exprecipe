@@ -21,7 +21,9 @@ public class UserService {
     }
 
 
-    public ResponseEntity<Object> newUser(User user) {
+    public ResponseEntity<Object> newUser() {
+        //Create A new user
+        User user = new User();
         User savedUser = userRepo.save(user);
         return ResponseEntity.ok(savedUser);
     }
