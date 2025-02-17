@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -74,6 +75,18 @@ public class IngredientController {
     @PutMapping("/{userId}/ingredient/{ingredientId}/possible+units")
     public ResponseEntity<Ingredient> updateIngredientPossibleUnits(@PathVariable int ingredientId, @RequestBody List<String> possibleUnits) {
         return ingredientService.updateIngredientPossibleUnits(ingredientId, possibleUnits);
+    }
+
+    /*
+    POST detects ingredients within inputted image and returns a list of detected ingredient names as a comma separated string
+     */
+    @PostMapping("/{user}/ingredient/detect")
+    public String detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
+        try{
+            return ingredientService.detectIngredientsInImage(imageFile);
+        }catch (Exception e) {
+            return "Error Detecting Ingredients: "+e.getMessage();
+        }
     }
 
 
