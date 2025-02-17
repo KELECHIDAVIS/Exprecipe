@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, StyleSheet} from "react-native";
 import { FlatList, Pressable, TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
-
+import Ingredient from "../../components/ingredient";
 export default function PantryPage() {
   const [loaded, setLoaded] = useState(false); // should only get ingredients on app launch, so only do if if not loaded
   const [ingredients, setIngredients] = useState([])
@@ -54,8 +54,6 @@ export default function PantryPage() {
           try {
               // retrieve user ingredients 
 
-            console.log("Current User:" ,user); 
-
             const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
             
             const ingrList = response.data; // returns as a list 
@@ -71,11 +69,24 @@ export default function PantryPage() {
         }
     }
     getIngrs();
+
   }, [user ,loaded]) // only call when not alr loaded and user is updated 
 
 
+  // only render the actual stuff if it is loaded
+  if(!loaded|| !user){
+    return(
+      <Text>Loading...</Text>
+    ); 
+  }
+  
+  function renderIngredients({item , index}) {
+    console.log("item: ", item)
+    return(
+       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} />
+    ); 
+  } 
 
-   
   return (
     <SafeAreaView style= {styles.page}>
       <View><Text>{"User "+ user.id}</Text></View>
@@ -88,7 +99,7 @@ export default function PantryPage() {
       <View style={styles.subcontainer}>
         <FlatList 
         data = {ingredients}
-        renderItem=  {({ingr}) => <Text>{ingr.name}</Text>}
+        renderItem=  {renderIngredients}
         keyExtractor={ingr => ingr.id} 
         />
       </View>
