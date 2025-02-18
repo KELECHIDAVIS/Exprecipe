@@ -84,6 +84,7 @@ export default function PantryPage() {
     ); 
   }
   
+  // renders each ingredient as a ingredient card 
   function renderIngredients({item , index}) {
     console.log("item: ", item)
     return(
@@ -91,6 +92,27 @@ export default function PantryPage() {
     ); 
   } 
 
+  // when plus is clicked, take name thats in text input then send through backend using ingredient search function
+  function ingredientSearch (){
+    // call backend with name 
+    const searchIngredient = async ()=>{
+      try{
+        const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${text}&number=${3}`); 
+  
+        console.log(response.data) // should be 4 ingredients
+        // launch modal with ingredient choices
+        // if just one just return that one
+        // if none then throw up a message saying you couldn't find an ingredient w/ that name
+      }catch(error){
+        console.log("Error searching that ingredient name: "+ error)
+        console.log("url: ", `${apiUrl}/ingredient/search`)
+      }
+    }
+    
+    if(text.length>0)
+      searchIngredient(); 
+    onChangeText("") // clear text input 
+  }
   return (
     <SafeAreaView style= {styles.page}>
       <View style={{padding:10, margin:10}}><Text>{"User "+ user.id}</Text></View>
@@ -100,7 +122,7 @@ export default function PantryPage() {
             onChangeText={onChangeText}
             value={text}
           />
-          <Pressable><AntDesign name="plussquare" size={24} color="green" /></Pressable>
+          <Pressable onPress={ingredientSearch}><AntDesign name="plussquare" size={24} color="green" /></Pressable>
         </View>
         
         <Pressable><MaterialCommunityIcons name="view-grid" size={24} color="grey" /></Pressable>
