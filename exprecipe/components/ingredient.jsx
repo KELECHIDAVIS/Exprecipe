@@ -12,9 +12,9 @@ const Ingredient = ({name,  possibleUnits,imageURL, amount, unit, isListForm}) =
                 style={styles.image}
                 source={imageURL}
             />
-            <View style={content}>
+            <View style={styles.content}>
                 <Text>Name: {name}</Text>
-                <Test>{amount+" "+unit}</Test>
+                <Text>{amount+" "+(unit ? unit: "cups")}</Text>
             </View>
         </Pressable>
     )

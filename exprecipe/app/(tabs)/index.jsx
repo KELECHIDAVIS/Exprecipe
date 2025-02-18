@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, StyleSheet} from "react-native";
-import { FlatList, Pressable, TextInput } from "react-native-gesture-handler";
+import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 import Ingredient from "../../components/ingredient";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 export default function PantryPage() {
+
   const [loaded, setLoaded] = useState(false); // should only get ingredients on app launch, so only do if if not loaded
   const [ingredients, setIngredients] = useState([])
   const [user, setUser] = useState(null)
+  const [text, onChangeText] = useState("Enter Ingredient"); // for text input
   const apiUrl = process.env.EXPO_PUBLIC_API_URL
  
 
@@ -89,15 +93,18 @@ export default function PantryPage() {
 
   return (
     <SafeAreaView style= {styles.page}>
-      <View><Text>{"User "+ user.id}</Text></View>
+      <View style={{padding:10, margin:10}}><Text>{"User "+ user.id}</Text></View>
       <View style={styles.subcontainer}>
-        <View>
-          <TextInput style={{backgroundColor:'white'}}></TextInput>
-          <Pressable>Enter</Pressable>
+        <View style={styles.inputContainer}>
+          <TextInput style={{backgroundColor:'white'}}
+            onChangeText={onChangeText}
+            value={text}
+          />
+          <Pressable><AntDesign name="plussquare" size={24} color="green" /></Pressable>
         </View>
         
-        <Pressable>Square</Pressable>
-        <Pressable>List</Pressable>
+        <Pressable><MaterialCommunityIcons name="view-grid" size={24} color="grey" /></Pressable>
+        <Pressable><Feather name="list" size={24} color="green" /></Pressable>
       </View>
 
       <View style={styles.subcontainer}>
@@ -116,5 +123,6 @@ export default function PantryPage() {
 
 var styles = StyleSheet.create({
   page:{ flex: 1, alignItems: "center", margin:10,},
-  subcontainer:{flexDirection:"row", alignContent:'center', justifyContent:'space-between', gap:8}
+  subcontainer:{flexDirection:"row", alignContent:'center', justifyContent:'space-between', gap:14},
+  inputContainer:{flexDirection:"row"},
 })
