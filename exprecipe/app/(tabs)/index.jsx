@@ -83,7 +83,7 @@ export default function PantryPage() {
   function renderIngredients({item , index}) {
     console.log("item: ", item)
     return(
-       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} />
+       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} />
     ); 
   } 
 
@@ -91,9 +91,13 @@ export default function PantryPage() {
     <SafeAreaView style= {styles.page}>
       <View><Text>{"User "+ user.id}</Text></View>
       <View style={styles.subcontainer}>
-        <TextInput style={{backgroundColor:'white'}}></TextInput>
-        <Pressable>Enter</Pressable>
-        <Pressable>Scan</Pressable>
+        <View>
+          <TextInput style={{backgroundColor:'white'}}></TextInput>
+          <Pressable>Enter</Pressable>
+        </View>
+        
+        <Pressable>Square</Pressable>
+        <Pressable>List</Pressable>
       </View>
 
       <View style={styles.subcontainer}>
