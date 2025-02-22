@@ -33,8 +33,8 @@ styles = StyleSheet.create({
         backgroundColor:'beige',
     },  
     image:{
-        width:100,
-        height:100,
+        width:65,
+        height:65,
         
     },
     content:{

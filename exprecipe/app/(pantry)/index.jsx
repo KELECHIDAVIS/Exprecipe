@@ -8,8 +8,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Constants from "expo-constants";
-import { Picker } from "@react-native-picker/picker";
+
 
 
 
@@ -301,6 +300,9 @@ export default function PantryPage() {
         numColumns={2}
         renderItem=  {renderIngredients}
         keyExtractor={ingr => ingr.id} 
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        
         />
       </View>
       
