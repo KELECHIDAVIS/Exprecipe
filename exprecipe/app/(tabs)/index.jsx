@@ -12,6 +12,7 @@ export default function PantryPage() {
   const [ingredients, setIngredients] = useState([])
   const [user, setUser] = useState(null)
   const [text, onChangeText] = useState(""); // for text input
+  const [isAutoCompleteOn, setAutoComplete] = useState(false); 
   const [choiceOfIngrs, setChoiceOfIngrs] = useState([]); 
   const [modalVisible, setModalVisible] = useState(false); 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL
@@ -65,7 +66,7 @@ export default function PantryPage() {
             
             const ingrList = response.data; // returns as a list 
 
-            console.log("retrieved ingrlist: ",ingrList); 
+            //console.log("retrieved ingrlist: ",ingrList); 
 
             setIngredients(ingrList);
           } catch (error) {
@@ -147,7 +148,7 @@ export default function PantryPage() {
         if(data.length ==0 ){
           console.log("Ingredient With That Name Was Not Found ") // make a popup that let's the user know there isn't an ingredient 
           return; 
-        }else if (data.length ==1 ){ // just choose ingredient
+        }else if (data.length ==1 || isAutoCompleteOn){ // just choose the first ingredient 
           addIngredient(data[0]); 
         }else{
           //launch choice modal which will then have the choice
@@ -171,7 +172,13 @@ export default function PantryPage() {
       <View style={{padding:10, margin:10}}><Text>{"User "+ user.id}</Text></View>  
 
       <View style={styles.subcontainer}>
-
+        {/**toggle for auto complete */}
+        <Switch>
+          trackColor={{false: '#767577', true: '#81b0ff'}}
+          thumbColor={isAutoCompleteOn ? '#f5dd4b' : '#f4f3f4'}
+          onValueChange={setAutoComplete}
+          value={isAutoCompleteOn}
+        </Switch>
         {/*text input and button */}
         <View style={styles.inputContainer}>
           <TextInput style={{backgroundColor:'white', width:150,paddingLeft:10 }}
