@@ -8,6 +8,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Entypo from '@expo/vector-icons/Entypo';
+import { useRouter } from "expo-router";
 
 
 
@@ -32,6 +34,10 @@ export default function PantryPage() {
   const [open, setOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(possibleUnits.length > 0 ? possibleUnits[0] : '');
   const [items, setItems] = useState(possibleUnits.map(unit => ({ label: unit, value: unit })));
+
+  // for navigation 
+  const router = useRouter(); 
+
   const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
 
   const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
@@ -257,6 +263,11 @@ export default function PantryPage() {
     
     deleteRequest(); 
   }
+
+  // when user presses scanner button navigate to camera page 
+  function launchCamera(){
+    router.push("camera"); 
+  }
   return (
     <SafeAreaView style= {styles.page}>
 
@@ -384,6 +395,10 @@ export default function PantryPage() {
           </View>
         </View>
       </Modal>
+
+      <Pressable style={styles.scanButton} onPress={launchCamera}>
+        <Entypo name="camera" size={50} color="white" />
+      </Pressable>
         
     </SafeAreaView>
 
@@ -419,5 +434,15 @@ var styles = StyleSheet.create({
   ingrInfoImage:{width:50, height:50},
   infoUnitView:{flexDirection:'row', gap:16, alignItems:'center'},
   amountNumInput:{width:30, height:30, backgroundColor:'white'},
-  unitPicker: { width:120, height:40, backgroundColor:'white'}
+  unitPicker: { width:120, height:40, backgroundColor:'white'},
+  scanButton:{
+    position:'absolute',
+    bottom:12,
+    width:80,
+    height:80,
+    backgroundColor:'green',
+    borderRadius:50,
+    alignItems:"center",
+    justifyContent:'center'
+  }
 })
