@@ -188,7 +188,7 @@ export default function PantryPage() {
 
       {/** auto complete toggle switch */}
       <View style={styles.autoCompleteContainer}>
-        <Text>Auto Complete: </Text>
+        <Text>Auto Complete? : </Text>
         <Switch
           trackColor={{false: 'grey', true: '#f4f3f4'}}
           thumbColor={isAutoCompleteOn ? 'green' : '#f4f3f4'}
