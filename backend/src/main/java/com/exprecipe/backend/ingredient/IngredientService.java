@@ -57,12 +57,18 @@ public class IngredientService {
 
     // searches api based on inputted ingredient name and return's a list of spoonac ingrs to choose from
     // number is the amount of ingredients return
-    public ResponseEntity<Object[]> ingredientSearch(String search, int number) {
+    public SpoonacularIngredient[] ingredientSearch(String search, int number) {
 
         String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number+"&metaInformation=true";
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.getForEntity(apiURL,Object[].class );
+        try{
+            ResponseEntity<SpoonacularIngredient[]> list=  restTemplate.getForEntity(apiURL,SpoonacularIngredient[].class );
+
+            return list.getBody();
+        }catch(Exception e){
+            return new SpoonacularIngredient[0];
+        }
     };
 
     // Using the ingredient name, make a request to external api and get corresponding ingredient

@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal } from "react-native";
+import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal ,Switch} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 import Ingredient from "../../components/ingredient";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+import Constants from "expo-constants";
+
+
+
 export default function PantryPage() {
 
   const [loaded, setLoaded] = useState(false); // should only get ingredients on app launch, so only do if if not loaded
   const [ingredients, setIngredients] = useState([])
   const [user, setUser] = useState(null)
   const [text, onChangeText] = useState(""); // for text input
-  const [isAutoCompleteOn, setAutoComplete] = useState(false); 
+  const [isAutoCompleteOn, toggleAutoComplete] = useState(false); 
   const [choiceOfIngrs, setChoiceOfIngrs] = useState([]); 
   const [modalVisible, setModalVisible] = useState(false); 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL
- 
+
+  
+  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
+
   const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
 
   //if this is the first time the user is opening the app, create a new user in the backend
@@ -136,11 +143,12 @@ export default function PantryPage() {
     // call backend with name 
     const searchIngredient = async ()=>{
       try{
+        console.log("Calling ingredient search")
         const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${text}&number=${ingrSearchAmt}`); 
   
         const data = response.data ; 
 
-
+        console.log("ingredient search data", data); 
         // launch modal with ingredient choices
         // if just one just return that one
         // if none then throw up a message saying you couldn't find an ingredient w/ that name
@@ -153,13 +161,13 @@ export default function PantryPage() {
         }else{
           //launch choice modal which will then have the choice
           setChoiceOfIngrs(data) // list of spIngredients
-          setModalVisible(true) // launch modal
+          //setModalVisible(true) // launch modal
         }
 
         // add chosen ingredient to ingredient list 
       }catch(error){
         console.log("Error searching that ingredient name: "+ error)
-        console.log("url: ", `${apiUrl}/ingredient/search`)
+        console.log("url: ", `${apiUrl}/${user.id}/ingredient/search?search=${text}&number=${ingrSearchAmt}`)
       }
     }
     
@@ -169,16 +177,24 @@ export default function PantryPage() {
   }
   return (
     <SafeAreaView style= {styles.page}>
+
+      {/** auto complete toggle switch */}
+      <View style={styles.autoCompleteContainer}>
+        <Text>Auto Complete: </Text>
+        <Switch
+          trackColor={{false: 'grey', true: '#f4f3f4'}}
+          thumbColor={isAutoCompleteOn ? 'green' : '#f4f3f4'}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleAutoComplete}
+          value={isAutoCompleteOn}
+        />
+      </View>
+
+      {/* FOR TESTING SHOWS IF THERE IS A USER LOADED  */}
       <View style={{padding:10, margin:10}}><Text>{"User "+ user.id}</Text></View>  
 
       <View style={styles.subcontainer}>
-        {/**toggle for auto complete */}
-        <Switch>
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={isAutoCompleteOn ? '#f5dd4b' : '#f4f3f4'}
-          onValueChange={setAutoComplete}
-          value={isAutoCompleteOn}
-        </Switch>
+        
         {/*text input and button */}
         <View style={styles.inputContainer}>
           <TextInput style={{backgroundColor:'white', width:150,paddingLeft:10 }}
@@ -186,7 +202,7 @@ export default function PantryPage() {
             clearTextOnFocus={true}
             value={text}
           />
-          <Pressable onPress={ingredientSearch}><AntDesign name="plussquare" size={40} color="green" /></Pressable>
+          <Pressable onPress={()=>{ingredientSearch()}}><AntDesign name="plussquare" size={40} color="green" /></Pressable>
         </View>
         
         {/* grid and list formatting*/}
@@ -203,6 +219,18 @@ export default function PantryPage() {
         />
       </View>
       
+      {/**Modal for choosing ingredient to input */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          
+          <Pressable onPress={()=>{setModalVisible(!modalVisible)}}>Click to exit</Pressable>
+        </Modal>
       
     </SafeAreaView>
 
@@ -213,4 +241,5 @@ var styles = StyleSheet.create({
   page:{ flex: 1, alignItems: "center", margin:10,},
   subcontainer:{flexDirection:"row", alignContent:'center', justifyContent:'space-between', gap:14},
   inputContainer:{flexDirection:"row",alignContent:'center',gap:4},
+  autoCompleteContainer: {flexDirection:'row', alignContent:'center'}
 })
