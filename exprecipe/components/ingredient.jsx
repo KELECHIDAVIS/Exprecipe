@@ -3,18 +3,18 @@ import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
 const Ingredient = ({name,  possibleUnits,imageURL, amount, unit, isListForm}) =>{
-
+    
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
     return(
         <Pressable style={styles.container}>
             <Image 
                 style={styles.image}
-                source={imageURL}
+                source={{uri: imageURL}}
             />
             <View style={styles.content}>
-                <Text>Name: {name}</Text>
-                <Text>{amount+" "+(unit ? unit: "cups")}</Text>
+                <Text>{name}</Text>
+                <Text>{amount+" "+(unit ? unit: possibleUnits[0])}</Text>
             </View>
         </Pressable>
     )
@@ -26,13 +26,16 @@ styles = StyleSheet.create({
     container:{
         flexDirection:"row",
         justifyContent:"space-between",
+        alignContent:'center',
         margin:10,
+        backgroundColor:'beige',
     },  
     image:{
         width:100,
-        height:100
+        height:100,
+        
     },
     content:{
-
+        alignSelf:'center'
     }
 })

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal ,Switch} from "react-native";
+import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal ,Switch, Alert} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 import Ingredient from "../../components/ingredient";
@@ -88,6 +88,14 @@ export default function PantryPage() {
   }, [user ,loaded]) // only call when not alr loaded and user is updated 
 
 
+  useEffect(()=>{
+    if(choiceOfIngrs.length ==0){ // make sure the modal is updated accordingly 
+      setModalVisible(false); 
+    }else{
+      setModalVisible(true); 
+    }
+  }, [choiceOfIngrs])
+
   // only render the actual stuff if it is loaded
   if(!loaded|| !user){
     return(
@@ -97,7 +105,6 @@ export default function PantryPage() {
   
   // renders each ingredient as a ingredient card 
   function renderIngredients({item , index}) {
-    console.log("item: ", item)
     return(
        <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} />
     ); 
@@ -118,7 +125,7 @@ export default function PantryPage() {
           method:'post',
           url:`${apiUrl}/${user.id}/ingredient`,
           headers:{},
-          data:item  
+          data:chosenIngr  
         }); 
   
         const data = response.data ; // returns ingredient as in our custom ingredient form
@@ -132,7 +139,7 @@ export default function PantryPage() {
       } catch (error) {
         console.log("Error Adding Ingredient: ",error)
       }
-      setModalVisible(false); 
+      setChoiceOfIngrs([]); // clear choice of ingredients in turn closing the modal
     }
 
     createIngr(); 
@@ -143,16 +150,16 @@ export default function PantryPage() {
     // call backend with name 
     const searchIngredient = async ()=>{
       try{
-        console.log("Calling ingredient search")
-        const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${text}&number=${ingrSearchAmt}`); 
+        
+        // trim of possible white space off of text 
+        const ingrName = text.trim(); 
+        const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${ingrName}&number=${ingrSearchAmt}`); 
   
-        const data = response.data ; 
+        const data = response.data
 
-        console.log("ingredient search data", data); 
         // launch modal with ingredient choices
         // if just one just return that one
         // if none then throw up a message saying you couldn't find an ingredient w/ that name
-
         if(data.length ==0 ){
           console.log("Ingredient With That Name Was Not Found ") // make a popup that let's the user know there isn't an ingredient 
           return; 
@@ -160,8 +167,9 @@ export default function PantryPage() {
           addIngredient(data[0]); 
         }else{
           //launch choice modal which will then have the choice
+
           setChoiceOfIngrs(data) // list of spIngredients
-          //setModalVisible(true) // launch modal
+          // the use state will update based on choice ingrs 
         }
 
         // add chosen ingredient to ingredient list 
@@ -211,27 +219,47 @@ export default function PantryPage() {
       </View>
 
       {/* ingredient list */}
-      <View style={styles.subcontainer}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', alignSelf:"center"}}>
         <FlatList 
         data = {ingredients}
+        extraData={ingredients}
+        numColumns={2}
         renderItem=  {renderIngredients}
         keyExtractor={ingr => ingr.id} 
         />
       </View>
       
       {/**Modal for choosing ingredient to input */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          
-          <Pressable onPress={()=>{setModalVisible(!modalVisible)}}>Click to exit</Pressable>
-        </Modal>
-      
+      <Modal
+        visible={modalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Choose an Ingredient:</Text>
+            <FlatList
+              data={choiceOfIngrs}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    //add selected ingredient to ingredient list 
+                    addIngredient(item); 
+                  }}
+                >
+                  <Text style={{ fontSize: 16, padding: 10, borderBottomWidth: 1 }}>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <Pressable onPress={() => setModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+              <Text style={{ color: 'green' }}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+        
     </SafeAreaView>
 
   );
@@ -241,5 +269,26 @@ var styles = StyleSheet.create({
   page:{ flex: 1, alignItems: "center", margin:10,},
   subcontainer:{flexDirection:"row", alignContent:'center', justifyContent:'space-between', gap:14},
   inputContainer:{flexDirection:"row",alignContent:'center',gap:4},
-  autoCompleteContainer: {flexDirection:'row', alignContent:'center'}
+  autoCompleteContainer: {flexDirection:'row', alignContent:'center'},
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    justifyContent:'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
 })
