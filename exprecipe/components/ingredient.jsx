@@ -2,20 +2,22 @@
 import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
-const Ingredient = ({name,  possibleUnits,imageURL, amount, unit, isListForm}) =>{
+const Ingredient = ({name,  possibleUnits,imageURL, amount, unit, isListForm, openInfoModal, closeModal}) =>{
     
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
     return(
-        <Pressable style={styles.container}>
+        <Pressable style={styles.container} onPress={openInfoModal}>
             <Image 
                 style={styles.image}
                 source={{uri: imageURL}}
+                defaultSource={require('../assets/favicon.png')}
             />
             <View style={styles.content}>
                 <Text>{name}</Text>
-                <Text>{amount+" "+(unit ? unit: possibleUnits[0])}</Text>
+                <Text>{(amount>0 ? amount : "-")+" "+(unit ? unit: possibleUnits[0])}</Text>
             </View>
+            
         </Pressable>
     )
 }

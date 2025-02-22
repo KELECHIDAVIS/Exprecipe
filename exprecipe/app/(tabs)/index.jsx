@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal ,Switch, Alert} from "react-native";
+import { Text, View, SafeAreaView, StyleSheet, FlatList, Pressable, TextInput, Modal ,Switch, Alert, Keyboard, Image} from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios'
 import Ingredient from "../../components/ingredient";
@@ -8,6 +9,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Constants from "expo-constants";
+import { Picker } from "@react-native-picker/picker";
 
 
 
@@ -19,9 +21,18 @@ export default function PantryPage() {
   const [text, onChangeText] = useState(""); // for text input
   const [isAutoCompleteOn, toggleAutoComplete] = useState(false); 
   const [choiceOfIngrs, setChoiceOfIngrs] = useState([]); 
-  const [modalVisible, setModalVisible] = useState(false); 
-
+  const [ingrChoiceModal, setChoiceModalVisible] = useState(false);
+  const [ingrInfoModal, setIngrInfoModalVisible] = useState(false); 
   
+  
+  // for ingrInfo modal 
+  const [ingrInfo , setIngrInfo] = useState(null); // for the modal that allows the person to update amount and unit 
+  let possibleUnits = ingrInfo?.possibleUnits || []; // for ingrInfo
+  const [ingrAmt, setIngredientAmount]   = useState(0); 
+  // Dropdown state
+  const [open, setOpen] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState(possibleUnits.length > 0 ? possibleUnits[0] : '');
+  const [items, setItems] = useState(possibleUnits.map(unit => ({ label: unit, value: unit })));
   const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
 
   const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
@@ -90,23 +101,38 @@ export default function PantryPage() {
 
   useEffect(()=>{
     if(choiceOfIngrs.length ==0){ // make sure the modal is updated accordingly 
-      setModalVisible(false); 
+      setChoiceModalVisible(false); 
     }else{
-      setModalVisible(true); 
+      setChoiceModalVisible(true); 
     }
   }, [choiceOfIngrs])
 
+  // open the modal if selected ingredients is selected 
+  useEffect(()=>{ 
+    if(!ingrInfo){
+      setIngredientAmount(0)  ; 
+      setSelectedUnit(""); 
+      setIngrInfoModalVisible(false)
+    }else{
+      possibleUnits = ingrInfo.possibleUnits; // set possibleUnits
+      setSelectedUnit(possibleUnits[0])
+      setItems(possibleUnits.map(unit => ({ label: unit, value: unit }))); 
+      setIngrInfoModalVisible(true); 
+    }
+  }, [ingrInfo])
   // only render the actual stuff if it is loaded
   if(!loaded|| !user){
     return(
       <Text>Loading...</Text>
     ); 
   }
-  
+  function openInfoModal(ingr){
+    setIngrInfo(ingr) // ingr use state will be updated 
+  }
   // renders each ingredient as a ingredient card 
   function renderIngredients({item , index}) {
     return(
-       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} />
+       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} openInfoModal={()=>openInfoModal(item)}/>
     ); 
   } 
 
@@ -149,6 +175,9 @@ export default function PantryPage() {
   function ingredientSearch (){
     // call backend with name 
     const searchIngredient = async ()=>{
+
+      // collapse ingredient 
+      Keyboard.dismiss(); 
       try{
         
         // trim of possible white space off of text 
@@ -182,6 +211,32 @@ export default function PantryPage() {
     if(text.length>0)
       searchIngredient(); 
     onChangeText("") // clear text input 
+  }
+
+  function updateIngrInfo(){
+    Keyboard.dismiss()
+    const updateRequest = async ()=>{
+
+      // change ingr's amt and unit
+      let currIngr = ingrInfo ; 
+      currIngr.amount = ingrAmt; 
+      currIngr.unit = selectedUnit; 
+
+      // make backend request to update user's ingredient
+      try{
+        const ingrReponse = await axios({
+          method:'put',
+          url:`${apiUrl}/${user.id}/ingredient/${currIngr.id}`,
+          data:currIngr,
+        })
+      }catch(error){
+        console.log("Error updating ingredient amount/unit")
+      }
+      // make sure modal is gone
+      setIngrInfo(null); 
+    }
+
+    updateRequest(); 
   }
   return (
     <SafeAreaView style= {styles.page}>
@@ -229,19 +284,19 @@ export default function PantryPage() {
         />
       </View>
       
-      {/**Modal for choosing ingredient to input */}
+      {/**Modal for ingredient choice after search  */}
       <Modal
-        visible={modalVisible}
+        visible={ingrChoiceModal}
         animationType="fade"
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => setChoiceModalVisible(false)}
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
+          <View style={{ width: 300, padding: 20, backgroundColor: 'beige', borderRadius: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Choose an Ingredient:</Text>
             <FlatList
               data={choiceOfIngrs}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) => item.id}
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => {
@@ -253,8 +308,51 @@ export default function PantryPage() {
                 </Pressable>
               )}
             />
-            <Pressable onPress={() => setModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+            <Pressable onPress={() => setChoiceModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
               <Text style={{ color: 'green' }}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/**Ingredient Info Modal */}
+      <Modal
+        visible={ingrInfoModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setIngrInfoModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View style={{ width: 300, padding: 20, backgroundColor: 'beige', borderRadius: 10, alignItems:'center' , gap:10}}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{ingrInfo?.name}</Text>
+            {/** only render ingr image if it exist otherwise render image not fount  */}
+            <Image source={ingrInfo? {uri:ingrInfo.imageURL}: require('../../assets/favicon.png')} style={styles.ingrInfoImage}/>
+            
+            {/**amount and unit view  */}
+            <View style = {styles.infoUnitView}>
+              <Text>Amount</Text>
+              <TextInput style={styles.amountNumInput} keyboardType="numeric" 
+                onChangeText={newAmt=> setIngredientAmount(newAmt)}
+                clearTextOnFocus={true}
+                value={ingrAmt}
+              />
+              <Text>Unit</Text>
+              <DropDownPicker
+              open={open}
+              value={selectedUnit}
+              items={items}
+              setOpen={setOpen}
+              setValue={setSelectedUnit}
+              setItems={setItems}
+              containerStyle={{ width: 100 }}
+              style={{ backgroundColor: '#ffffff' }}
+              dropDownContainerStyle={{ backgroundColor: '#fafafa' }}
+              placeholder=""
+              />
+            </View>
+            {/**send req to backend to update ingr  */}
+            <Pressable onPress={()=>{updateIngrInfo()}} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+              <Text style={{ color: 'green' }}>Save</Text>
             </Pressable>
           </View>
         </View>
@@ -277,7 +375,7 @@ var styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'beige',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -291,4 +389,8 @@ var styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  ingrInfoImage:{width:50, height:50},
+  infoUnitView:{flexDirection:'row', gap:16, alignItems:'center'},
+  amountNumInput:{width:30, height:30, backgroundColor:'white'},
+  unitPicker: { width:120, height:40, backgroundColor:'white'}
 })
