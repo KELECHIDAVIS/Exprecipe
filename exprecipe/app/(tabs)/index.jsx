@@ -7,7 +7,7 @@ import Ingredient from "../../components/ingredient";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Constants from "expo-constants";
 import { Picker } from "@react-native-picker/picker";
 
@@ -238,6 +238,26 @@ export default function PantryPage() {
 
     updateRequest(); 
   }
+
+  function deleteIngredient(){
+    const deleteRequest = async ()=>{
+      //make request to delete the current ingredient 
+      try{
+        const ingrReponse = await axios({
+          method:'delete',
+          url:`${apiUrl}/${user.id}/ingredient/${ingrInfo.id}`,
+        })
+      }catch(error){
+        console.log("Error updating ingredient amount/unit")
+      }
+      //remove ingredient from viewed list using ingredient id 
+      setIngredients(ingredients.filter(item=>item.id != ingrInfo.id))
+      // make sure modal is gone
+      setIngrInfo(null); 
+    } 
+    
+    deleteRequest(); 
+  }
   return (
     <SafeAreaView style= {styles.page}>
 
@@ -350,10 +370,15 @@ export default function PantryPage() {
               placeholder=""
               />
             </View>
-            {/**send req to backend to update ingr  */}
-            <Pressable onPress={()=>{updateIngrInfo()}} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
-              <Text style={{ color: 'green' }}>Save</Text>
-            </Pressable>
+            {/**save and delete ingr buttons*/}
+            <View style={{  marginTop: 20 ,flexDirection:'row', width:'100%', justifyContent:'space-between', alignContent:'center'}}>
+              <Pressable onPress={()=>{deleteIngredient()}} style={{ alignSelf: 'flex-start' }}>
+                <MaterialIcons name="delete" size={40} color="red" />
+              </Pressable>
+              <Pressable onPress={()=>{updateIngrInfo()}} style={{  alignSelf: 'flex-end' }}>
+                <AntDesign name="checksquare" size={36} color="green" />
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
