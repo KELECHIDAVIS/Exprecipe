@@ -3,14 +3,16 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from "expo-router";
-
+import { useRouter , useLocalSearchParams} from "expo-router";
+import axios from 'axios'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef(null); // camera's ref 
   const [uri, setUri] = useState(null);
   const router = useRouter();
-
+  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
+  const {id} = useLocalSearchParams(); 
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -42,8 +44,39 @@ export default function CameraScreen() {
     )
   }
 
+  const detectIngredients = async ()=>{
+    // first turns uri into image
+    try {
+      // first get user from local storage
+      const file = {uri: uri, name: 'image.jpg', type:'image/jpeg'}
+      const formData = new FormData(); 
+      formData.append("image", file)
+
+      const response = await axios.post(
+        `${apiUrl}/${id}/ingredient/detect`,
+        formData,
+        {
+          headers:{
+            "Content-Type":"multipart/form-data"
+          },
+        }
+      ); 
+
+
+     console.log("responseType: "+ typeof(response))
+    }catch(error){
+      console.log("Error When Detecting Ingredients: ", error.message)
+    }
+
+   
+    
+
+    // then sends image to backend through post request 
+    
+    // gets detected ingredients as comma separated string 
+  
+  }
   const renderImage = ()=>{
-    console.log(uri); 
     return(
       <SafeAreaView style={{flex:1 , backgroundColor:'black',alignItems:'center', justifyContent:'center'}}>
         <Image
@@ -53,7 +86,7 @@ export default function CameraScreen() {
         />
         <View>
           <Button onPress={() => setUri(null)} title="Retake?" />
-          <Button  title="Detect Ingredients" />
+          <Button onPress={()=> detectIngredients()} title="Detect Ingredients" />
         </View>
       </SafeAreaView>
     )

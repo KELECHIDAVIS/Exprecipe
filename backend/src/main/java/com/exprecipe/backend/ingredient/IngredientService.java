@@ -213,7 +213,7 @@ public class IngredientService {
             GenerativeModel model = new GenerativeModel(modelName, vertexAI);
             GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
                     PartMaker.fromMimeTypeAndData("image/png", cloudStorageUri),
-                    "Return all the unique ingredients you can detect in this image as a comma separated list. Avoid using special and escape characters. Avoid saying anything other than the list"
+                    "Return all the unique ingredients you can detect in this image as a comma separated list. Avoid using special and escape characters. Avoid saying anything other than the list."
                     ));
 
             return response.toString();

@@ -12,6 +12,7 @@ const Ingredient = ({name,  possibleUnits,imageURL, amount, unit, isListForm, op
                 style={styles.image}
                 source={{uri: imageURL}}
                 defaultSource={require('../assets/favicon.png')}
+                resizeMode="contain"
             />
             <View style={styles.content}>
                 <Text>{name}</Text>
@@ -31,11 +32,11 @@ styles = StyleSheet.create({
         alignContent:'center',
         margin:10,
         backgroundColor:'beige',
+        width:"40%"
     },  
     image:{
         width:65,
         height:65,
-        
     },
     content:{
         alignSelf:'center'

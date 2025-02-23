@@ -82,6 +82,7 @@ public class IngredientController {
      */
     @PostMapping("/{user}/ingredient/detect")
     public String detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
+        System.out.println(imageFile);
         try{
             return ingredientService.detectIngredientsInImage(imageFile);
         }catch (Exception e) {

@@ -15,7 +15,8 @@ import { useRouter } from "expo-router";
 
 
 export default function PantryPage() {
-
+  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
+  
   const [loaded, setLoaded] = useState(false); // should only get ingredients on app launch, so only do if if not loaded
   const [ingredients, setIngredients] = useState([])
   const [user, setUser] = useState(null)
@@ -38,8 +39,7 @@ export default function PantryPage() {
   // for navigation 
   const router = useRouter(); 
 
-  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
-
+ 
   const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
 
   //if this is the first time the user is opening the app, create a new user in the backend
@@ -266,7 +266,7 @@ export default function PantryPage() {
 
   // when user presses scanner button navigate to camera page 
   function launchCamera(){
-    router.push("camera"); 
+    router.push(`/camera?id=${user.id}`); 
   }
   return (
     <SafeAreaView style= {styles.page}>
