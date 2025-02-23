@@ -35,7 +35,7 @@ export default function CameraScreen() {
     return(
       <CameraView style={styles.camera} ref={ref}>
         <SafeAreaView style={{margin:5}}>
-          <Pressable><Text style={styles.text}> Cancel</Text></Pressable>
+          <Pressable onPress={()=>{router.back()}}><Text style={styles.text}> Cancel</Text></Pressable>
         </SafeAreaView>
         <Pressable onPress={takePicture} style={{backgroundColor:'white', width:85, height:80, borderRadius:50, position:'absolute', bottom:40, alignSelf:'center'}}      ></Pressable>
       </CameraView>
@@ -51,7 +51,10 @@ export default function CameraScreen() {
           resizeMode="contain"
           style={{ width: "80%",height:'80%',aspectRatio:1}}
         />
-        <Button onPress={() => setUri(null)} title="Retake?" />
+        <View>
+          <Button onPress={() => setUri(null)} title="Retake?" />
+          <Button  title="Detect Ingredients" />
+        </View>
       </SafeAreaView>
     )
   }
