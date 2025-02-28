@@ -9,7 +9,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Entypo from '@expo/vector-icons/Entypo';
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 
 
@@ -25,6 +25,7 @@ export default function PantryPage() {
   const [choiceOfIngrs, setChoiceOfIngrs] = useState([]); 
   const [ingrChoiceModal, setChoiceModalVisible] = useState(false);
   const [ingrInfoModal, setIngrInfoModalVisible] = useState(false); 
+  const [scannedIngrModal, setScannedModalVisible] = useState(false); 
   
   
   // for ingrInfo modal 
@@ -35,12 +36,22 @@ export default function PantryPage() {
   const [open, setOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(possibleUnits.length > 0 ? possibleUnits[0] : '');
   const [items, setItems] = useState(possibleUnits.map(unit => ({ label: unit, value: unit })));
-
+  const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
+  
   // for navigation 
   const router = useRouter(); 
 
+  //for retrieving scanned ingredients from camera page 
+  const {scannedIngredients} = useLocalSearchParams(); 
+
+  useEffect(()=>{
+    if(scannedIngredients){
+      // pop up modal with all ingredients
+      setScannedModalVisible(true)
+    }
+  }, [scannedIngredients])
+
  
-  const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
 
   //if this is the first time the user is opening the app, create a new user in the backend
   useEffect(()=>{
@@ -338,6 +349,37 @@ export default function PantryPage() {
                   }}
                 >
                   <Text style={{ fontSize: 16, padding: 10, borderBottomWidth: 1 }}>{item.name}</Text>
+                </Pressable>
+              )}
+            />
+            <Pressable onPress={() => setChoiceModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+              <Text style={{ color: 'green' }}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      
+      {/**Modal displaying scanned ingredients */}
+      <Modal
+        visible={scannedIngrModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setScannedModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View style={{ width: 300, padding: 20, backgroundColor: 'beige', borderRadius: 10 }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Choose an Ingredient:</Text>
+            <FlatList
+              data={scannedIngredients}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    //add selected ingredient to ingredient list 
+                    addIngredient(item); 
+                  }}
+                >
+                  <Text style={{ fontSize: 16, padding: 10, borderBottomWidth: 1 }}>{item}</Text>
                 </Pressable>
               )}
             />

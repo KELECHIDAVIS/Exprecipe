@@ -46,7 +46,6 @@ export default function CameraScreen() {
 
   const detectIngredients = async ()=>{
     // first turns uri into image
-    console.log("calling api")
     try {
       // first get user from local storage
       const file = {uri: uri, name: 'image.jpg', type:'image/jpeg'}
@@ -66,26 +65,20 @@ export default function CameraScreen() {
       console.log("response data: ",response.data )
       // the response should be an object containing the "ingredients" list
       
-      const ingredients = response.data; 
+      const scannedIngredients = response.data; 
 
       if(!response.data)
         throw new Error("Response data was null ")
-
-
-
       
-
-      if(ingredients.length ==0){
-        Alert.alert("No ingredients detected. Please Try Again")
-      }else{
-        for(let i = 0 ; i<ingredients.length; i++){
-          console.log(ingredients[i])
-        }
-      }
-     
+      // return ingredients to pantry page
+      router.back({
+        params: { scannedIngredients }, // This won't automatically work in Expo Router
+      })
+      
 
     }catch(error){
       console.log("Error When Detecting Ingredients: ", error.message)
+      Alert.alert("Error When Detecting Ingredients"); 
     }
 
    
@@ -107,6 +100,7 @@ export default function CameraScreen() {
         <View>
           <Button onPress={() => setUri(null)} title="Retake?" />
           <Button onPress={detectIngredients} title="Detect Ingredients" />
+          <Button onPress={()=> router.back()} title="Back Test" />
         </View>
       </SafeAreaView>
     )
