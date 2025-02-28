@@ -1,4 +1,4 @@
-import { View, Text, Pressable ,SafeAreaView,StyleSheet , Button ,Image} from "react-native";
+import { View, Text, Pressable ,SafeAreaView,StyleSheet , Button ,Image, Alert} from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 
@@ -63,11 +63,25 @@ export default function CameraScreen() {
         }
       ); 
 
+      console.log("response data: ",response.data )
+      // the response should be an object containing the "ingredients" list
+      
+      const ingredients = response.data; 
 
-     console.log("responseType: "+ typeof(response))
-     console.log(response)
-     console.log("just the data ", response.data)
-    console.log("candidates data type ", typeof(response.data)) // so response. data is a string how to access? 
+      if(!response.data)
+        throw new Error("Response data was null ")
+
+
+
+      
+
+      if(ingredients.length ==0){
+        Alert.alert("No ingredients detected. Please Try Again")
+      }else{
+        for(let i = 0 ; i<ingredients.length; i++){
+          console.log(ingredients[i])
+        }
+      }
      
 
     }catch(error){

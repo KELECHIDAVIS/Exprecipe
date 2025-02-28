@@ -8,6 +8,8 @@ import com.google.cloud.storage.*;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
+import com.google.cloud.vertexai.api.Schema;
+import com.google.cloud.vertexai.api.Type;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
@@ -211,9 +213,16 @@ public class IngredientService {
         // Initialize client that will be used to send requests. This client only needs
         // to be created once, and can be reused for multiple requests.
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            // response will be in json form
+            // response will be in a json list of strings
             GenerationConfig generationConfig = GenerationConfig.newBuilder()
                     .setResponseMimeType("application/json")
+                    .setResponseSchema(Schema.newBuilder()
+                            .setType(Type.ARRAY)
+                            .setItems(Schema.newBuilder()
+                                    .setType(Type.STRING)
+                                    .build())
+                            .build()
+                    )
                     .build();
 
             // generate model
@@ -223,13 +232,12 @@ public class IngredientService {
 
             GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
                     PartMaker.fromMimeTypeAndData("image/png", cloudStorageUri),
-                    "List all the ingredients you can detect within this image. Use generic names when referring to the ingredients. Return list as this JSON schema:\n"
-                    +"ingredients : list[String]\n"
+                    "Return a list of all the ingredients you can detect within this image. Use generic names when referring to the ingredients.\n"
                     ));
 
             String output = ResponseHandler.getText(response);
 
-            return output; 
+            return output;
         }
     }
 }
