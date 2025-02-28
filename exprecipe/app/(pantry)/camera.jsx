@@ -46,6 +46,7 @@ export default function CameraScreen() {
 
   const detectIngredients = async ()=>{
     // first turns uri into image
+    console.log("calling api")
     try {
       // first get user from local storage
       const file = {uri: uri, name: 'image.jpg', type:'image/jpeg'}
@@ -64,6 +65,11 @@ export default function CameraScreen() {
 
 
      console.log("responseType: "+ typeof(response))
+     console.log(response)
+     console.log("just the data ", response.data)
+    console.log("candidates data type ", typeof(response.data)) // so response. data is a string how to access? 
+     
+
     }catch(error){
       console.log("Error When Detecting Ingredients: ", error.message)
     }
@@ -86,7 +92,7 @@ export default function CameraScreen() {
         />
         <View>
           <Button onPress={() => setUri(null)} title="Retake?" />
-          <Button onPress={()=> detectIngredients()} title="Detect Ingredients" />
+          <Button onPress={detectIngredients} title="Detect Ingredients" />
         </View>
       </SafeAreaView>
     )
