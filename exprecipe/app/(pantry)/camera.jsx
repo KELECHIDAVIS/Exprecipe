@@ -100,7 +100,6 @@ export default function CameraScreen() {
         <View>
           <Button onPress={() => setUri(null)} title="Retake?" />
           <Button onPress={detectIngredients} title="Detect Ingredients" />
-          <Button onPress={()=> router.back()} title="Back Test" />
         </View>
       </SafeAreaView>
     )
