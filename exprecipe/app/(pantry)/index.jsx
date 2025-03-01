@@ -42,7 +42,7 @@ export default function PantryPage() {
   const router = useRouter(); 
 
   //for retrieving scanned ingredients from camera page 
-  const {scannedIngredients , removeItem, clearScannedIngredients} = usePantryStore(); 
+  const {scannedIngredients , removeScannedIngredient, clearScannedIngredients} = usePantryStore(); 
 
   useEffect(()=>{
     if(scannedIngredients.length > 0){
@@ -386,7 +386,7 @@ export default function PantryPage() {
               renderItem={({ item }) => (
                 <View style={{flex: 1 , flexDirection:'row', justifyContent:'center'}}>
                   <Text style={{ fontSize: 16, padding: 10, borderBottomWidth: 1 }}>{item}</Text>
-                  <Pressable onPress={()=>{removeItem(item)}} style={{ alignSelf: 'flex-end' }}>
+                  <Pressable onPress={()=>{removeScannedIngredient(item)}} style={{ alignSelf: 'flex-end' }}>
                     <MaterialIcons name="delete" size={24} color="red" />
                   </Pressable>
                 </View>
