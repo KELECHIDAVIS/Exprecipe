@@ -42,12 +42,10 @@ export default function PantryPage() {
   const router = useRouter(); 
 
   //for retrieving scanned ingredients from camera page 
-  const {scannedIngredients , removeItem} = usePantryStore(); 
+  const {scannedIngredients , removeItem, clearScannedIngredients} = usePantryStore(); 
 
   useEffect(()=>{
     if(scannedIngredients.length > 0){
-      console.log("New Scanned ingredients:", scannedIngredients)
-
       setTimeout(() => setScannedModalVisible(true), 50); // Force re-render so modal appears 
     }
   }, [scannedIngredients])
@@ -207,6 +205,7 @@ export default function PantryPage() {
         // if just one just return that one
         // if none then throw up a message saying you couldn't find an ingredient w/ that name
         if(data.length ==0 ){
+          Alert.alert("Ingredient With That Name Was Not Found")
           console.log("Ingredient With That Name Was Not Found ") // make a popup that let's the user know there isn't an ingredient 
           return; 
         }else if (data.length ==1 || isAutoCompleteOn){ // just choose the first ingredient 
@@ -280,6 +279,17 @@ export default function PantryPage() {
   function launchCamera(){
     router.push(`/camera?id=${user.id}`); 
   }
+
+  // saves the list of scanned ingredients and closes the modal 
+  function saveScannedIngredients(){
+    const saveRequest = async() =>{
+      // send list of ingredients to backend and add list of ingredients to current list after it is saved to backend 
+    }
+
+    saveRequest(); 
+    clearScannedIngredients(); // clear the scannedIngredients
+    setScannedModalVisible(false); 
+  }
   return (
     <SafeAreaView style= {styles.page}>
 
@@ -295,8 +305,7 @@ export default function PantryPage() {
         />
       </View>
 
-      {/* FOR TESTING SHOWS IF THERE IS A USER LOADED  */}
-      <View style={{padding:10, margin:10}}><Text>{"User "+ user.id}</Text></View>  
+       
 
       <View style={styles.subcontainer}>
         
@@ -383,7 +392,7 @@ export default function PantryPage() {
                 </View>
               )}
             />
-            <Pressable onPress={() => setScannedModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+            <Pressable onPress={saveScannedIngredients} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
               <Text style={{ color: 'green' }}>Close</Text>
             </Pressable>
           </View>
