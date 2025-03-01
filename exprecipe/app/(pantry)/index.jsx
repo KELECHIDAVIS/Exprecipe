@@ -42,12 +42,13 @@ export default function PantryPage() {
   const router = useRouter(); 
 
   //for retrieving scanned ingredients from camera page 
-  const scannedIngredients = usePantryStore((state) =>state.scannedIngredients)
+  const {scannedIngredients , removeItem} = usePantryStore(); 
 
   useEffect(()=>{
     if(scannedIngredients.length > 0){
-      console.log("New Scanned Ingredients: ", scannedIngredients)
-      setScannedModalVisible(true); 
+      console.log("New Scanned ingredients:", scannedIngredients)
+
+      setTimeout(() => setScannedModalVisible(true), 50); // Force re-render so modal appears 
     }
   }, [scannedIngredients])
 
@@ -368,22 +369,21 @@ export default function PantryPage() {
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <View style={{ width: 300, padding: 20, backgroundColor: 'beige', borderRadius: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Choose an Ingredient:</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Verify Detected Ingredients:</Text>
             <FlatList
               data={scannedIngredients}
+              extraData={scannedIngredients}
               keyExtractor={(item, index) => index}
               renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    //add selected ingredient to ingredient list 
-                    addIngredient(item); 
-                  }}
-                >
+                <View style={{flex: 1 , flexDirection:'row', justifyContent:'center'}}>
                   <Text style={{ fontSize: 16, padding: 10, borderBottomWidth: 1 }}>{item}</Text>
-                </Pressable>
+                  <Pressable onPress={()=>{removeItem(item)}} style={{ alignSelf: 'flex-end' }}>
+                    <MaterialIcons name="delete" size={24} color="red" />
+                  </Pressable>
+                </View>
               )}
             />
-            <Pressable onPress={() => setChoiceModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
+            <Pressable onPress={() => setScannedModalVisible(false)} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
               <Text style={{ color: 'green' }}>Close</Text>
             </Pressable>
           </View>
