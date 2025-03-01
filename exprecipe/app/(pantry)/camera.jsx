@@ -5,7 +5,8 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter , useLocalSearchParams} from "expo-router";
 import axios from 'axios'
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usePantryStore } from "./store";
+
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef(null); // camera's ref 
@@ -67,13 +68,14 @@ export default function CameraScreen() {
       
       const scannedIngredients = response.data; 
 
-      if(!response.data)
+      if(!scannedIngredients)
         throw new Error("Response data was null ")
       
-      // return ingredients to pantry page
-      router.back({
-        params: { scannedIngredients }, // This won't automatically work in Expo Router
-      })
+      // set global var scannedIngredients
+      usePantryStore.getState().setScannedIngredients(scannedIngredients)
+
+      // navigate back 
+      router.back(); 
       
 
     }catch(error){

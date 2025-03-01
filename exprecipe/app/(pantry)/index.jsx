@@ -11,7 +11,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useRouter, useLocalSearchParams } from "expo-router";
 
-
+import { usePantryStore } from "./store";
 
 
 export default function PantryPage() {
@@ -42,12 +42,12 @@ export default function PantryPage() {
   const router = useRouter(); 
 
   //for retrieving scanned ingredients from camera page 
-  const {scannedIngredients} = useLocalSearchParams(); 
+  const scannedIngredients = usePantryStore((state) =>state.scannedIngredients)
 
   useEffect(()=>{
-    if(scannedIngredients){
-      // pop up modal with all ingredients
-      setScannedModalVisible(true)
+    if(scannedIngredients.length > 0){
+      console.log("New Scanned Ingredients: ", scannedIngredients)
+      setScannedModalVisible(true); 
     }
   }, [scannedIngredients])
 
