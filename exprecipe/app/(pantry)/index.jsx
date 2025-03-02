@@ -95,8 +95,8 @@ export default function PantryPage() {
           try {
               // retrieve user ingredients 
 
+              console.log(`${apiUrl}/${user.id}/ingredient`)
             const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
-            
             const ingrList = response.data; // returns as a list 
 
             //console.log("retrieved ingrlist: ",ingrList); 
