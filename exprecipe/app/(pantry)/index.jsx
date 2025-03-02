@@ -94,8 +94,6 @@ export default function PantryPage() {
         if(!loaded&&user){
           try {
               // retrieve user ingredients 
-
-              console.log(`${apiUrl}/${user.id}/ingredient`)
             const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
             const ingrList = response.data; // returns as a list 
 
@@ -220,7 +218,6 @@ export default function PantryPage() {
         // add chosen ingredient to ingredient list 
       }catch(error){
         console.log("Error searching that ingredient name: "+ error)
-        console.log("url: ", `${apiUrl}/${user.id}/ingredient/search?search=${text}&number=${ingrSearchAmt}`)
       }
     }
     
@@ -282,12 +279,30 @@ export default function PantryPage() {
 
   // saves the list of scanned ingredients and closes the modal 
   function saveScannedIngredients(){
+    console.log("saved scanned Ingredients")
     const saveRequest = async() =>{
-      // send list of ingredients to backend and add list of ingredients to current list after it is saved to backend 
+      try {
+        // send list of ingredients to backend and add list of ingredients to current list after it is saved to backend
+        console.log("scannedIngredients: ", scannedIngredients); 
+        const response = await axios({
+          method:'post',
+          url:`${apiUrl}/${user.id}/ingredient/list`,
+          data:scannedIngredients, 
+        })
+        
+        const addedIngrsList = response.data; 
+        console.log("reponse list: ", addedIngrsList); 
+        
+        // add to ingr list to front of the list 
+        setIngredients(prevIngredients=> [...addedIngrsList , ...prevIngredients])
+
+        clearScannedIngredients(); // clear the scannedIngredients
+      } catch (error) {
+        console.log("Error When Saving Scanned Ingredients: ", error.message); 
+      }
     }
 
     saveRequest(); 
-    clearScannedIngredients(); // clear the scannedIngredients
     setScannedModalVisible(false); 
   }
   return (
@@ -393,7 +408,7 @@ export default function PantryPage() {
               )}
             />
             <Pressable onPress={saveScannedIngredients} style={{ marginTop: 20, alignSelf: 'flex-end' }}>
-              <Text style={{ color: 'green' }}>Close</Text>
+              <Text style={{ color: 'green' }}>Confirm</Text>
             </Pressable>
           </View>
         </View>
