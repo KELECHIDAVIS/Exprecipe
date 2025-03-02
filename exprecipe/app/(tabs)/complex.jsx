@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function SettingsPage() {
+export default function ComplexRecipePage() {
   return (
     <View style={styles.container}>
-      <Text>Settings</Text>
+      <Text>Complex</Text>
     </View>
   );
 }

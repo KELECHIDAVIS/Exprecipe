@@ -13,10 +13,11 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="recipes"
+        name="(tabs)"
         options={{
           title: 'Recipes',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="book" color={color} />,
+          headerShown:true,
         }}
       />
       <Tabs.Screen
