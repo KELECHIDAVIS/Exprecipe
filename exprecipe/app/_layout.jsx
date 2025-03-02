@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router';
 
 export default function Layout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'green' , headerShown:false}}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'green' , headerShown:true}}>
       <Tabs.Screen
         name="(pantry)"
         options={{
@@ -13,11 +13,10 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="(tabs)"
+        name="(recipes)"
         options={{
           title: 'Recipes',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="book" color={color} />,
-          headerShown:true,
         }}
       />
       <Tabs.Screen
