@@ -58,7 +58,7 @@ public class RecipeService {
     -retrieve their ingredients through repo
     -format list of ingredients for external api
     -call external api
-    -return results as list of OBJECTS as a string
+    -return results as list of OBJECTS
     (reason for list of objs so we don't have to waste time formatting into Recipes)
      */
     /*
@@ -67,7 +67,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<String> getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<Object[]> getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             List<Ingredient> ingrList = ingredientRepo.findIngredientsByUser_Id(userId);
@@ -82,7 +82,7 @@ public class RecipeService {
 
             String apiURL = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+apiKey+"&ingredients="+formattedIngredients+"&number="+numberOfRecipes+"&ranking="+ranking+"&ignorePantry="+ignorePantry;
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiURL, String.class);
+            ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(apiURL, Object[].class);
 
             return responseEntity;
         }
