@@ -41,13 +41,16 @@ export default function SimpleRecipesPage() {
         // make request based on user, and options
         const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${numResults}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
         console.log(url); 
-        // const response = await axios.get(url)
+        const response = await axios.get(url)
 
-        // // returns a list of recipe objects 
-        // const recipeList = response.data; 
+        // returns list of recipes as a string so parse first 
+        const recipeList = response.data; 
 
-        // if(recipeList)
-        //   setRecipes(recipeList); 
+        console.log(typeof(recipeList))
+        console.log("Response data: ",recipeList)
+        console.log("Unused Ingredients: ", recipeList.unusedIngredients)
+        if(recipeList)
+          setRecipes(recipeList); 
       } catch (error) {
         Alert.alert("Error Searching Ingredients. Please Try Again")
         console.log("Error searching ingredients: ", error.message); 

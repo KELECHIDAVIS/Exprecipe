@@ -67,7 +67,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<Object[]> getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public String getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             List<Ingredient> ingrList = ingredientRepo.findIngredientsByUser_Id(userId);
@@ -82,11 +82,11 @@ public class RecipeService {
 
             String apiURL = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+apiKey+"&ingredients="+formattedIngredients+"&number="+numberOfRecipes+"&ranking="+ranking+"&ignorePantry="+ignorePantry;
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(apiURL, Object[].class);
+            String responseEntity = restTemplate.getForObject(apiURL, String.class);
 
             return responseEntity;
         }
-        return ResponseEntity.badRequest().build();
+        return HttpStatus.FORBIDDEN.getReasonPhrase();
     }
 
     /*
