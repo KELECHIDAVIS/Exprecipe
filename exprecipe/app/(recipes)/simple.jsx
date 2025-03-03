@@ -1,15 +1,17 @@
-import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, TextInput, Keyboard , TouchableWithoutFeedback} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Pressable, Switch, FlatList, TextInput, Keyboard , TouchableWithoutFeedback, Modal, Button} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
+import { RadioButton } from 'react-native-paper';
 import { useState } from 'react';
 export default function SimpleRecipesPage() {
 
   const [recipes , setRecipes] = useState([]); 
   const [numResults, setNumResults] = useState(10); // 1-100 
-  const [ranking, setRanking] = useState(2) // (1) maximize used ingrs , (2) minimize missing ingredients
+  const [ranking, setRanking] = useState('2') // (1) maximize used ingrs , (2) minimize missing ingredients
   const [ignorePantry, setIgnorePantry] = useState(true);  // assume user has common ingrs like water, salt, flour, 
-  
+  const [isRankModalVisible, setRankModalVisible] = useState(false); 
+  const [isIgnoreModalVisible, setIgnoreModalVisible] = useState(false); 
   
 
   return (
@@ -25,11 +27,11 @@ export default function SimpleRecipesPage() {
                 </View>
 
                 {/**The other two launch modals where the user can get more info and customize their search= */}
-                <Pressable style={styles.innerOptionsFormat}>
+                <Pressable style={styles.innerOptionsFormat} onPress={()=> {setRankModalVisible(true)} }>
                   <Text style={styles.filterText}>Ranking</Text>
                   <FontAwesome name="sort" size={24} color="black" />
                 </Pressable>
-                <Pressable style={styles.innerOptionsFormat}>
+                <Pressable style={styles.innerOptionsFormat} onPress={()=> {setIgnoreModalVisible(true)}} >
                   <Text style={styles.filterText}>IgnorePantry?</Text>
                   {ignorePantry ? (<Feather name="check" size={24} color="green" />): (<Feather name="x" size={24} color="red" />) }
                 </Pressable>
@@ -47,6 +49,55 @@ export default function SimpleRecipesPage() {
               keyExtractor={item => item.id}
 
             />
+
+            {/** Rank Modal  */}
+            <Modal
+              animationType='fade'
+              transparent  = {true}
+              visible = {isRankModalVisible}
+              onRequestClose={()=>{ setRankModalVisible(false)}}
+            >
+              <View style = {styles.modalContainer}>
+              <View style={styles.modalView}>
+                <Text style>Choose Ranking Method</Text>
+
+                <RadioButton.Group onValueChange={newVal => setRanking(newVal)} value= {ranking}>
+                  <View>
+                    <RadioButton.Item label='Minimize Missing Ingredients' value='2'/>
+                    <RadioButton.Item label='Maximize Used Ingredients' value='1r'/>
+                  </View>
+                </RadioButton.Group>
+                
+                <Button onPress={()=> setRankModalVisible(false)} title='Confirm'></Button>
+                </View>
+              </View>
+            </Modal>
+
+            {/** Ignore Pantry Modal  */}
+            <Modal
+              animationType='fade'
+              transparent  = {true}
+              visible = {isIgnoreModalVisible}
+              onRequestClose={()=>{ setIgnoreModalVisible(false)}}
+            >
+              <View style = {styles.modalContainer}>
+              <View style={styles.modalView}>
+                <Text style={{padding:20, textAlign:'center'}}>Ignore Common Pantry Ingredients Like Water, Salt, Flour, etc? </Text>
+                <View style={{flexDirection:'row', gap:10, justifyContent:'center' , alignItems:'center' , padding:10}}>
+                  <Text style={styles.filterText}>No</Text>
+                  <Switch
+                    trackColor={{false: 'grey', true: '#f4f3f4'}}
+                    thumbColor={ignorePantry ? 'green' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={setIgnorePantry}
+                    value={ignorePantry}
+                  />
+                  <Text style={styles.filterText}>Yes</Text>
+                </View>
+                <Button onPress={()=> setIgnoreModalVisible(false)} title='Confirm'></Button>
+                </View>
+              </View>
+            </Modal>
           </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -93,6 +144,17 @@ const styles = StyleSheet.create({
     width: 28,
     backgroundColor:"white",
     borderWidth:1,
+  }, 
+  modalView:{
+    margin: 20,
+    backgroundColor: 'beige',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+  },
+  modalContainer:{
+    flex:1,
+    alignItems:"center",
+    justifyContent:'center'
   }
-
 });
