@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView, Pressable, Switch, FlatList, TextInput, Keyboard , TouchableWithoutFeedback, Modal, Button} from 'react-native';
+import {Alert,  View, Text, StyleSheet, SafeAreaView, Pressable, Switch, FlatList, TextInput, Keyboard , TouchableWithoutFeedback, Modal, Button} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
 import { RadioButton } from 'react-native-paper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 export default function SimpleRecipesPage() {
 
   const [recipes , setRecipes] = useState([]); 
@@ -12,7 +15,47 @@ export default function SimpleRecipesPage() {
   const [ignorePantry, setIgnorePantry] = useState(true);  // assume user has common ingrs like water, salt, flour, 
   const [isRankModalVisible, setRankModalVisible] = useState(false); 
   const [isIgnoreModalVisible, setIgnoreModalVisible] = useState(false); 
+  const [user, setUser] = useState(null) ; // use full api calls and dietary prefs
+  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
   
+  // when page is rendered for the first time want to get user from local storage
+  useEffect(()=>{
+    const retrieveUser = async ()=>{
+      // get user from localStorage 
+      try {
+        const storedUser= await AsyncStorage.getItem("user"); // should be there since confirmed on pantry page
+        setUser(JSON.parse(storedUser)); 
+      } catch (error) {
+        Alert.alert("Error when retrieving user")
+        console.log("Error when retrieving user: ", error.message); 
+      }
+    }
+    retrieveUser(); 
+  },[]); 
+
+
+  const searchRecipes = async () =>{
+    // only call if user is present
+    if(user){
+      try {
+        // make request based on user, and options
+        const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${numResults}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
+        console.log(url); 
+        // const response = await axios.get(url)
+
+        // // returns a list of recipe objects 
+        // const recipeList = response.data; 
+
+        // if(recipeList)
+        //   setRecipes(recipeList); 
+      } catch (error) {
+        Alert.alert("Error Searching Ingredients. Please Try Again")
+        console.log("Error searching ingredients: ", error.message); 
+      }
+    }else{
+      Alert.alert("User couldn't be found. Please Try Again")
+    }
+  }
 
   return (
     
@@ -36,7 +79,7 @@ export default function SimpleRecipesPage() {
                   {ignorePantry ? (<Feather name="check" size={24} color="green" />): (<Feather name="x" size={24} color="red" />) }
                 </Pressable>
               </View>
-              <Pressable style={styles.searchButton}>
+              <Pressable style={styles.searchButton} onPress={searchRecipes}>
                 <AntDesign name="search1" size={36} color="white" />
               </Pressable>
             </View>
@@ -45,7 +88,8 @@ export default function SimpleRecipesPage() {
             <FlatList 
               style={styles.recipeListContainer}
               data={recipes}
-              renderItem={item=><Text>{item.id}</Text>}
+              extraData={recipes}
+              renderItem={item=><Text>{item.title}</Text>}
               keyExtractor={item => item.id}
 
             />
