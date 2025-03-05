@@ -48,7 +48,12 @@ export default function SimpleRecipesPage() {
 
         console.log(typeof(recipeList))
         console.log("Response data: ",recipeList)
-        console.log("Unused Ingredients: ", recipeList.unusedIngredients)
+        
+        console.log("usedIngredients")
+        for(let i = 0 ; i< recipeList.length ; i++ )
+        {
+          console.log(recipeList[i].usedIngredients)
+        }
         if(recipeList)
           setRecipes(recipeList); 
       } catch (error) {
