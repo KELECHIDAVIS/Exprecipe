@@ -67,7 +67,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public String getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<String> getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             List<Ingredient> ingrList = ingredientRepo.findIngredientsByUser_Id(userId);
@@ -84,9 +84,11 @@ public class RecipeService {
             RestTemplate restTemplate = new RestTemplate();
             String responseEntity = restTemplate.getForObject(apiURL, String.class);
 
-            return responseEntity;
+            System.out.println(responseEntity);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
         }
-        return HttpStatus.FORBIDDEN.getReasonPhrase();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /*

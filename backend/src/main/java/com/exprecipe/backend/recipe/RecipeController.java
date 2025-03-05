@@ -40,7 +40,7 @@ public class RecipeController {
      returned in string form
      */
     @GetMapping("/{userId}/recipe/possible")
-    public String getPossibleRecipes(@PathVariable Integer userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
+    public ResponseEntity<String> getPossibleRecipes(@PathVariable Integer userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         return recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
     }
 

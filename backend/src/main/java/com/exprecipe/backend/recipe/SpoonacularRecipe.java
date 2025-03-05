@@ -5,19 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 // the form the api returns recipes in
+@JsonIgnoreProperties
+class SpoonacularRecipe {
+    private Integer id;
+    private String image;
+    private String imageType;
+    private Integer likes;
+    private Integer missedIngredientCount;
+    private List<SpRecipeIngredient> missedIngredients;
+    private String title;
+    private List<SpRecipeIngredient> unusedIngredients;
+    private Integer usedIngredientCount;
+    private List<SpRecipeIngredient> usedIngredients;
+}
 
-//@JsonIgnoreProperties
-//class Recipe {
-//    private int id;
-//    private String image;
-//    private String imageType;
-//    private int likes;
-//    private int missedIngredientCount;
-//    private List<Ingredient> missedIngredients;
-//    private String title;
-//    private List<Ingredient> unusedIngredients;
-//    private int usedIngredientCount;
-//    private List<Ingredient> usedIngredients;
-//
-//
-//}
