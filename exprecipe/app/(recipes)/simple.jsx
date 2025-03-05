@@ -33,6 +33,9 @@ export default function SimpleRecipesPage() {
     retrieveUser(); 
   },[]); 
 
+  useEffect(() => {
+    console.log("Recipes state updated:", recipes);
+  }, [recipes]);
 
   const searchRecipes = async () =>{
     // only call if user is present
@@ -40,22 +43,15 @@ export default function SimpleRecipesPage() {
       try {
         // make request based on user, and options
         const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${numResults}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
-        console.log(url); 
+
         const response = await axios.get(url)
 
         // returns list of recipes as a string so parse first 
         const recipeList = response.data; 
-
-        console.log(typeof(recipeList))
-        console.log("Response data: ",recipeList)
-        
-        console.log("usedIngredients")
-        for(let i = 0 ; i< recipeList.length ; i++ )
-        {
-          console.log(recipeList[i].usedIngredients)
-        }
+        console.log("req success")
+        // setRecipes
         if(recipeList)
-          setRecipes(recipeList); 
+          setRecipes((prevRecipes) => [...recipeList]); 
       } catch (error) {
         Alert.alert("Error Searching Ingredients. Please Try Again")
         console.log("Error searching ingredients: ", error.message); 
@@ -95,10 +91,10 @@ export default function SimpleRecipesPage() {
             {/** Recipe List Container */}
             <FlatList 
               style={styles.recipeListContainer}
+              contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
               data={recipes}
-              extraData={recipes}
-              renderItem={item=><Text>{item.title}</Text>}
-              keyExtractor={item => item.id}
+              renderItem={(item) =><Text style={{fontSize:24, textAlign:'center', color:'red', alignSelf:'center'}}>{JSON.stringify(item)}</Text>}
+              keyExtractor={(item) => item.id}
 
             />
 
@@ -182,7 +178,9 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   recipeListContainer:{
-    flex:9
+    flex:9,
+    backgroundColor:'yellow',
+    width:'100%',
   },
   filterText:{ 
     fontSize:16
