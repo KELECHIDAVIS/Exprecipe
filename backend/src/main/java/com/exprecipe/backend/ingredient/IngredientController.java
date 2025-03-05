@@ -1,8 +1,10 @@
 package com.exprecipe.backend.ingredient;
 
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,17 +88,17 @@ public class IngredientController {
     POST detects ingredients within inputted image and returns a list of detected ingredient names as a comma separated string
      */
     @PostMapping("/{user}/ingredient/detect")
-    public String detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
+    public ResponseEntity<String> detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
         System.out.println(imageFile);
         try{
             return ingredientService.detectIngredientsInImage(imageFile);
         }catch (Exception e) {
-            return "Error Detecting Ingredients: "+e.getMessage();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
         }
     }
 
     @GetMapping("/{user}/ingredient/search")
-    public SpoonacularIngredient[] searchIngredients( @RequestParam String search, @RequestParam Integer number) {
+    public ResponseEntity<SpoonacularIngredient[]> searchIngredients( @RequestParam String search, @RequestParam Integer number) {
        return ingredientService.ingredientSearch(search, number);
     }
 
