@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Recipe from '../../components/recipe';
 export default function SimpleRecipesPage() {
 
   const [recipes , setRecipes] = useState([]); 
@@ -33,8 +34,8 @@ export default function SimpleRecipesPage() {
     retrieveUser(); 
   },[]); 
 
+  // ensure recipe flatlist rerenders when changed 
   useEffect(() => {
-    console.log("Recipes state updated:", recipes);
   }, [recipes]);
 
   const searchRecipes = async () =>{
@@ -93,7 +94,7 @@ export default function SimpleRecipesPage() {
               style={styles.recipeListContainer}
               contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
               data={recipes}
-              renderItem={(item) =><Text style={{fontSize:24, textAlign:'center', color:'red', alignSelf:'center'}}>{JSON.stringify(item)}</Text>}
+              renderItem={({item}) =><Recipe recipeData={item} ranking={ranking}/>}
               keyExtractor={(item) => item.id}
 
             />
@@ -112,7 +113,7 @@ export default function SimpleRecipesPage() {
                 <RadioButton.Group onValueChange={newVal => setRanking(newVal)} value= {ranking}>
                   <View>
                     <RadioButton.Item label='Minimize Missing Ingredients' value='2'/>
-                    <RadioButton.Item label='Maximize Used Ingredients' value='1r'/>
+                    <RadioButton.Item label='Maximize Used Ingredients' value='1'/>
                   </View>
                 </RadioButton.Group>
                 
@@ -179,7 +180,6 @@ const styles = StyleSheet.create({
   },
   recipeListContainer:{
     flex:9,
-    backgroundColor:'yellow',
     width:'100%',
   },
   filterText:{ 

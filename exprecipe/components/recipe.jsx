@@ -2,21 +2,48 @@
 import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
-const Recipe = (recipeData) =>{
+const Recipe = ({recipeData, ranking,  isListForm, openInfoModal, closeModal}) =>{
     
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
+    
+    // if the ranking is minimize missing then show missing ingr count else show max used 
+    function renderIngredientCount(ranking){
+
+        let textColor = "green"; 
+        if (ranking ==2 ){
+            if(recipeData.missedIngredientCount>=1 && recipeData.missedIngredientCount<3)
+                textColor='orange'
+            else if (recipeData.missedIngredientCount>=3 && recipeData.missedIngredientCount<6)
+                textColor= 'red'
+
+            return (
+                <Text style={[styles1.contextText , {color:textColor}]}>{recipeData.missedIngredientCount} missing ingr(s)</Text>
+            )
+        }else{
+            // if ratio of used count > .7 should be green , >=.5 orange, < .5 red  
+            const ratio = (recipeData.usedIngredientCount / (recipeData.usedIngredientCount +recipeData.missedIngredientCount ))
+            if(ratio < .5)
+                textColor= 'red'
+            else if (recipeData.usedIngredientCount < .7)
+                textColor = 'orange'            
+            return (
+                <Text style={[styles1.contextText, {color:textColor}] }>{recipeData.usedIngredientCount} used ingr(s)</Text>
+            )
+        }
+    }
+    
     return(
-        <Pressable style={styles.container} onPress={openInfoModal}>
+        <Pressable style={styles1.container} onPress={openInfoModal}>
             <Image 
-                style={styles.image}
-                source={{uri: recipeData.imageURL}}
+                style={styles1.image}
+                source={{uri: recipeData.image}}
                 defaultSource={require('../assets/favicon.png')}
                 resizeMode="contain"
             />
-            <View style={styles.content}>
-                <Text>{title}</Text>
-                <Text>{(amount>0 ? amount : "-")+" "+(unit ? unit: possibleUnits[0])}</Text>
+            <View style={styles1.content}>
+                <Text style={styles1.contextText}>{recipeData.title}</Text>
+                {renderIngredientCount(ranking)}
             </View>
             
         </Pressable>
@@ -25,20 +52,32 @@ const Recipe = (recipeData) =>{
 
 export default Recipe
 
-styles = StyleSheet.create({
+styles1 = StyleSheet.create({
     container:{
         flexDirection:"row",
         justifyContent:"space-between",
-        alignContent:'center',
+        alignItems:'center',
         margin:10,
-        backgroundColor:'beige',
-        width:"40%"
+        borderWidth:1,
+        borderColor:'green' ,
+        width:"100%",
+        gap:8
     },  
     image:{
-        width:65,
-        height:65,
+        flex:2,
+        width:"100%",
+        height:"100%",
     },
     content:{
-        alignSelf:'center'
+        flex: 3,
+        alignSelf:'center',
+        textAlign:'center',
+        justifyContent:'center',
+        gap:5,
+        padding:10,
+    },
+    contextText:{
+        textAlign:'center'
+        
     }
 })
