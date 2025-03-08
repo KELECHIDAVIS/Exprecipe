@@ -106,4 +106,17 @@ public class RecipeService {
         return formattedIngredients;
     }
 
+    // makes a request to the external api to retreive recipe information
+    public ResponseEntity<String> getRecipeInformation(Integer userId, Integer recipeId) {
+        Optional<User> possibleUser = userRepo.findById(userId);
+        if(possibleUser.isPresent()) {
+            String apiUrl = "https://api.spoonacular.com/recipes/" + recipeId + "/information?apiKey=" + apiKey;
+
+            RestTemplate restTemplate = new RestTemplate();
+            String responseEntity = restTemplate.getForObject(apiUrl, String.class);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }

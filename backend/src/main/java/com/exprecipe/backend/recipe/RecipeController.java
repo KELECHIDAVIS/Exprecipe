@@ -44,5 +44,13 @@ public class RecipeController {
         return recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
     }
 
+    /*
+    @ returns recipe info object from external api
+     */
+    @GetMapping("/{userId}/recipe/information")
+    public ResponseEntity<String> getRecipeInformation(@PathVariable Integer userId, @RequestParam Integer recipeId) {
+        return recipeService.getRecipeInformation(userId, recipeId)   ;
+    }
+
 
 }
