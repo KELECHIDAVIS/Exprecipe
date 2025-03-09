@@ -7,9 +7,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 // also takes in the ingredients the user has and doesn't have so we can color code the ingredient based on names
 
-const RecipeModal = (visible , setModalVisible, recipeInfo, usedIngredients, missingIngredients) =>{
-    <SafeAreaView>
-        <Modal
+const RecipeModal = ({visible , setModalVisible, recipeInfo, usedIngredients, missingIngredients}) =>{
+    <Modal
             animationType='fade'    
             transparent= 'false'
             visible={visible}
@@ -17,7 +16,7 @@ const RecipeModal = (visible , setModalVisible, recipeInfo, usedIngredients, mis
         >
             {/** exit and save view  */}
             <View style={modalStyle.exitAndSaveContainer}>
-                <Pressable>
+                <Pressable onPress={()=>{setModalVisible(false)}}>
                     <AntDesign name="closesquare" size={24} color="black" />
                 </Pressable>
                 <Pressable>
@@ -54,12 +53,25 @@ const RecipeModal = (visible , setModalVisible, recipeInfo, usedIngredients, mis
             <Text style={modalStyle.subTitle}>Instructions: </Text>
             <Text style={modalStyle.bodyText}>{recipeInfo.instructions} </Text>
         </Modal>
-    </SafeAreaView>
 }
 
 export default RecipeModal; 
 
 
 const modalStyle = StyleSheet.create({
+    exitAndSaveContainer:{
 
+    },
+    title:{
+
+    },
+    subTitle:{
+
+    },
+    bodyText:{
+
+    },
+    cookTime:{
+        
+    }
 })

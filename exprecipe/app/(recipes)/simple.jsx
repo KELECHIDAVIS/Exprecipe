@@ -8,6 +8,7 @@ import { useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Recipe from '../../components/recipe';
+import RecipeModal from '../../components/recipeModal';
 export default function SimpleRecipesPage() {
 
   const [recipes , setRecipes] = useState([]); 
@@ -17,6 +18,9 @@ export default function SimpleRecipesPage() {
   const [isRankModalVisible, setRankModalVisible] = useState(false); 
   const [isIgnoreModalVisible, setIgnoreModalVisible] = useState(false); 
   const [user, setUser] = useState(null) ; // use full api calls and dietary prefs
+  const [recipeInfoModalVisible, setRecipeInfoModalVisible] = useState(false); 
+  const [recipeModalInfo, setRecipeModalInfo] = useState({}); 
+  const [condensedRecipeInfo, setCondensedRecipeInfo] = useState({}); 
   const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
   
   // when page is rendered for the first time want to get user from local storage
@@ -49,7 +53,6 @@ export default function SimpleRecipesPage() {
 
         // returns list of recipes as a string so parse first 
         const recipeList = response.data; 
-        console.log("req success")
         // setRecipes
         if(recipeList)
           setRecipes((prevRecipes) => [...recipeList]); 
@@ -62,6 +65,26 @@ export default function SimpleRecipesPage() {
     }
   }
 
+  // when recipe card is clicked, get the recipe fully detailed recipe info using condensed info  
+  const openInfoModal = async (item)=>{
+    if(user)
+    {
+      setCondensedRecipeInfo(item); 
+
+      // make request based on user, and options
+      const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
+
+      const response = await axios.get(url)    
+      
+      const modalInfo = response.data; 
+
+      setRecipeModalInfo(modalInfo)
+
+      setRecipeInfoModalVisible(true); 
+    }else{
+      Alert.alert("User couldn't be found. Please Try Again")
+    }
+  }
   return (
     
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -94,7 +117,7 @@ export default function SimpleRecipesPage() {
               style={styles.recipeListContainer}
               contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
               data={recipes}
-              renderItem={({item}) =><Recipe recipeData={item} ranking={ranking}/>}
+              renderItem={({item}) =><Recipe recipeData={item} ranking={ranking} openInfoModal={()=>{openInfoModal(item)}}/>}
               keyExtractor={(item) => item.id}
 
             />
@@ -147,6 +170,14 @@ export default function SimpleRecipesPage() {
                 </View>
               </View>
             </Modal>
+
+            <RecipeModal
+              visible={recipeInfoModalVisible}
+              setModalVisible={setRecipeInfoModalVisible}
+              recipeInfo={recipeModalInfo}
+              usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
+              missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
+            />
           </SafeAreaView>
     </TouchableWithoutFeedback>
   );

@@ -2,7 +2,8 @@
 import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
-const Recipe = ({recipeData, ranking,  isListForm, openInfoModal, closeModal}) =>{
+
+const Recipe = ({recipeData, ranking,  isListForm, openInfoModal}) =>{
     
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
@@ -33,6 +34,7 @@ const Recipe = ({recipeData, ranking,  isListForm, openInfoModal, closeModal}) =
         }
     }
     
+    // maybe change pressable to a view nd just wrap recipe in simple page in a pressable
     return(
         <Pressable style={styles1.container} onPress={openInfoModal}>
             <Image 
