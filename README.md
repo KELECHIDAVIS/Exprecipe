@@ -1,0 +1,1 @@
+Exprecipe is an app that allows the user to take a picture of their fridge or pantry and return the recipes possible from the ingredients they have. Users can input their household ingredients through text/images and be served recipes that can also be influenced by many filters such as cuisine type, nutrients, and more!
