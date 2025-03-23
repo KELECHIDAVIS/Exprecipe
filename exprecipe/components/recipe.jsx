@@ -3,7 +3,7 @@ import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
 
-const Recipe = ({recipeData, ranking,  isListForm, openInfoModal}) =>{
+const Recipe = ({recipeData, ranking,  isListForm}) =>{
     
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
@@ -36,7 +36,7 @@ const Recipe = ({recipeData, ranking,  isListForm, openInfoModal}) =>{
     
     // maybe change pressable to a view nd just wrap recipe in simple page in a pressable
     return(
-        <Pressable style={styles1.container} onPress={openInfoModal}>
+        <View style={styles1.container} >
             <Image 
                 style={styles1.image}
                 source={{uri: recipeData.image}}
@@ -48,7 +48,7 @@ const Recipe = ({recipeData, ranking,  isListForm, openInfoModal}) =>{
                 {renderIngredientCount(ranking)}
             </View>
             
-        </Pressable>
+        </View>
     )
 }
 

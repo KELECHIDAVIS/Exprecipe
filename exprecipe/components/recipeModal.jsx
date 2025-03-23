@@ -1,4 +1,4 @@
-import {View, FlatList, Text , Modal, StyleSheet, Pressable}  from 'react-native'
+import {View, FlatList, Text , Modal, StyleSheet, Pressable, SafeAreaView}  from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -7,16 +7,13 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 // also takes in the ingredients the user has and doesn't have so we can color code the ingredient based on names
 
-const RecipeModal = ({visible , setModalVisible, recipeInfo, usedIngredients, missingIngredients}) =>{
-    <Modal
-            animationType='fade'    
-            transparent= 'false'
-            visible={visible}
-            onRequestClose={()=>{setModalVisible(false)}}
-        >
+const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
+    
+    return(
+        <SafeAreaView style = {modalStyle.pageStyle}>
             {/** exit and save view  */}
             <View style={modalStyle.exitAndSaveContainer}>
-                <Pressable onPress={()=>{setModalVisible(false)}}>
+                <Pressable >
                     <AntDesign name="closesquare" size={24} color="black" />
                 </Pressable>
                 <Pressable>
@@ -52,13 +49,15 @@ const RecipeModal = ({visible , setModalVisible, recipeInfo, usedIngredients, mi
             {/**instructions */}
             <Text style={modalStyle.subTitle}>Instructions: </Text>
             <Text style={modalStyle.bodyText}>{recipeInfo.instructions} </Text>
-        </Modal>
+        </SafeAreaView>
+    )
 }
 
 export default RecipeModal; 
 
 
 const modalStyle = StyleSheet.create({
+    pageStyle:{}, 
     exitAndSaveContainer:{
 
     },

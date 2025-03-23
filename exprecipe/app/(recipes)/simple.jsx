@@ -1,4 +1,4 @@
-import {Alert,  View, Text, StyleSheet, SafeAreaView, Pressable, Switch, FlatList, TextInput, Keyboard , TouchableWithoutFeedback, Modal, Button} from 'react-native';
+import {Alert,  View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Switch, FlatList, TextInput, Keyboard , TouchableWithoutFeedback, Modal, Button} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
@@ -19,8 +19,8 @@ export default function SimpleRecipesPage() {
   const [isIgnoreModalVisible, setIgnoreModalVisible] = useState(false); 
   const [user, setUser] = useState(null) ; // use full api calls and dietary prefs
   const [recipeInfoModalVisible, setRecipeInfoModalVisible] = useState(false); 
-  const [recipeModalInfo, setRecipeModalInfo] = useState({}); 
-  const [condensedRecipeInfo, setCondensedRecipeInfo] = useState({}); 
+  const [recipeModalInfo, setRecipeModalInfo] = useState(null); 
+  const [condensedRecipeInfo, setCondensedRecipeInfo] = useState(null); 
   const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
   
   // when page is rendered for the first time want to get user from local storage
@@ -40,6 +40,7 @@ export default function SimpleRecipesPage() {
 
   // ensure recipe flatlist rerenders when changed 
   useEffect(() => {
+    console.log("Recipe updated: ", recipes.length," recipes")
   }, [recipes]);
 
   const searchRecipes = async () =>{
@@ -48,11 +49,13 @@ export default function SimpleRecipesPage() {
       try {
         // make request based on user, and options
         const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${numResults}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
-
+        console.log(url); 
         const response = await axios.get(url)
 
         // returns list of recipes as a string so parse first 
         const recipeList = response.data; 
+
+        console.log("After response: ", recipeList)
         // setRecipes
         if(recipeList)
           setRecipes((prevRecipes) => [...recipeList]); 
@@ -69,7 +72,6 @@ export default function SimpleRecipesPage() {
   const openInfoModal = async (item)=>{
     if(user)
     {
-      setCondensedRecipeInfo(item); 
 
       // make request based on user, and options
       const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
@@ -79,11 +81,17 @@ export default function SimpleRecipesPage() {
       const modalInfo = response.data; 
 
       setRecipeModalInfo(modalInfo)
+      setCondensedRecipeInfo(item); // for remembering the used and missing ingredients 
 
       setRecipeInfoModalVisible(true); 
     }else{
       Alert.alert("User couldn't be found. Please Try Again")
     }
+  }
+
+  const closeInfoModal=()=>{
+    setRecipeInfoModalVisible(false); 
+    setRecipeModalInfo(null); 
   }
   return (
     
@@ -98,18 +106,18 @@ export default function SimpleRecipesPage() {
                 </View>
 
                 {/**The other two launch modals where the user can get more info and customize their search= */}
-                <Pressable style={styles.innerOptionsFormat} onPress={()=> {setRankModalVisible(true)} }>
+                <TouchableOpacity style={styles.innerOptionsFormat} onPress={()=> {setRankModalVisible(true)} }>
                   <Text style={styles.filterText}>Ranking</Text>
                   <FontAwesome name="sort" size={24} color="black" />
-                </Pressable>
-                <Pressable style={styles.innerOptionsFormat} onPress={()=> {setIgnoreModalVisible(true)}} >
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.innerOptionsFormat} onPress={()=> {setIgnoreModalVisible(true)}} >
                   <Text style={styles.filterText}>IgnorePantry?</Text>
                   {ignorePantry ? (<Feather name="check" size={24} color="green" />): (<Feather name="x" size={24} color="red" />) }
-                </Pressable>
+                </TouchableOpacity>
               </View>
-              <Pressable style={styles.searchButton} onPress={searchRecipes}>
+              <TouchableOpacity style={styles.searchButton} onPress={searchRecipes}>
                 <AntDesign name="search1" size={36} color="white" />
-              </Pressable>
+              </TouchableOpacity>
             </View>
         
             {/** Recipe List Container */}
@@ -117,7 +125,13 @@ export default function SimpleRecipesPage() {
               style={styles.recipeListContainer}
               contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
               data={recipes}
-              renderItem={({item}) =><Recipe recipeData={item} ranking={ranking} openInfoModal={()=>{openInfoModal(item)}}/>}
+              extraData={recipes}
+              renderItem={({item}) =>(
+                <TouchableOpacity onPress={()=>openInfoModal(item)}>
+                  <Recipe recipeData={item} ranking={ranking} />
+                </TouchableOpacity>
+              )}
+          
               keyExtractor={(item) => item.id}
 
             />
@@ -171,13 +185,24 @@ export default function SimpleRecipesPage() {
               </View>
             </Modal>
 
-            <RecipeModal
-              visible={recipeInfoModalVisible}
-              setModalVisible={setRecipeInfoModalVisible}
-              recipeInfo={recipeModalInfo}
-              usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
-              missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
-            />
+            
+
+
+            {/** Recipe Info Modal  */}
+            <Modal
+                animationType='fade'    
+                transparent= {false}
+                visible={recipeInfoModalVisible}
+                onRequestClose={()=>{closeInfoModal()}}
+            >
+                <RecipeModal
+
+                  recipeInfo={recipeModalInfo}
+                  usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
+                  missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
+                />
+            </Modal>
+
           </SafeAreaView>
     </TouchableWithoutFeedback>
   );
