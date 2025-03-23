@@ -12,7 +12,7 @@ import RecipeModal from '../../components/recipeModal';
 export default function SimpleRecipesPage() {
 
   const [recipes , setRecipes] = useState([]); 
-  const [numResults, setNumResults] = useState(10); // 1-100 
+  const [numResults, setNumResults] = useState(2); // 1-100  (2 for testing, 5-10 for production)
   const [ranking, setRanking] = useState('2') // (1) maximize used ingrs , (2) minimize missing ingredients
   const [ignorePantry, setIgnorePantry] = useState(true);  // assume user has common ingrs like water, salt, flour, 
   const [isRankModalVisible, setRankModalVisible] = useState(false); 
