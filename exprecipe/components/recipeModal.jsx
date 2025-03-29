@@ -1,4 +1,4 @@
-import {View, FlatList, Text , Modal, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView}  from 'react-native'
+import {View, FlatList, Text , Modal, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,Image}  from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -11,6 +11,26 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfoModal}) =>{
     if(!recipeInfo)
         return
+
+    const usedIngredientSet = new Set(); // set of the name of used ingredients 
+    for(let i = 0; i< usedIngredients.length;  i++){
+        usedIngredientSet.add(usedIngredients[i].name);  
+    } 
+    
+    function renderIngredient(item){
+        // if the item is in used ingredient make the name green, else make the name red 
+        const color = usedIngredientSet.has(item.name) ? "green" : "red"
+        
+        // if image doesn't start with http add the starting to it
+        const imageSrc = item.image.startsWith("http")? item.image : "https://img.spoonacular.com/ingredients_100x100/"+item.image
+        return(
+            <View style={[modalStyle.ingrContainer, { borderColor:color}]}>
+                <Text style={[{color:color}]}>{item.name}</Text>
+                <Image style={modalStyle.ingrImage} source={{uri: imageSrc}}/>
+                <Text style={[{color:color}]}> {item.amount+" "+item.unit}</Text>
+            </View>
+        )
+    }
     return(
 
         <SafeAreaView style = {modalStyle.pageStyle}>
@@ -46,7 +66,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
                 <FlatList 
                     horizontal={true}
                     showsHorizontalScrollIndicator={true}
-                    style={{padding:10, columnGap:10}}
+                    style={modalStyle.carouselStyle}
                     data={recipeInfo.dishTypes}
                     renderItem={({item})=>(
                         <View style={modalStyle.bubbleListItem}>
@@ -61,7 +81,10 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={true}
+                    style={modalStyle.carouselStyle}
                     data={recipeInfo.extendedIngredients}
+                    renderItem={({item}) => renderIngredient(item)}
+                    keyExtractor={(item, index) => index}
                 />
 
                 {/**instructions */}
@@ -115,5 +138,20 @@ const modalStyle = StyleSheet.create({
         borderColor:'green',
         borderRadius:25,
         marginHorizontal:5
-    }
+    },
+    ingrImage:{
+        width:65,
+        height:65,
+        resizeMode:'contain'
+    },
+    ingrContainer:{
+        justifyContent:'center',
+        alignItems:'center',
+        textAlign:'center',
+        borderWidth:1,
+        padding:5,
+        margin:5,
+        borderRadius:10
+    },
+    carouselStyle:{padding:10, columnGap:10},
 })
