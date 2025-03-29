@@ -72,18 +72,18 @@ export default function SimpleRecipesPage() {
   const openInfoModal = async (item)=>{
     if(user)
     {
+      console.log("open info modal")
+      // // make request based on user, and options
+      // const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
 
-      // make request based on user, and options
-      const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
-
-      const response = await axios.get(url)    
+      // const response = await axios.get(url)    
       
-      const modalInfo = response.data; 
+      // const modalInfo = response.data; 
 
-      setRecipeModalInfo(modalInfo)
-      setCondensedRecipeInfo(item); // for remembering the used and missing ingredients 
+      // setRecipeModalInfo(modalInfo)
+      // setCondensedRecipeInfo(item); // for remembering the used and missing ingredients 
 
-      setRecipeInfoModalVisible(true); 
+      // setRecipeInfoModalVisible(true); 
     }else{
       Alert.alert("User couldn't be found. Please Try Again")
     }
