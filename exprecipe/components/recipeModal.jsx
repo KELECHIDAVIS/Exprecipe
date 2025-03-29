@@ -1,9 +1,10 @@
-import {View, FlatList, Text , Modal, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,Image}  from 'react-native'
+import {View, FlatList, Text , Modal, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,Image,Alert}  from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
+import axios from 'axios';
+import * as WebBrowser from "expo-web-browser"
 // this modal receives recipe info object that will have detailed info about the recipe
 
 // also takes in the ingredients the user has and doesn't have so we can color code the ingredient based on names
@@ -31,6 +32,29 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
             </View>
         )
     }
+
+    // make request to backend to save recipe for user 
+    const saveRecipe = async ()=>{
+        try {
+            // might have to convert backend friendly object before sending 
+            const url = `${apiUrl}/${user.id}/recipe`; 
+
+            const response = await axios.post(url, recipeInfo)    
+            
+            const savedRecipe = response.data;
+            console.log(savedRecipe)
+            Alert.alert("Succesfully Saved Recipe!");
+        } catch (error) {
+            console.log(error)
+            Alert.alert("Error When Trying To Save Recipe. Please Try Again")
+        }
+
+        
+    }
+
+    const openRecipeURL = async ()=>{
+        await WebBrowser.openBrowserAsync(recipeInfo.sourceUrl); 
+    }
     return(
 
         <SafeAreaView style = {modalStyle.pageStyle}>
@@ -40,13 +64,13 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
                     <TouchableOpacity onPress={()=>closeInfoModal()}>
                         <AntDesign name="closesquare" size={40} color="black" />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>saveRecipe()}>
                         <FontAwesome5 name="save" size={40} color="black" />
                     </TouchableOpacity>
                 </View>
                 
                 {/**recipe title and website press */}
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>openRecipeURL()}>
                     <Text style={modalStyle.title}>{recipeInfo.title +"\t" }
                         <FontAwesome name="external-link" size={24} color="black" style={{padding:20}} />
                     </Text>
@@ -60,6 +84,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
                         <Text style={modalStyle.subTitle}>{recipeInfo.readyInMinutes} mins</Text>
                     </View>
                 </View>
+                
                 
                 {/**bubble list of dishtypes (ex: lunch , main course, dinner) */}
                 <Text style={modalStyle.bodyTitles}>Dish Types: </Text>
