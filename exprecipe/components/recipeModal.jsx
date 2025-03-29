@@ -44,7 +44,13 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
                 <FlatList 
                     horizontal={true}
                     showsHorizontalScrollIndicator={true}
+                    style={{padding:10, columnGap:10}}
                     data={recipeInfo.dishTypes}
+                    renderItem={({item})=>(
+                        <View style={modalStyle.bubbleListItem}>
+                            <Text style={modalStyle.bodyText}>{item}</Text>
+                        </View>
+                    )}
                 />
 
                 {/**ingredients carousel */}
@@ -97,5 +103,11 @@ const modalStyle = StyleSheet.create({
     },
     cookTime:{
         
+    },
+    bubbleListItem:{
+        borderWidth:1,
+        borderColor:'green',
+        borderRadius:25,
+        marginHorizontal:5
     }
 })
