@@ -84,7 +84,7 @@ public class RecipeService {
             RestTemplate restTemplate = new RestTemplate();
             String responseEntity = restTemplate.getForObject(apiURL, String.class);
 
-            System.out.println(responseEntity);
+
 
             return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
         }

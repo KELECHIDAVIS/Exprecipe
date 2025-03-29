@@ -1,4 +1,4 @@
-import {View, FlatList, Text , Modal, StyleSheet, Pressable, SafeAreaView}  from 'react-native'
+import {View, FlatList, Text , Modal, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView}  from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -10,46 +10,57 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
     
     return(
+
         <SafeAreaView style = {modalStyle.pageStyle}>
-            {/** exit and save view  */}
-            <View style={modalStyle.exitAndSaveContainer}>
-                <Pressable >
-                    <AntDesign name="closesquare" size={24} color="black" />
-                </Pressable>
-                <Pressable>
-                    <FontAwesome5 name="save" size={24} color="black" />
-                </Pressable>
-            </View>
-            
-            {/**recipe title and website press */}
-            <Pressable>
-                <Text style={modalStyle.title}>{recipeInfo.title}</Text>
-                <FontAwesome name="external-link" size={24} color="black" />
-            </Pressable>
+                <ScrollView >
+                {/** exit and save view  */}
+                <View style={modalStyle.exitAndSaveContainer}>
+                    <TouchableOpacity >
+                        <AntDesign name="closesquare" size={40} color="black" />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <FontAwesome5 name="save" size={40} color="black" />
+                    </TouchableOpacity>
+                </View>
+                
+                {/**recipe title and website press */}
+                <TouchableOpacity>
+                    <Text style={modalStyle.title}>{recipeInfo.title +"\t" }
+                        <FontAwesome name="external-link" size={24} color="black" style={{padding:20}} />
+                    </Text>
+                </TouchableOpacity>
 
-            <Text style={modalStyle.subTitle}>Servings: {recipeInfo.servings}</Text>
-            {/** cooktime view  */}
-            <View>
-                <Ionicons name="timer" size={24} color="black" />
-                <Text style={modalStyle.cookTime}>{recipeInfo.readyInMinutes} mins</Text>
-            </View>
-            
-            {/**bubble list of dishtypes (ex: lunch , main course, dinner) */}
-            <Text style={modalStyle.subTitle}>Dish Types: </Text>
-            <FlatList 
-                data={recipeInfo.dishTypes}
-            />
+                {/** cooktime view  */}
+                <View style={{flexDirection:'row', alignSelf:'center', padding:16,gap:10}}>
+                    <Text style={modalStyle.subTitle}>Servings: {recipeInfo.servings}</Text>
+                    <View style={{flexDirection:'row'}}>
+                        <Ionicons name="timer" size={24} color="black" />
+                        <Text style={modalStyle.subTitle}>{recipeInfo.readyInMinutes} mins</Text>
+                    </View>
+                </View>
+                
+                {/**bubble list of dishtypes (ex: lunch , main course, dinner) */}
+                <Text style={modalStyle.bodyTitles}>Dish Types: </Text>
+                <FlatList 
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={true}
+                    data={recipeInfo.dishTypes}
+                />
 
-            {/**ingredients carousel */}
-            <Text style={modalStyle.subTitle}>Ingredients:</Text>
-            <FlatList
-                data={recipeInfo.extendedIngredients}
-            />
+                {/**ingredients carousel */}
+                <Text style={modalStyle.bodyTitles}>Ingredients:</Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={true}
+                    data={recipeInfo.extendedIngredients}
+                />
 
-            {/**instructions */}
-            <Text style={modalStyle.subTitle}>Instructions: </Text>
-            <Text style={modalStyle.bodyText}>{recipeInfo.instructions} </Text>
+                {/**instructions */}
+                <Text style={modalStyle.bodyTitles}>Instructions: </Text>
+                <Text style={modalStyle.bodyText}>{recipeInfo.instructions} </Text>
+            </ScrollView>
         </SafeAreaView>
+        
     )
 }
 
@@ -57,18 +68,32 @@ export default RecipeModal;
 
 
 const modalStyle = StyleSheet.create({
-    pageStyle:{}, 
+    pageStyle:{backgroundColor: 'white', flex:1, alignContent:'center'}, 
     exitAndSaveContainer:{
-
+        flexDirection:'row',
+        justifyContent:'space-between',
+        padding:16
     },
     title:{
-
+        textAlign:'center',
+        fontSize:24,
+        fontWeight:'500'
     },
     subTitle:{
-
+        textAlign:'center',
+        fontSize:18,
+        fontWeight:'400'
+    },
+    bodyTitles:{
+        fontSize:20,
+        fontWeight:'400',
+        textAlign:'left',
+        padding:10,
+        paddingTop:20
     },
     bodyText:{
-
+        textAlign:'justify',
+        padding:10,
     },
     cookTime:{
         
