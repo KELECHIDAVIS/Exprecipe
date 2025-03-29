@@ -3,19 +3,21 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
+
 // this modal receives recipe info object that will have detailed info about the recipe
 
 // also takes in the ingredients the user has and doesn't have so we can color code the ingredient based on names
 
-const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
-    
+const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfoModal}) =>{
+    if(!recipeInfo)
+        return
     return(
 
         <SafeAreaView style = {modalStyle.pageStyle}>
                 <ScrollView >
                 {/** exit and save view  */}
                 <View style={modalStyle.exitAndSaveContainer}>
-                    <TouchableOpacity >
+                    <TouchableOpacity onPress={()=>closeInfoModal()}>
                         <AntDesign name="closesquare" size={40} color="black" />
                     </TouchableOpacity>
                     <TouchableOpacity>
@@ -51,6 +53,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
                             <Text style={modalStyle.bodyText}>{item}</Text>
                         </View>
                     )}
+                    keyExtractor={(item, index) => index}
                 />
 
                 {/**ingredients carousel */}
@@ -63,7 +66,10 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients}) =>{
 
                 {/**instructions */}
                 <Text style={modalStyle.bodyTitles}>Instructions: </Text>
-                <Text style={modalStyle.bodyText}>{recipeInfo.instructions} </Text>
+                {/**
+                 * TODO:    api returns html text, render that into react native component eventually 
+                 * I WANT TO RENDER HTML DIRECTLY SO WE CAN GET A NICE FORMAT BUT LIBRARIES WEREN'T WORKING */}
+                <Text style={modalStyle.bodyText}>{recipeInfo.instructions.replace(/<[^>]*>/g, '')} </Text>
             </ScrollView>
         </SafeAreaView>
         

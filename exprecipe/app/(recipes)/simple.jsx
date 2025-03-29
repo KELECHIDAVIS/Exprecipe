@@ -12213,8 +12213,8 @@ export default function SimpleRecipesPage() {
     // only call if user is present
     if(user){
       try {
-        // make request based on user, and options
-        const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${numResults}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
+        // make request based on user, and options, max results is 100
+        const url = `${apiUrl}/${user.id}/recipe/possible?numberOfRecipes=${Math.min(numResults,100)}&ranking=${ranking}&ignorePantry=${ignorePantry}`; 
         const response = await axios.get(url)
 
         // returns list of recipes as a string so parse first 
@@ -12236,7 +12236,6 @@ export default function SimpleRecipesPage() {
   const openInfoModal = async (item)=>{
     if(user)
     {
-      console.log("open info modal")
       // make request based on user, and options
       const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
 
@@ -12255,7 +12254,8 @@ export default function SimpleRecipesPage() {
 
   const closeInfoModal=()=>{
     setRecipeInfoModalVisible(false); 
-    setRecipeModalInfo(null); 
+    setRecipeModalInfo(null);
+    setCondensedRecipeInfo(null) 
   }
   return (
     
@@ -12355,17 +12355,19 @@ export default function SimpleRecipesPage() {
             {/** Recipe Info Modal  */}
             <Modal
                 animationType='fade'    
-                transparent= {false}
+                transparent= {true}
                 visible={recipeInfoModalVisible}
-                onRequestClose={()=>{closeInfoModal()}}
+                onRequestClose={closeInfoModal}
             > 
                 <RecipeModal
 
                   recipeInfo={recipeModalInfo}
                   usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
                   missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
+                  closeInfoModal={closeInfoModal}
                 />
             </Modal>
+            
 
           </SafeAreaView>
     </TouchableWithoutFeedback>
