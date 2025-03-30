@@ -38,6 +38,8 @@ public class RecipeService {
         Optional<User> possibleUser = userRepo.findById(userId);
         // save if user exists
         if(possibleUser.isPresent()) {
+
+            //otherwise translate sp recipe and save
             Recipe recipe = translateSpRecipe(spRecipe, possibleUser.get());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(recipeRepo.save(recipe));
@@ -61,6 +63,7 @@ public class RecipeService {
         recipe.setImage(spRecipe.getImage());
         recipe.setDishTypes(recipe.getDishTypes());
         recipe.setCuisines(recipe.getCuisines());
+        recipe.setTitle(spRecipe.getTitle());
 
         // translate the ingredient to our ingredients
         // set ingredient's recipe and user
@@ -85,7 +88,7 @@ public class RecipeService {
             ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
         }
 
-        ingredientRepo.save(ingr);
+
         return ingr;
     }
 
