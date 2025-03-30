@@ -33,14 +33,60 @@ public class RecipeService {
         return ResponseEntity.ok(recipeRepo.findRecipesByUser_Id(userId));
     }
 
-    public ResponseEntity<Recipe> saveRecipe(int userId, Recipe recipe) {
+    public ResponseEntity<Recipe> saveRecipe(int userId, SpoonacularRecipe spRecipe) {
         //first make sure associated user exist
         Optional<User> possibleUser = userRepo.findById(userId);
         // save if user exists
         if(possibleUser.isPresent()) {
+            Recipe recipe = translateSpRecipe(spRecipe, possibleUser.get());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(recipeRepo.save(recipe));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    private Recipe translateSpRecipe(SpoonacularRecipe spRecipe, User user) {
+        Recipe recipe = new Recipe();
+        recipe.setUser(user);
+        recipe.setServings(spRecipe.getServings());
+        recipe.setReadyInMinutes(spRecipe.getReadyInMinutes());
+        recipe.setCookingMinutes(spRecipe.getCookingMinutes());
+        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
+        recipe.setSpID(spRecipe.getId());
+        recipe.setSpoonacularSourceUrl(spRecipe.getSpoonacularSourceUrl());
+        recipe.setSourceUrl(spRecipe.getSourceUrl());
+        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
+        recipe.setInstructions(spRecipe.getInstructions());
+        recipe.setImage(spRecipe.getImage());
+        recipe.setImage(spRecipe.getImage());
+        recipe.setDishTypes(recipe.getDishTypes());
+        recipe.setCuisines(recipe.getCuisines());
+
+        // translate the ingredient to our ingredients
+        // set ingredient's recipe and user
+
+        // for each ingredient, save (if ingr and return
+        for(SpRecipeIngredient spIngr : spRecipe.getExtendedIngredients()) {
+            Ingredient ingredient = saveSpoonacularIngredient(spIngr, recipe);
+            recipe.getExtendedIngredients().add(ingredient);
+        }
+        return recipe;
+    }
+    // Saves to a recipe instead of a user, means its part of a recipe's details not user pantry
+    public Ingredient saveSpoonacularIngredient(SpRecipeIngredient spIngredient , Recipe recipe) {
+        Ingredient ingr = new Ingredient();
+        ingr.setName(spIngredient.getName());
+        ingr.setUnit(spIngredient.getUnit());
+        ingr.setAmount(spIngredient.getAmount());
+        ingr.setSpID(spIngredient.getId());
+        if(spIngredient.getImage().startsWith("http")){
+            ingr.setImage(spIngredient.getImage());
+        }else{
+            ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
+        }
+
+        ingredientRepo.save(ingr);
+        return ingr;
     }
 
     public ResponseEntity<String> deleteRecipe(int recipeId) {

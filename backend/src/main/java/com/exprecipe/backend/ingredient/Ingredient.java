@@ -15,8 +15,8 @@ public class Ingredient {
     private int id;
     private int spID; // api given ingredient id
     private String name;
-    private String imageURL;
-    private int amount;
+    private String image;
+    private double amount;
     private String unit;
 
     @ElementCollection
@@ -36,11 +36,11 @@ public class Ingredient {
     private Recipe recipe; // if coming from recipe, user will be null
 
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -84,12 +84,12 @@ public class Ingredient {
         this.name = name;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImage(String imageURL) {
+        this.image = imageURL;
     }
 
     public int getSpID() {

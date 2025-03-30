@@ -1,7 +1,9 @@
 package com.exprecipe.backend.recipe;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SpRecipeIngredient {
     private String aisle;
     private Double amount;

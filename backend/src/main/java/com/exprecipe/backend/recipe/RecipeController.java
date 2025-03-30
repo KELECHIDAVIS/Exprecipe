@@ -19,7 +19,7 @@ public class RecipeController {
     }
 
     @PostMapping("/{userId}/recipe")
-    public ResponseEntity<Recipe> addRecipe(@PathVariable Integer userId, @RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> addRecipe(@PathVariable Integer userId, @RequestBody SpoonacularRecipe recipe) {
         return recipeService.saveRecipe(userId, recipe);
     }
 

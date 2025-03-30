@@ -19,22 +19,24 @@ public class Recipe {
     private long spID; //api given id
     private String title;
     private String description;
-    private String imageURL;
+    private String image;
     private int servings;
-    private int readyInMin;  // total time
-    private int cookTime;
-    private int prepTime;
-    private String originalURL; // url to recipes original webiste
-    private String spURL; // api given url that provides a lot of info about the recipe
+    private int readyInMinutes;  // total time
+    private int cookingMinutes;
+    private int preparationMinutes;
+    private String sourceUrl; // url to recipes original webiste
+    private String spoonacularSourceUrl; // api given url that provides a lot of info about the recipe
     private String instructions;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> ingredients = new ArrayList<Ingredient>();
+    private List<Ingredient> extendedIngredients = new ArrayList<Ingredient>();
 
     @ElementCollection
     @CollectionTable(name = "dish_type", joinColumns = @JoinColumn(name = "id")) // 2
     @Column(name = "dish_types") // 3
     private Set<String> dishTypes; // might be helpful for saved recipe filter; { "lunch", "main-course","dinner"} etc.
+
+
 
     @ElementCollection
     @CollectionTable(name = "cuisine", joinColumns = @JoinColumn(name = "id")) // 2
@@ -46,7 +48,13 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public List<Ingredient> getExtendedIngredients() {
+        return extendedIngredients;
+    }
 
+    public void setExtendedIngredients(List<Ingredient> extendedIngredients) {
+        this.extendedIngredients = extendedIngredients;
+    }
     public int getId() {
         return id;
     }
@@ -79,12 +87,12 @@ public class Recipe {
         this.description = description;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImage(String imageURL) {
+        this.image = imageURL;
     }
 
     public int getServings() {
@@ -95,44 +103,44 @@ public class Recipe {
         this.servings = servings;
     }
 
-    public int getReadyInMin() {
-        return readyInMin;
+    public int getReadyInMinutes() {
+        return readyInMinutes;
     }
 
-    public void setReadyInMin(int readyInMin) {
-        this.readyInMin = readyInMin;
+    public void setReadyInMinutes(int readyInMin) {
+        this.readyInMinutes = readyInMin;
     }
 
-    public int getCookTime() {
-        return cookTime;
+    public int getCookingMinutes() {
+        return cookingMinutes;
     }
 
-    public void setCookTime(int cookTime) {
-        this.cookTime = cookTime;
+    public void setCookingMinutes(int cookTime) {
+        this.cookingMinutes = cookTime;
     }
 
-    public int getPrepTime() {
-        return prepTime;
+    public int getPreparationMinutes() {
+        return preparationMinutes;
     }
 
-    public void setPrepTime(int prepTime) {
-        this.prepTime = prepTime;
+    public void setPreparationMinutes(int prepTime) {
+        this.preparationMinutes = prepTime;
     }
 
-    public String getOriginalURL() {
-        return originalURL;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setOriginalURL(String originalURL) {
-        this.originalURL = originalURL;
+    public void setSourceUrl(String originalURL) {
+        this.sourceUrl = originalURL;
     }
 
-    public String getSpURL() {
-        return spURL;
+    public String getSpoonacularSourceUrl() {
+        return spoonacularSourceUrl;
     }
 
-    public void setSpURL(String spURL) {
-        this.spURL = spURL;
+    public void setSpoonacularSourceUrl(String spURL) {
+        this.spoonacularSourceUrl = spURL;
     }
 
     public String getInstructions() {
@@ -144,11 +152,11 @@ public class Recipe {
     }
 
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return extendedIngredients;
     }
 
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        this.extendedIngredients = ingredients;
     }
 
     public Set<String> getDishTypes() {

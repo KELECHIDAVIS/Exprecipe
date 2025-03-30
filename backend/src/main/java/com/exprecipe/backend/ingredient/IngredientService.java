@@ -1,5 +1,7 @@
 package com.exprecipe.backend.ingredient;
 
+import com.exprecipe.backend.recipe.Recipe;
+import com.exprecipe.backend.recipe.SpRecipeIngredient;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -16,9 +18,7 @@ import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -98,11 +98,12 @@ public class IngredientService {
         ingr.setName(spIngredient.getName());
         ingr.setPossibleUnits(spIngredient.getPossibleUnits());
         ingr.setSpID(spIngredient.getId());
-        ingr.setImageURL("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
+        ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
 
         ingredientRepo.save(ingr);
         return ingr;
     }
+
 
     // adds list of ingredients using list of ingredient names that's returned from the scanned image
     public ResponseEntity<List<Ingredient>> addListOfIngredients(Integer userId, List<String> ingrNames) {
