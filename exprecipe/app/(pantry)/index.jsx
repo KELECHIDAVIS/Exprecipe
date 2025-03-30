@@ -334,9 +334,9 @@ export default function PantryPage() {
           <Pressable onPress={()=>{ingredientSearch()}}><AntDesign name="plussquare" size={40} color="green" /></Pressable>
         </View>
         
-        {/* grid and list formatting*/}
+        {/* grid and list formatting
         <Pressable><MaterialCommunityIcons name="view-grid" size={40} color="grey" /></Pressable>
-        <Pressable><Feather name="list" size={40} color="green" /></Pressable>
+        <Pressable><Feather name="list" size={40} color="green" /></Pressable> */}
       </View>
 
       {/* ingredient list */}
@@ -344,7 +344,7 @@ export default function PantryPage() {
         <FlatList 
         data = {ingredients}
         extraData={ingredients}
-        numColumns={2}
+        numColumns={4}
         renderItem=  {renderIngredients}
         keyExtractor={ingr => ingr.id} 
         horizontal={false}

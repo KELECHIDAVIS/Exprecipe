@@ -9,7 +9,10 @@ import * as WebBrowser from "expo-web-browser"
 
 // also takes in the ingredients the user has and doesn't have so we can color code the ingredient based on names
 
-const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfoModal}) =>{
+const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfoModal, userID}) =>{
+
+    const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
+
     if(!recipeInfo)
         return
 
@@ -37,7 +40,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
     const saveRecipe = async ()=>{
         try {
             // might have to convert backend friendly object before sending 
-            const url = `${apiUrl}/${user.id}/recipe`; 
+            const url = `${apiUrl}/${userID}/recipe`; 
 
             const response = await axios.post(url, recipeInfo)    
             
@@ -117,7 +120,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
                 {/**
                  * TODO:    api returns html text, render that into react native component eventually 
                  * I WANT TO RENDER HTML DIRECTLY SO WE CAN GET A NICE FORMAT BUT LIBRARIES WEREN'T WORKING */}
-                <Text style={modalStyle.bodyText}>{recipeInfo.instructions.replace(/<[^>]*>/g, '')} </Text>
+                <Text style={modalStyle.bodyText}>{(recipeInfo.instructions) ? recipeInfo.instructions.replace(/<[^>]*>/g, '') : "No Instructions Provided"} </Text>
             </ScrollView>
         </SafeAreaView>
         
@@ -127,7 +130,7 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
 export default RecipeModal; 
 
 
-const modalStyle = StyleSheet.create({
+export const modalStyle = StyleSheet.create({
     pageStyle:{backgroundColor: 'white', flex:1, alignContent:'center'}, 
     exitAndSaveContainer:{
         flexDirection:'row',

@@ -12365,6 +12365,7 @@ export default function SimpleRecipesPage() {
                   usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
                   missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
                   closeInfoModal={closeInfoModal}
+                  userID={user? user.id : null}
                 />
             </Modal>
             
