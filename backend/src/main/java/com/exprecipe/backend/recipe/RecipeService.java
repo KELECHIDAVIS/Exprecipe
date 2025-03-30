@@ -4,6 +4,8 @@ import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.ingredient.IngredientRepo;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,9 @@ import java.util.Optional;
 
 @Service
 public class RecipeService {
+    @Autowired
     private final RecipeRepo recipeRepo;
+    @Autowired
     private final IngredientRepo ingredientRepo; // to get possible Recipes
     private final UserRepo userRepo; // get recipes associated w/ users
 
@@ -29,16 +33,24 @@ public class RecipeService {
         this.userRepo = userRepo;
     }
 
+    @Transactional
     public ResponseEntity<List<Recipe>> getUserRecipes(int userId) {
         return ResponseEntity.ok(recipeRepo.findRecipesByUser_Id(userId));
     }
 
+    @Transactional
     public ResponseEntity<Recipe> saveRecipe(int userId, SpoonacularRecipe spRecipe) {
         //first make sure associated user exist
         Optional<User> possibleUser = userRepo.findById(userId);
         // save if user exists
         if(possibleUser.isPresent()) {
 
+            // only save recipe if user hasn't saved it prior
+            List<Recipe> possibleRecipes = recipeRepo.findRecipeByUser_IdAndSpID(userId, spRecipe.getId());
+
+            if(!possibleRecipes.isEmpty()) {
+
+            }
             //otherwise translate sp recipe and save
             Recipe recipe = translateSpRecipe(spRecipe, possibleUser.get());
 

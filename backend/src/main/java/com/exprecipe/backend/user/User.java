@@ -12,7 +12,7 @@ import java.util.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
 
     @ElementCollection
@@ -22,17 +22,47 @@ public class User {
     private boolean premiumUser;
     private LocalDate createdAt;
 
-    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> ingredients = new ArrayList<Ingredient>();
 
-    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Recipe> recipes = new ArrayList<Recipe>();
+    // User's personal ingredient list (their pantry)
+    @ManyToMany
+    @JoinTable(
+            name = "user_ingredients",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<Ingredient> ingredients = new HashSet<>();
 
-    public Integer getId() {
+    // User's saved recipes
+    @ManyToMany
+    @JoinTable(
+            name = "user_recipes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<Recipe> savedRecipes = new HashSet<>();
+
+
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public Set<Recipe> getSavedRecipes() {
+        return savedRecipes;
+    }
+
+    public void setSavedRecipes(Set<Recipe> savedRecipes) {
+        this.savedRecipes = savedRecipes;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
