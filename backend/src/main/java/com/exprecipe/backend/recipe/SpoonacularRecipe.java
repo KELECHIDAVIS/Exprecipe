@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,6 +29,7 @@ public class SpoonacularRecipe {
     private List<SpRecipeIngredient> extendedIngredients;
     private List<String> dishTypes;
     private WinePairing winePairing;
+    @Lob
     private String instructions;
 
     public String getInstructions() {

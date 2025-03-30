@@ -18,6 +18,7 @@ public class Recipe {
 
     private long spID; //api given id
     private String title;
+    @Lob
     private String description;
     private String image;
     private int servings;
@@ -26,7 +27,9 @@ public class Recipe {
     private int preparationMinutes;
     private String sourceUrl; // url to recipes original webiste
     private String spoonacularSourceUrl; // api given url that provides a lot of info about the recipe
+    @Lob
     private String instructions;
+
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> extendedIngredients = new ArrayList<Ingredient>();

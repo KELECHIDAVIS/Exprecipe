@@ -41,13 +41,29 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
         try {
             // might have to convert backend friendly object before sending 
             const url = `${apiUrl}/${userID}/recipe`; 
+            const data = JSON.stringify(recipeInfo); 
 
-            const response = await axios.post(url, recipeInfo)    
-            
-            const savedRecipe = response.data;
-            console.log(savedRecipe)
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: url,
+                headers: { 
+                  'Content-Type': 'application/json'
+                },
+                data : data
+              };
+              
+              axios.request(config)
+              .then((response) => {
+                console.log(JSON.stringify(response.data));
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+              
             Alert.alert("Succesfully Saved Recipe!");
         } catch (error) {
+            console.log("Error: ", error)
             console.log(error)
             Alert.alert("Error When Trying To Save Recipe. Please Try Again")
         }

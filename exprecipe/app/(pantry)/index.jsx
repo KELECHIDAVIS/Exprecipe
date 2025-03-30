@@ -59,26 +59,34 @@ export default function PantryPage() {
       // first check if user exist in local storage
       try{
         const storedUser = await AsyncStorage.getItem("user"); 
-        if(storedUser){// set user if exists 
-          
-          setUser(JSON.parse(storedUser));  // parse from string to object form 
-          
-        }else{ // first time user 
+        let possibleUser; 
+        // make sure that user is valid 
+        try{
+          possibleUser = JSON.parse(storedUser); 
+           // if user not found from request, delete this stored user
+           const response = await axios.get(apiUrl+`/${possibleUser.id}`) 
+
+           if(response.status == 404)
+            throw new Error("Invalid Stored User")
+
+        }catch(error){ // either there was no stored User or the stored user was not valid 
+          // first time user or invalid saved user
           
           // call backed to create new user 
-
+          console.log("Error Message (invalid stored user), creating new user... ")
           const response = await axios.post(apiUrl) // creates new  user 
 
           // retrieve user from response
-          const userData = response.data
+          possibleUser = response.data
 
-
+          console.log("New User: " , possibleUser)
           // save new user 
-          await AsyncStorage.setItem("user",  JSON.stringify(userData))
-
-          // set user 
-          setUser(userData); 
+          await AsyncStorage.setItem("user",  JSON.stringify(possibleUser))
+        }finally{
+          setUser(possibleUser);  
         }
+         
+
       } catch(error){
         console.error("Error initializing user: "+error)
       }
@@ -145,7 +153,7 @@ export default function PantryPage() {
   // renders each ingredient as a ingredient card 
   function renderIngredients({item , index}) {
     return(
-       <Ingredient name={item.name} imageURL={item.imageURL} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} openInfoModal={()=>openInfoModal(item)}/>
+       <Ingredient name={item.name} imageURL={item.image} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} openInfoModal={()=>openInfoModal(item)}/>
     ); 
   } 
 
@@ -326,7 +334,7 @@ export default function PantryPage() {
         
         {/*text input and button */}
         <View style={styles.inputContainer}>
-          <TextInput style={{backgroundColor:'white', width:150,paddingLeft:10 }}
+          <TextInput style={{backgroundColor:'white', width:250,paddingLeft:10 }}
             onChangeText={newText=> onChangeText(newText)}
             clearTextOnFocus={true}
             value={text}
@@ -475,7 +483,7 @@ var styles = StyleSheet.create({
   page:{ flex: 1, alignItems: "center", margin:10,},
   subcontainer:{flexDirection:"row", alignContent:'center', justifyContent:'space-between', gap:14},
   inputContainer:{flexDirection:"row",alignContent:'center',gap:4},
-  autoCompleteContainer: {flexDirection:'row', alignContent:'center'},
+  autoCompleteContainer: {flexDirection:'row', alignItems:'center' , justifyContent:'center' , padding:10},
   centeredView: {
     flex: 1,
     justifyContent: 'center',
