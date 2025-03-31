@@ -2,6 +2,7 @@ package com.exprecipe.backend.user.userrecipe;
 
 import com.exprecipe.backend.recipe.Recipe;
 import com.exprecipe.backend.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 /**
@@ -17,6 +18,7 @@ public class UserRecipe {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

@@ -114,7 +114,7 @@ public class IngredientService {
         ingr.setName(spIngredient.getName());
         ingr.setPossibleUnits(spIngredient.getPossibleUnits());
         ingr.setSpID(spIngredient.getId());
-
+        ingr.setAisle(spIngredient.getAisle());
         String imageUrl = spIngredient.getImage().startsWith("http") ?  spIngredient.getImage() : "https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage() ;
         ingr.setImage(imageUrl); //extension for ingredients
 

@@ -2,6 +2,7 @@ package com.exprecipe.backend.ingredient;
 
 import com.exprecipe.backend.recipe.RecipeIngredient;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 
@@ -26,10 +27,13 @@ public class Ingredient {
     private String name;
     private String image;
     private String aisle;
+
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<UserIngredient> userIngredients = new HashSet<UserIngredient>();
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<RecipeIngredient> recipeIngredients = new HashSet<RecipeIngredient>();
 
 

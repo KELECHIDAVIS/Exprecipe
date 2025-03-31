@@ -2,6 +2,7 @@ package com.exprecipe.backend.user.userIngr;
 
 import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 /**
@@ -14,6 +15,7 @@ public class UserIngredient {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
