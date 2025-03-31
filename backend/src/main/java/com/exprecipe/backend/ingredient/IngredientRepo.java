@@ -10,8 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface IngredientRepo extends JpaRepository<Ingredient, Long> {
-    List<Ingredient> findIngredientsByUser_Id(Long userId);
-    boolean existsIngredientBySpID(int spID);
+
     Optional<Ingredient> findByName(String name);
 
     @Query(value = "SELECT * FROM ingredient ORDER BY  similarity(name, :searchTerm) DESC LIMIT :numResult", nativeQuery = true)

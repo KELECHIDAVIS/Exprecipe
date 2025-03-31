@@ -2,6 +2,8 @@ package com.exprecipe.backend.ingredient;
 
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
+import com.exprecipe.backend.user.userIngr.UserIngredient;
+import com.exprecipe.backend.user.userIngr.UserIngredientRepo;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
@@ -25,15 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
     private final UserRepo userRepo;
+    private final UserIngredientRepo userIngredientRepo;
 
     @Value("${bucket.name}")
     private String bucketName;
@@ -43,16 +43,14 @@ public class IngredientService {
     private String apiKey;
 
     @Autowired
-    public IngredientService(IngredientRepo ingredientRepo, UserRepo userRepo) {
+    public IngredientService(IngredientRepo ingredientRepo, UserRepo userRepo, UserIngredientRepo userIngredientRepo) {
         this.ingredientRepo = ingredientRepo;
         this.userRepo = userRepo;
+        this.userIngredientRepo = userIngredientRepo;
     }
 
 
-    public ResponseEntity<List<Ingredient>> getUserIngredients(Long userId) {
 
-        return ResponseEntity.ok(ingredientRepo.findIngredientsByUser_Id(userId));
-    }
 
 
 
@@ -101,21 +99,7 @@ public class IngredientService {
         }
     };
 
-    // Using the ingredient name, make a request to external api and get corresponding ingredient
-    public ResponseEntity<Ingredient> addIngredient(Long userId, SpoonacularIngredient spIngredient) {
 
-        Optional<User> userOpt = userRepo.findById(userId);
-
-        // if user is present save ingredient
-        if(userOpt.isPresent()){
-
-           // map sp ingr to our type
-            Ingredient ingr = translateAndSaveSpIngredient(spIngredient , userOpt.get());
-            return ResponseEntity.ok(ingr);
-        }
-
-        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
-    }
 
     //translates spIngr to our version then saves to db
     public Ingredient translateAndSaveSpIngredient(SpoonacularIngredient spIngredient ) {
@@ -159,41 +143,7 @@ public class IngredientService {
         }
         return ResponseEntity.badRequest().build();
     }
-    public ResponseEntity<Ingredient> updateIngredientAmount(Long ingrId, int amount) {
-        Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
 
-        if(possibleIngr.isPresent()) {
-            Ingredient ingredient = possibleIngr.get();
-            ingredient.setAmount(amount);
-            ingredientRepo.save(ingredient);
-            return ResponseEntity.ok(ingredient);
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    public ResponseEntity<Ingredient> updateIngredientUnit(Long ingrId, String unit) {
-        Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
-
-        if(possibleIngr.isPresent()) {
-            Ingredient ingredient = possibleIngr.get();
-            ingredient.setUnit(unit);
-            ingredientRepo.save(ingredient);
-            return ResponseEntity.ok(ingredient);
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    public ResponseEntity<Ingredient> updateIngredientPossibleUnits(Long ingrId, List<String> possibleUnits) {
-        Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
-
-        if(possibleIngr.isPresent()) {
-            Ingredient ingredient = possibleIngr.get();
-            ingredient.setPossibleUnits(possibleUnits);
-            ingredientRepo.save(ingredient);
-            return ResponseEntity.ok(ingredient);
-        }
-        return ResponseEntity.badRequest().build();
-    }
 
     public ResponseEntity<String> detectIngredientsInImage(MultipartFile imageFile) throws IOException {
         return ResponseEntity.ok().body(scanImage(imageFile)) ;

@@ -27,18 +27,18 @@ public class RecipeController {
         return recipeService.saveRecipe(userId, recipe);
     }
 
-    @DeleteMapping("/{userId}/recipe/{recipeId}")
-    public ResponseEntity<String> deleteRecipe(@PathVariable Integer userId, @PathVariable Integer recipeId) {
-        return recipeService.deleteRecipe(recipeId);
-    }
+//    @DeleteMapping("/{userId}/recipe/{recipeId}")
+//    public ResponseEntity<String> deleteRecipe(@PathVariable Integer userId, @PathVariable Integer recipeId) {
+//        return recipeService.deleteRecipe(recipeId);
+//    }
 
-    /*
-    @returns user's saved recipes
-     */
-    @GetMapping("/{userId}/recipe")
-    public ResponseEntity<Set<Recipe>> getUserRecipes(@PathVariable Long userId) {
-        return userService.getUserRecipes(userId);
-    }
+//    /*
+//    @returns user's saved recipes
+//     */
+//    @GetMapping("/{userId}/recipe")
+//    public ResponseEntity<Set<Recipe>> getUserRecipes(@PathVariable Long userId) {
+//        return userService.getUserRecipes(userId);
+//    }
 
     /*
     @returns recipes that are possible based on user's ingredients
@@ -53,7 +53,7 @@ public class RecipeController {
     @ returns recipe info object from external api
      */
     @GetMapping("/{userId}/recipe/information")
-    public ResponseEntity<String> getRecipeInformation(@PathVariable Integer userId, @RequestParam Integer recipeId) {
+    public ResponseEntity<String> getRecipeInformation(@PathVariable Long userId, @RequestParam Integer recipeId) {
         return recipeService.getRecipeInformation(userId, recipeId)   ;
     }
 

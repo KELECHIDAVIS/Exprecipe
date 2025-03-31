@@ -2,6 +2,8 @@ package com.exprecipe.backend.ingredient;
 
 
 import com.exprecipe.backend.user.UserService;
+import com.exprecipe.backend.user.userIngr.UserIngredient;
+import com.exprecipe.backend.user.userIngr.UserIngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,13 @@ import java.util.Set;
 public class IngredientController {
     private final UserService userService;
     private final IngredientService ingredientService;
+    private final UserIngredientService userIngredientService;
 
     @Autowired
-    public IngredientController(UserService userService, IngredientService ingredientService) {
+    public IngredientController(UserService userService, IngredientService ingredientService, UserIngredientService userIngredientService) {
         this.userService = userService;
         this.ingredientService = ingredientService;
+        this.userIngredientService = userIngredientService;
     }
 
     /*
@@ -28,8 +32,8 @@ public class IngredientController {
     @return a list of ingredients associated with input user
      */
     @GetMapping("/{userId}/ingredient")
-    public ResponseEntity<Set<Ingredient>> getUserIngredients(@PathVariable(value= "userId") Long userId) {
-        return userService.getUserIngredients(userId);
+    public ResponseEntity<Set<UserIngredient>> getUserIngredients(@PathVariable(value= "userId") Long userId) {
+        return userIngredientService.getUserPantry(userId);
     }
 
     /*
@@ -37,53 +41,33 @@ public class IngredientController {
     @returns created ingredient
      */
     @PostMapping("/{userId}/ingredient")
-    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") Long userId, @RequestBody SpoonacularIngredient spIngredient) {
-        return ingredientService.addIngredient(userId, spIngredient);
+    public ResponseEntity<UserIngredient> createUserIngredient(@PathVariable(value= "userId") Long userId, @RequestBody SpoonacularIngredient spIngredient) {
+        return userIngredientService.saveIngredientToPantry(userId, spIngredient);
     }
 
     @PostMapping("/{userId}/ingredient/list")
-    public ResponseEntity<List<Ingredient>> addListOfIngredients(@PathVariable Long userId, @RequestBody List<String> ingrNames) {
-        return ingredientService.addListOfIngredients(userId, ingrNames);
+    public ResponseEntity<List<UserIngredient>> addListOfIngredients(@PathVariable Long userId, @RequestBody List<String> ingrNames) {
+        return userIngredientService.addListOfIngredients(userId, ingrNames);
     }
     /*
-    DELETE specified ingredient
+    DELETE specified ingredient user ingredient
     @returns a string confirming deletion
      */
     @DeleteMapping("/{userId}/ingredient/{ingredientId}")
     public ResponseEntity<String> deleteUserIngredient(@PathVariable(value= "userId") Long userId, @PathVariable(value= "ingredientId") Long ingredientId) {
-        return ingredientService.deleteIngredient(ingredientId);
+        return userIngredientService.deleteIngredient(ingredientId);
     }
 
     /*
     PUT update specified ingredient
      */
     @PutMapping("/{userId}/ingredient/{ingredientId}")
-    public ResponseEntity<Ingredient> updateIngredient( @RequestBody Ingredient ingredient) {
-        return ingredientService.updateIngredient(ingredient);
+    public ResponseEntity<UserIngredient> updateIngredient(@RequestBody UserIngredient ingredient) {
+        return userIngredientService.updateIngredient(ingredient);
     }
 
-    /*
-    PUT update specified ingredient's amount
-     */
-    @PutMapping("/{userId}/ingredient/{ingredientId}/amount")
-    public ResponseEntity<Ingredient> updateIngredientAmount(@PathVariable int ingredientId, @RequestParam("amount") int amount) {
-        return ingredientService.updateIngredientAmount(ingredientId, amount);
-    }
-    /*
-    PUT update specified ingredient's unit
-     */
-    @PutMapping("/{userId}/ingredient/{ingredientId}/unit")
-    public ResponseEntity<Ingredient> updateIngredientUnit(@PathVariable int ingredientId, @RequestParam("unit") String unit) {
-        return ingredientService.updateIngredientUnit(ingredientId, unit);
-    }
 
-    /*
-    PUT update specified ingredient's amount
-     */
-    @PutMapping("/{userId}/ingredient/{ingredientId}/possible+units")
-    public ResponseEntity<Ingredient> updateIngredientPossibleUnits(@PathVariable int ingredientId, @RequestBody List<String> possibleUnits) {
-        return ingredientService.updateIngredientPossibleUnits(ingredientId, possibleUnits);
-    }
+
 
     /*
     POST detects ingredients within inputted image and returns a list of detected ingredient names as a comma separated string

@@ -4,6 +4,8 @@ import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.ingredient.IngredientRepo;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
+import com.exprecipe.backend.user.userIngr.UserIngredient;
+import com.exprecipe.backend.user.userIngr.UserIngredientRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RecipeService {
@@ -26,6 +29,8 @@ public class RecipeService {
 
     @Value("${api.key}")
     private String apiKey;
+    @Autowired
+    private UserIngredientRepo userIngredientRepo;
 
     public RecipeService(RecipeRepo recipeRepo, IngredientRepo ingredientRepo, UserRepo userRepo) {
         this.recipeRepo = recipeRepo;
@@ -33,85 +38,84 @@ public class RecipeService {
         this.userRepo = userRepo;
     }
 
-    @Transactional
-    public ResponseEntity<List<Recipe>> getUserRecipes(Long userId) {
-        return ResponseEntity.ok(recipeRepo.findRecipesByUser_Id(userId));
-    }
+//    @Transactional
+//    public ResponseEntity<List<Recipe>> getUserRecipes(Long userId) {
+//        return ResponseEntity.ok(recipeRepo.findRecipesByUser_Id(userId));
+//    }
 
     @Transactional
     public ResponseEntity<Recipe> saveRecipe(Long userId, SpoonacularRecipe spRecipe) {
         //first make sure associated user exist
         Optional<User> possibleUser = userRepo.findById(userId);
         // save if user exists
-        if(possibleUser.isPresent()) {
-
-            // only save recipe if user hasn't saved it prior
-            List<Recipe> possibleRecipes = recipeRepo.findRecipeByUser_IdAndSpID(userId, spRecipe.getId());
-
-            if(!possibleRecipes.isEmpty()) {
-
-            }
-            //otherwise translate sp recipe and save
-            Recipe recipe = translateSpRecipe(spRecipe, possibleUser.get());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(recipeRepo.save(recipe));
-        }
+//        if(possibleUser.isPresent()) {
+//
+//            // only save recipe if user hasn't saved it prior
+//            List<Recipe> possibleRecipes = recipeRepo.findRecipeByUser_IdAndSpID(userId, spRecipe.getId());
+//
+//            if(!possibleRecipes.isEmpty()) {
+//
+//            }
+//            //otherwise translate sp recipe and save
+//            Recipe recipe = translateSpRecipe(spRecipe, possibleUser.get());
+//
+//            return ResponseEntity.status(HttpStatus.CREATED).body(recipeRepo.save(recipe));
+//        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    private Recipe translateSpRecipe(SpoonacularRecipe spRecipe, User user) {
-        Recipe recipe = new Recipe();
-        recipe.setUser(user);
-        recipe.setServings(spRecipe.getServings());
-        recipe.setReadyInMinutes(spRecipe.getReadyInMinutes());
-        recipe.setCookingMinutes(spRecipe.getCookingMinutes());
-        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
-        recipe.setSpID(spRecipe.getId());
-        recipe.setSpoonacularSourceUrl(spRecipe.getSpoonacularSourceUrl());
-        recipe.setSourceUrl(spRecipe.getSourceUrl());
-        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
-        recipe.setInstructions(spRecipe.getInstructions());
-        recipe.setImage(spRecipe.getImage());
-        recipe.setImage(spRecipe.getImage());
-        recipe.setDishTypes(recipe.getDishTypes());
-        recipe.setCuisines(recipe.getCuisines());
-        recipe.setTitle(spRecipe.getTitle());
-
-        // translate the ingredient to our ingredients
-        // set ingredient's recipe and user
-
-        // for each ingredient, save (if ingr and return
-        for(SpRecipeIngredient spIngr : spRecipe.getExtendedIngredients()) {
-            Ingredient ingredient = saveSpoonacularIngredient(spIngr, recipe);
-            recipe.getExtendedIngredients().add(ingredient);
-        }
-        return recipe;
-    }
-    // Saves to a recipe instead of a user, means its part of a recipe's details not user pantry
-    public Ingredient saveSpoonacularIngredient(SpRecipeIngredient spIngredient , Recipe recipe) {
-        Ingredient ingr = new Ingredient();
-        ingr.setName(spIngredient.getName());
-        ingr.setUnit(spIngredient.getUnit());
-        ingr.setAmount(spIngredient.getAmount());
-        ingr.setSpID(spIngredient.getId());
-        if(spIngredient.getImage().startsWith("http")){
-            ingr.setImage(spIngredient.getImage());
-        }else{
-            ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
-        }
-
-
-        return ingr;
-    }
-
-    public ResponseEntity<String> deleteRecipe(int recipeId) {
-        try{
-            recipeRepo.deleteById(recipeId);
-        }catch(EmptyResultDataAccessException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Recipe With That Id Exists");
-        }
-        return ResponseEntity.ok().body("Recipe deleted");
-    }
+//    private Recipe translateSpRecipe(SpoonacularRecipe spRecipe, User user) {
+//        Recipe recipe = new Recipe();
+//        recipe.setServings(spRecipe.getServings());
+//        recipe.setReadyInMinutes(spRecipe.getReadyInMinutes());
+//        recipe.setCookingMinutes(spRecipe.getCookingMinutes());
+//        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
+//        recipe.setSpID(spRecipe.getId());
+//        recipe.setSpoonacularSourceUrl(spRecipe.getSpoonacularSourceUrl());
+//        recipe.setSourceUrl(spRecipe.getSourceUrl());
+//        recipe.setPreparationMinutes(spRecipe.getPreparationMinutes());
+//        recipe.setInstructions(spRecipe.getInstructions());
+//        recipe.setImage(spRecipe.getImage());
+//        recipe.setImage(spRecipe.getImage());
+//        recipe.setDishTypes(recipe.getDishTypes());
+//        recipe.setCuisines(recipe.getCuisines());
+//        recipe.setTitle(spRecipe.getTitle());
+//
+//        // translate the ingredient to our ingredients
+//        // set ingredient's recipe and user
+//
+//        // for each ingredient, save (if ingr and return
+//        for(SpRecipeIngredient spIngr : spRecipe.getExtendedIngredients()) {
+//            Ingredient ingredient = saveSpoonacularIngredient(spIngr, recipe);
+//            recipe.getExtendedIngredients().add(ingredient);
+//        }
+//        return recipe;
+//    }
+//    // Saves to a recipe instead of a user, means its part of a recipe's details not user pantry
+//    public Ingredient saveSpoonacularIngredient(SpRecipeIngredient spIngredient , Recipe recipe) {
+//        Ingredient ingr = new Ingredient();
+//        ingr.setName(spIngredient.getName());
+//        ingr.setUnit(spIngredient.getUnit());
+//        ingr.setAmount(spIngredient.getAmount());
+//        ingr.setSpID(spIngredient.getId());
+//        if(spIngredient.getImage().startsWith("http")){
+//            ingr.setImage(spIngredient.getImage());
+//        }else{
+//            ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
+//        }
+//
+//
+//        return ingr;
+//    }
+//
+//    public ResponseEntity<String> deleteRecipe(int recipeId) {
+//        try{
+//            recipeRepo.deleteById(recipeId);
+//        }catch(EmptyResultDataAccessException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Recipe With That Id Exists");
+//        }
+//        return ResponseEntity.ok().body("Recipe deleted");
+//    }
 
     /*
     This functions will get the user's possible recipes based on their ingredients
@@ -131,7 +135,7 @@ public class RecipeService {
     public ResponseEntity<String> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
-            List<Ingredient> ingrList = ingredientRepo.findIngredientsByUser_Id(userId);
+            Set<UserIngredient> ingrList = userIngredientRepo.findByUser_Id(userId);
 
             /*
             format ingrs for api
@@ -155,12 +159,13 @@ public class RecipeService {
     /*
     Formats our ingredients list into external api's format
      */
-    private String formatIngredientList(List<Ingredient> ingrList) {
+    private String formatIngredientList(Set<UserIngredient> ingrList) {
         String formattedIngredients = "";
-        for(int i = 0 ; i < ingrList.size() ; i++) {
-            formattedIngredients+= ingrList.get(i).getName();
+        List<UserIngredient> asList = ingrList.stream().toList();
+        for(int i = 0 ; i < asList.size() ; i++) {
+            formattedIngredients+= asList.get(i).getIngredient().getName();
 
-            if(i != ingrList.size() - 1) {
+            if(i != asList.size() - 1) {
                 formattedIngredients+=",";
             }
         }
@@ -168,7 +173,7 @@ public class RecipeService {
     }
 
     // makes a request to the external api to retreive recipe information
-    public ResponseEntity<String> getRecipeInformation(Integer userId, Integer recipeId) {
+    public ResponseEntity<String> getRecipeInformation(Long userId, Integer recipeId) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             String apiUrl = "https://api.spoonacular.com/recipes/" + recipeId + "/information?apiKey=" + apiKey;
