@@ -25,7 +25,7 @@ public class Ingredient {
     @Column(unique = true, nullable = false)
     private String name;
     private String image;
-
+    private String aisle;
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserIngredient> userIngredients = new HashSet<UserIngredient>();
 
@@ -38,6 +38,7 @@ public class Ingredient {
     @Column(name = "possible_units") // 3
     private List<String> possibleUnits; // some ingrs have different possiblites. ex: 3 slices for pineapple or pinch of salt
 
+    //Getters and Setters
 
     public List<String> getPossibleUnits() {
         return possibleUnits;
@@ -45,6 +46,14 @@ public class Ingredient {
 
     public void setPossibleUnits(List<String> possibleUnits) {
         this.possibleUnits = possibleUnits;
+    }
+
+    public String getAisle() {
+        return aisle;
+    }
+
+    public void setAisle(String aisle) {
+        this.aisle = aisle;
     }
 
     public Long getId() {

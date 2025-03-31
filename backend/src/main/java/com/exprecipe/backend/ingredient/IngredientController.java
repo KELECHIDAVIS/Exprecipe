@@ -50,7 +50,7 @@ public class IngredientController {
     @returns a string confirming deletion
      */
     @DeleteMapping("/{userId}/ingredient/{ingredientId}")
-    public ResponseEntity<String> deleteUserIngredient(@PathVariable(value= "userId") int userId, @PathVariable(value= "ingredientId") int ingredientId) {
+    public ResponseEntity<String> deleteUserIngredient(@PathVariable(value= "userId") Long userId, @PathVariable(value= "ingredientId") Long ingredientId) {
         return ingredientService.deleteIngredient(ingredientId);
     }
 

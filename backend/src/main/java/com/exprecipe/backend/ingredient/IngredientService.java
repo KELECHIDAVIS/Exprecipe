@@ -61,12 +61,39 @@ public class IngredientService {
     // searches api based on inputted ingredient name and return's a list of spoonac ingrs to choose from
     // number is the amount of ingredients return
     public ResponseEntity<SpoonacularIngredient[]> ingredientSearch(String search, int number) {
+        // first check db to see if it returns the correct amount of ingredients
+        List<Ingredient> possibleIngredients = ingredientRepo.findSimilarIngredients(search, number);
+
+        if(possibleIngredients!=null && possibleIngredients.size()==number) {
+            // translate into spingrs then return
+            List<SpoonacularIngredient> ingredients =new ArrayList<SpoonacularIngredient>();
+
+            for (int i = 0; i < possibleIngredients.size(); i++) {
+                SpoonacularIngredient sp = new SpoonacularIngredient(
+                        possibleIngredients.get(i).getName(),
+                        possibleIngredients.get(i).getImage(),
+                        possibleIngredients.get(i).getSpID(),
+                        possibleIngredients.get(i).getAisle(),
+                        possibleIngredients.get(i).getPossibleUnits()
+                );
+
+                ingredients.add(sp);
+            }
+            return ResponseEntity.ok(ingredients.toArray(new SpoonacularIngredient[possibleIngredients.size()]));
+        }
+
+        // otherwise call api then save the results
 
         String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number+"&metaInformation=true";
         RestTemplate restTemplate = new RestTemplate();
 
         try{
             ResponseEntity<SpoonacularIngredient[]> list=  restTemplate.getForEntity(apiURL,SpoonacularIngredient[].class );
+
+            // For each sp ingr translate and save the result to ingredient
+            for(int i = 0; i< list.getBody().length; i++){
+                translateAndSaveSpIngredient(list.getBody()[i]);
+            }
 
             return ResponseEntity.ok().body(list.getBody());
         }catch(Exception e){
@@ -83,7 +110,7 @@ public class IngredientService {
         if(userOpt.isPresent()){
 
            // map sp ingr to our type
-            Ingredient ingr = saveSpoonacularIngredient(spIngredient , userOpt.get());
+            Ingredient ingr = translateAndSaveSpIngredient(spIngredient , userOpt.get());
             return ResponseEntity.ok(ingr);
         }
 
@@ -91,7 +118,14 @@ public class IngredientService {
     }
 
     //translates spIngr to our version then saves to db
-    public Ingredient saveSpoonacularIngredient(SpoonacularIngredient spIngredient , User user) {
+    public Ingredient translateAndSaveSpIngredient(SpoonacularIngredient spIngredient ) {
+        // if ingredient with that name already exists, just return that ingredient
+        Optional<Ingredient> ingrOpt = ingredientRepo.findByName(spIngredient.getName());
+
+        if(ingrOpt.isPresent()){ // just return saved ingredient
+            return ingrOpt.get();
+        }
+
         Ingredient ingr = new Ingredient();
         ingr.setName(spIngredient.getName());
         ingr.setPossibleUnits(spIngredient.getPossibleUnits());
@@ -105,41 +139,7 @@ public class IngredientService {
     }
 
 
-    // adds list of ingredients using list of ingredient names that's returned from the scanned image
-    public ResponseEntity<List<Ingredient>> addListOfIngredients(Long userId, List<String> ingrNames) {
 
-        // first check user is valid
-        Optional<User> userOpt = userRepo.findById(userId);
-
-        if(userOpt.isPresent()){
-            List<Ingredient> detectedIngrs= new ArrayList<>();
-
-            RestTemplate restTemplate = new RestTemplate();
-            String apiURL ;
-            // for each ingredient
-            for(int i =0 ; i<ingrNames.size(); i++){
-
-                // search spoonac for ingr name (use auto complete because it returns amount and unit
-                // call add ingredient function with
-                // add to list
-                apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+ingrNames.get(i)+"&number="+1+"&metaInformation=true";
-
-                try{
-                    SpoonacularIngredient[] list=  restTemplate.getForObject(apiURL, SpoonacularIngredient[].class); // returns as a list
-
-                    // if there is an ingredient, save to db
-                    if(list[0] != null) {
-                        Ingredient ingr = saveSpoonacularIngredient(list[0], userOpt.get());
-                        detectedIngrs.add(ingr); // add to list
-                    }
-                }catch(Exception e){
-                // if not found just continue onto the next
-                }
-            }
-            return ResponseEntity.ok(detectedIngrs); // return ingredients
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // user doesn't exist
-    }
 
     public ResponseEntity<String> deleteIngredient(Long ingrId) {
         try {
