@@ -119,6 +119,7 @@ public class UserIngredientService {
                         UserIngredient userIngr = new UserIngredient();
                         userIngr.setUser(userOpt.get());
                         userIngr.setIngredient(ingr);
+                        userIngredientRepo.save(userIngr); // save user ingr
 
                         detectedIngrs.add(userIngr); // add to list
                     }
