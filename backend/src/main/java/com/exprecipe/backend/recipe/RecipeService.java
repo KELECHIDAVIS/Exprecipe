@@ -34,12 +34,12 @@ public class RecipeService {
     }
 
     @Transactional
-    public ResponseEntity<List<Recipe>> getUserRecipes(int userId) {
+    public ResponseEntity<List<Recipe>> getUserRecipes(Long userId) {
         return ResponseEntity.ok(recipeRepo.findRecipesByUser_Id(userId));
     }
 
     @Transactional
-    public ResponseEntity<Recipe> saveRecipe(int userId, SpoonacularRecipe spRecipe) {
+    public ResponseEntity<Recipe> saveRecipe(Long userId, SpoonacularRecipe spRecipe) {
         //first make sure associated user exist
         Optional<User> possibleUser = userRepo.findById(userId);
         // save if user exists
@@ -128,7 +128,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<String> getPossibleRecipes (int userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<String> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             List<Ingredient> ingrList = ingredientRepo.findIngredientsByUser_Id(userId);

@@ -1,7 +1,5 @@
 package com.exprecipe.backend.ingredient;
 
-import com.exprecipe.backend.recipe.Recipe;
-import com.exprecipe.backend.recipe.SpRecipeIngredient;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -51,7 +49,7 @@ public class IngredientService {
     }
 
 
-    public ResponseEntity<List<Ingredient>> getUserIngredients(Integer userId) {
+    public ResponseEntity<List<Ingredient>> getUserIngredients(Long userId) {
 
         return ResponseEntity.ok(ingredientRepo.findIngredientsByUser_Id(userId));
     }
@@ -77,12 +75,13 @@ public class IngredientService {
     };
 
     // Using the ingredient name, make a request to external api and get corresponding ingredient
-    public ResponseEntity<Ingredient> addIngredient(Integer userId, SpoonacularIngredient spIngredient) {
+    public ResponseEntity<Ingredient> addIngredient(Long userId, SpoonacularIngredient spIngredient) {
 
         Optional<User> userOpt = userRepo.findById(userId);
 
         // if user is present save ingredient
         if(userOpt.isPresent()){
+
            // map sp ingr to our type
             Ingredient ingr = saveSpoonacularIngredient(spIngredient , userOpt.get());
             return ResponseEntity.ok(ingr);
@@ -94,11 +93,12 @@ public class IngredientService {
     //translates spIngr to our version then saves to db
     public Ingredient saveSpoonacularIngredient(SpoonacularIngredient spIngredient , User user) {
         Ingredient ingr = new Ingredient();
-        ingr.setUser(user);
         ingr.setName(spIngredient.getName());
         ingr.setPossibleUnits(spIngredient.getPossibleUnits());
         ingr.setSpID(spIngredient.getId());
-        ingr.setImage("https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage()); //extension for ingredients
+
+        String imageUrl = spIngredient.getImage().startsWith("http") ?  spIngredient.getImage() : "https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage() ;
+        ingr.setImage(imageUrl); //extension for ingredients
 
         ingredientRepo.save(ingr);
         return ingr;
@@ -106,7 +106,7 @@ public class IngredientService {
 
 
     // adds list of ingredients using list of ingredient names that's returned from the scanned image
-    public ResponseEntity<List<Ingredient>> addListOfIngredients(Integer userId, List<String> ingrNames) {
+    public ResponseEntity<List<Ingredient>> addListOfIngredients(Long userId, List<String> ingrNames) {
 
         // first check user is valid
         Optional<User> userOpt = userRepo.findById(userId);
@@ -141,7 +141,7 @@ public class IngredientService {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // user doesn't exist
     }
 
-    public ResponseEntity<String> deleteIngredient(int ingrId) {
+    public ResponseEntity<String> deleteIngredient(Long ingrId) {
         try {
             ingredientRepo.deleteById(ingrId);
         }catch (EmptyResultDataAccessException e){
@@ -159,7 +159,7 @@ public class IngredientService {
         }
         return ResponseEntity.badRequest().build();
     }
-    public ResponseEntity<Ingredient> updateIngredientAmount(int ingrId, int amount) {
+    public ResponseEntity<Ingredient> updateIngredientAmount(Long ingrId, int amount) {
         Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
 
         if(possibleIngr.isPresent()) {
@@ -171,7 +171,7 @@ public class IngredientService {
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<Ingredient> updateIngredientUnit(int ingrId, String unit) {
+    public ResponseEntity<Ingredient> updateIngredientUnit(Long ingrId, String unit) {
         Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
 
         if(possibleIngr.isPresent()) {
@@ -183,7 +183,7 @@ public class IngredientService {
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<Ingredient> updateIngredientPossibleUnits(int ingrId, List<String> possibleUnits) {
+    public ResponseEntity<Ingredient> updateIngredientPossibleUnits(Long ingrId, List<String> possibleUnits) {
         Optional<Ingredient> possibleIngr = ingredientRepo.findById(ingrId);
 
         if(possibleIngr.isPresent()) {

@@ -1,7 +1,7 @@
 package com.exprecipe.backend.user;
 
-import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.recipe.Recipe;
+import com.exprecipe.backend.user.userIngr.UserIngredient;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -22,17 +22,9 @@ public class User {
     private boolean premiumUser;
     private LocalDate createdAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserIngredient> pantry = new HashSet<>();
 
-    // User's personal ingredient list (their pantry)
-    @ManyToMany
-    @JoinTable(
-            name = "user_ingredients",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
-    private Set<Ingredient> ingredients = new HashSet<>();
-
-    // User's saved recipes
     @ManyToMany
     @JoinTable(
             name = "user_recipes",
@@ -40,23 +32,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "recipe_id")
     )
     private Set<Recipe> savedRecipes = new HashSet<>();
-
-
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(Set<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public Set<Recipe> getSavedRecipes() {
-        return savedRecipes;
-    }
-
-    public void setSavedRecipes(Set<Recipe> savedRecipes) {
-        this.savedRecipes = savedRecipes;
-    }
 
     public Long getId() {
         return id;
@@ -90,5 +65,19 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public Set<UserIngredient> getPantry() {
+        return pantry;
+    }
 
+    public void setPantry(Set<UserIngredient> pantry) {
+        this.pantry = pantry;
+    }
+
+    public Set<Recipe> getSavedRecipes() {
+        return savedRecipes;
+    }
+
+    public void setSavedRecipes(Set<Recipe> savedRecipes) {
+        this.savedRecipes = savedRecipes;
+    }
 }

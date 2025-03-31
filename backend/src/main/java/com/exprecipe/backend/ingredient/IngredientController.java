@@ -1,24 +1,25 @@
 package com.exprecipe.backend.ingredient;
 
 
-import org.apache.coyote.Response;
+import com.exprecipe.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class IngredientController {
-
+    private final UserService userService;
     private final IngredientService ingredientService;
 
     @Autowired
-    public IngredientController(IngredientService ingredientService) {
+    public IngredientController(UserService userService, IngredientService ingredientService) {
+        this.userService = userService;
         this.ingredientService = ingredientService;
     }
 
@@ -27,8 +28,8 @@ public class IngredientController {
     @return a list of ingredients associated with input user
      */
     @GetMapping("/{userId}/ingredient")
-    public ResponseEntity<List<Ingredient>> getUserIngredients(@PathVariable(value= "userId") int userId) {
-        return ingredientService.getUserIngredients(userId);
+    public ResponseEntity<Set<Ingredient>> getUserIngredients(@PathVariable(value= "userId") Long userId) {
+        return userService.getUserIngredients(userId);
     }
 
     /*
@@ -36,12 +37,12 @@ public class IngredientController {
     @returns created ingredient
      */
     @PostMapping("/{userId}/ingredient")
-    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") int userId, @RequestBody SpoonacularIngredient spIngredient) {
+    public ResponseEntity<Ingredient> createUserIngredient(@PathVariable(value= "userId") Long userId, @RequestBody SpoonacularIngredient spIngredient) {
         return ingredientService.addIngredient(userId, spIngredient);
     }
 
     @PostMapping("/{userId}/ingredient/list")
-    public ResponseEntity<List<Ingredient>> addListOfIngredients(@PathVariable Integer userId, @RequestBody List<String> ingrNames) {
+    public ResponseEntity<List<Ingredient>> addListOfIngredients(@PathVariable Long userId, @RequestBody List<String> ingrNames) {
         return ingredientService.addListOfIngredients(userId, ingrNames);
     }
     /*

@@ -6,15 +6,21 @@ import com.exprecipe.backend.user.User;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+/**
+ * Users with common recipes will reference the same recipe to save on db space
+ * Recipes will reference recipe ingredients
+ */
 @Entity
 public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private long spID; //api given id
     private String title;
@@ -30,144 +36,36 @@ public class Recipe {
     @Lob
     private String instructions;
 
-
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> extendedIngredients = new ArrayList<Ingredient>();
-
     @ElementCollection
     @CollectionTable(name = "dish_type", joinColumns = @JoinColumn(name = "id")) // 2
     @Column(name = "dish_types") // 3
     private Set<String> dishTypes; // might be helpful for saved recipe filter; { "lunch", "main-course","dinner"} etc.
-
-
 
     @ElementCollection
     @CollectionTable(name = "cuisine", joinColumns = @JoinColumn(name = "id")) // 2
     @Column(name = "cuisines") // 3
     private Set<String> cuisines; //could be a part of many different cuisines
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "savedRecipes")
+    private Set<User> users = new HashSet<>();
 
-    public List<Ingredient> getExtendedIngredients() {
-        return extendedIngredients;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setExtendedIngredients(List<Ingredient> extendedIngredients) {
-        this.extendedIngredients = extendedIngredients;
-    }
-    public int getId() {
-        return id;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Set<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;
     }
 
-    public long getSpID() {
-        return spID;
-    }
-
-    public void setSpID(long spID) {
-        this.spID = spID;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String imageURL) {
-        this.image = imageURL;
-    }
-
-    public int getServings() {
-        return servings;
-    }
-
-    public void setServings(int servings) {
-        this.servings = servings;
-    }
-
-    public int getReadyInMinutes() {
-        return readyInMinutes;
-    }
-
-    public void setReadyInMinutes(int readyInMin) {
-        this.readyInMinutes = readyInMin;
-    }
-
-    public int getCookingMinutes() {
-        return cookingMinutes;
-    }
-
-    public void setCookingMinutes(int cookTime) {
-        this.cookingMinutes = cookTime;
-    }
-
-    public int getPreparationMinutes() {
-        return preparationMinutes;
-    }
-
-    public void setPreparationMinutes(int prepTime) {
-        this.preparationMinutes = prepTime;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String originalURL) {
-        this.sourceUrl = originalURL;
-    }
-
-    public String getSpoonacularSourceUrl() {
-        return spoonacularSourceUrl;
-    }
-
-    public void setSpoonacularSourceUrl(String spURL) {
-        this.spoonacularSourceUrl = spURL;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public List<Ingredient> getIngredients() {
-        return extendedIngredients;
-    }
-
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.extendedIngredients = ingredients;
-    }
-
-    public Set<String> getDishTypes() {
-        return dishTypes;
-    }
-
-    public void setDishTypes(Set<String> dishTypes) {
-        this.dishTypes = dishTypes;
+    public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
     }
 
     public Set<String> getCuisines() {
@@ -178,11 +76,107 @@ public class Recipe {
         this.cuisines = cuisines;
     }
 
-    public User getUser() {
-        return user;
+    public Set<String> getDishTypes() {
+        return dishTypes;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setDishTypes(Set<String> dishTypes) {
+        this.dishTypes = dishTypes;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public String getSpoonacularSourceUrl() {
+        return spoonacularSourceUrl;
+    }
+
+    public void setSpoonacularSourceUrl(String spoonacularSourceUrl) {
+        this.spoonacularSourceUrl = spoonacularSourceUrl;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public int getPreparationMinutes() {
+        return preparationMinutes;
+    }
+
+    public void setPreparationMinutes(int preparationMinutes) {
+        this.preparationMinutes = preparationMinutes;
+    }
+
+    public int getCookingMinutes() {
+        return cookingMinutes;
+    }
+
+    public void setCookingMinutes(int cookingMinutes) {
+        this.cookingMinutes = cookingMinutes;
+    }
+
+    public int getReadyInMinutes() {
+        return readyInMinutes;
+    }
+
+    public void setReadyInMinutes(int readyInMinutes) {
+        this.readyInMinutes = readyInMinutes;
+    }
+
+    public int getServings() {
+        return servings;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public long getSpID() {
+        return spID;
+    }
+
+    public void setSpID(long spID) {
+        this.spID = spID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

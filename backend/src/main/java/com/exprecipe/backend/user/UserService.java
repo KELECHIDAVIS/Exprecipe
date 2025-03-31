@@ -57,21 +57,4 @@ public class UserService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Set<Ingredient>> getUserIngredients(Long userId) {
-        Optional<User> userOpt = userRepo.findById(userId);
-
-        if (userOpt.isPresent()) {
-            return new ResponseEntity<>(userOpt.get().getIngredients(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    public ResponseEntity<Set<Recipe>> getUserRecipes(Long userId) {
-        Optional<User> userOpt = userRepo.findById(userId);
-
-        if (userOpt.isPresent()) {
-            return new ResponseEntity<>(userOpt.get().getSavedRecipes(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 }
