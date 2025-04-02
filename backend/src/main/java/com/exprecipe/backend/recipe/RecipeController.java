@@ -2,6 +2,7 @@ package com.exprecipe.backend.recipe;
 
 
 import com.exprecipe.backend.user.UserService;
+import com.exprecipe.backend.user.userrecipe.UserRecipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,18 +28,18 @@ public class RecipeController {
         return recipeService.saveRecipe(userId, recipe);
     }
 
-//    @DeleteMapping("/{userId}/recipe/{recipeId}")
-//    public ResponseEntity<String> deleteRecipe(@PathVariable Integer userId, @PathVariable Integer recipeId) {
-//        return recipeService.deleteRecipe(recipeId);
-//    }
+    @DeleteMapping("/{userId}/recipe/{recipeId}")
+    public ResponseEntity<String> deleteRecipe(@PathVariable Integer userId, @PathVariable Long recipeId) {
+        return recipeService.deleteUserRecipe(recipeId);
+    }
 
-//    /*
-//    @returns user's saved recipes
-//     */
-//    @GetMapping("/{userId}/recipe")
-//    public ResponseEntity<Set<Recipe>> getUserRecipes(@PathVariable Long userId) {
-//        return userService.getUserRecipes(userId);
-//    }
+    /*
+    @returns user's saved recipes
+     */
+    @GetMapping("/{userId}/recipe")
+    public ResponseEntity<Set<UserRecipe>> getUserRecipes(@PathVariable Long userId) {
+        return recipeService.getUserRecipes(userId);
+    }
 
     /*
     @returns recipes that are possible based on user's ingredients
@@ -50,7 +51,7 @@ public class RecipeController {
     }
 
     /*
-    @ returns recipe info object from external api
+    @ returns recipe info object from external api using spid
      */
     @GetMapping("/{userId}/recipe/information")
     public ResponseEntity<String> getRecipeInformation(@PathVariable Long userId, @RequestParam Integer recipeId) {

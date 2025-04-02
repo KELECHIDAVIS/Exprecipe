@@ -3,6 +3,7 @@ package com.exprecipe.backend.user;
 import com.exprecipe.backend.recipe.Recipe;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userrecipe.UserRecipe;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class User {
     private Set<UserIngredient> pantry = new HashSet<>();
 
     @OneToMany (mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<UserRecipe> savedRecipes = new HashSet<>();
 
     public Long getId() {

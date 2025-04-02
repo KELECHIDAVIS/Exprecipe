@@ -12,7 +12,4 @@ public class UserRecipeService {
         this.userRecipeRepo = userRecipeRepo;
     }
 
-    public ResponseEntity<UserRecipe> getUserSavedRecipes(Long userId) {
-        return ResponseEntity.ok(userRecipeRepo.findById(userId).get());
-    }
 }

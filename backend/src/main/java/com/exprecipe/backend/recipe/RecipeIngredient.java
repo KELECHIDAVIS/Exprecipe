@@ -1,6 +1,7 @@
 package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.ingredient.Ingredient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class RecipeIngredient {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
+    @JsonIgnore
     private Recipe recipe;
 
     @ManyToOne

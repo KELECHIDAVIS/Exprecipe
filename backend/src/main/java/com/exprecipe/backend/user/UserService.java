@@ -2,6 +2,7 @@ package com.exprecipe.backend.user;
 
 import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.recipe.Recipe;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class UserService {
         User savedUser = userRepo.save(user);
         return ResponseEntity.ok(savedUser);
     }
-
+    @Transactional // so that we can see the instructions of recipes
     public ResponseEntity<User> getUserById(long id) {
         Optional<User> user = userRepo.findById(id);
         if (user.isPresent()) {
@@ -42,8 +43,8 @@ public class UserService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    public ResponseEntity<List<User>>getAllUsers() {
+    @Transactional
+    public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(userRepo.findAll(), HttpStatus.OK);
     }
 
