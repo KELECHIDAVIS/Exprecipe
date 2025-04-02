@@ -17,13 +17,19 @@ const RecipeModal = ({recipeInfo, usedIngredients, missingIngredients, closeInfo
         return
 
     const usedIngredientSet = new Set(); // set of the name of used ingredients 
-    for(let i = 0; i< usedIngredients.length;  i++){
-        usedIngredientSet.add(usedIngredients[i].name);  
-    } 
+
+    if(usedIngredients)
+    {
+        for(let i = 0; i< usedIngredients.length;  i++){
+            usedIngredientSet.add(usedIngredients[i].name);  
+        } 
+    }
     
     function renderIngredient(item){
         // if the item is in used ingredient make the name green, else make the name red 
-        const color = usedIngredientSet.has(item.name) ? "green" : "red"
+        //if were this is coming from saved recipe just have the text be black
+        let color = 'black' ; 
+        if (usedIngredients) color = usedIngredientSet.has(item.name) ? "green" : "red"
         
         // if image doesn't start with http add the starting to it
         const imageSrc = item.image.startsWith("http")? item.image : "https://img.spoonacular.com/ingredients_100x100/"+item.image

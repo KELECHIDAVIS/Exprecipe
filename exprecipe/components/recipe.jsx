@@ -3,7 +3,7 @@ import { View, Text,Image,Pressable, StyleSheet  } from "react-native"
 
 
 
-const Recipe = ({recipeData, ranking,  isListForm}) =>{
+const Recipe = ({recipeData, ranking,  isListForm, isSavedRecipe}) =>{
     
     // if is List form is true we want the ingredient container to be wide 
     // otherwise be small with 
@@ -11,6 +11,8 @@ const Recipe = ({recipeData, ranking,  isListForm}) =>{
     // if the ranking is minimize missing then show missing ingr count else show max used 
     function renderIngredientCount(ranking){
 
+        if(isSavedRecipe)
+            return
         let textColor = "green"; 
         if (ranking ==2 ){
             if(recipeData.missedIngredientCount>=1 && recipeData.missedIngredientCount<3)
@@ -43,6 +45,7 @@ const Recipe = ({recipeData, ranking,  isListForm}) =>{
                 defaultSource={require('../assets/favicon.png')}
                 resizeMode="contain"
             />
+            
             <View style={styles1.content}>
                 <Text style={styles1.contextText}>{recipeData.title}</Text>
                 {renderIngredientCount(ranking)}
