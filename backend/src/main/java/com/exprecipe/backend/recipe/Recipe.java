@@ -3,6 +3,8 @@ package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.user.User;
+import com.exprecipe.backend.user.userrecipe.UserRecipe;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -49,15 +51,17 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 
-    @ManyToMany(mappedBy = "savedRecipes")
-    private Set<User> users = new HashSet<>();
+    // User's saved recipes reference a certain recipe
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<UserRecipe> userRecipes = new HashSet<>();
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<UserRecipe> getUserRecipes() {
+        return userRecipes;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUserRecipes(Set<UserRecipe> userRecipes) {
+        this.userRecipes = userRecipes;
     }
 
     public Set<RecipeIngredient> getRecipeIngredients() {

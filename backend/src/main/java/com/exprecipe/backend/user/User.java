@@ -2,6 +2,7 @@ package com.exprecipe.backend.user;
 
 import com.exprecipe.backend.recipe.Recipe;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
+import com.exprecipe.backend.user.userrecipe.UserRecipe;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -25,13 +26,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserIngredient> pantry = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_recipes",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
-    private Set<Recipe> savedRecipes = new HashSet<>();
+    @OneToMany (mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserRecipe> savedRecipes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -73,11 +69,11 @@ public class User {
         this.pantry = pantry;
     }
 
-    public Set<Recipe> getSavedRecipes() {
+    public Set<UserRecipe> getSavedRecipes() {
         return savedRecipes;
     }
 
-    public void setSavedRecipes(Set<Recipe> savedRecipes) {
+    public void setSavedRecipes(Set<UserRecipe> savedRecipes) {
         this.savedRecipes = savedRecipes;
     }
 }
