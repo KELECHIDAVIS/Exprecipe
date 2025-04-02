@@ -30,13 +30,13 @@ export default function PantryPage() {
   
   // for ingrInfo modal 
   const [ingrInfo , setIngrInfo] = useState(null); // for the modal that allows the person to update amount and unit 
-  let possibleUnits = ingrInfo?.possibleUnits || []; // for ingrInfo
+  let possibleUnits = ingrInfo?.ingredient.possibleUnits || []; // for ingrInfo
   const [ingrAmt, setIngredientAmount]   = useState(0); 
   // Dropdown state
   const [open, setOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(possibleUnits.length > 0 ? possibleUnits[0] : '');
   const [items, setItems] = useState(possibleUnits.map(unit => ({ label: unit, value: unit })));
-  const ingrSearchAmt = 3; // amount of ingrs return after a recipe search
+  
   
   // for navigation 
   const router = useRouter(); 
@@ -69,6 +69,9 @@ export default function PantryPage() {
            if(response.status == 404)
             throw new Error("Invalid Stored User")
 
+           // if returns a valid user set possible user with up to date info 
+           possibleUser= response.data; 
+
         }catch(error){ // either there was no stored User or the stored user was not valid 
           // first time user or invalid saved user
           
@@ -78,11 +81,13 @@ export default function PantryPage() {
 
           // retrieve user from response
           possibleUser = response.data
-
           console.log("New User: " , possibleUser)
-          // save new user 
-          await AsyncStorage.setItem("user",  JSON.stringify(possibleUser))
+          
         }finally{
+
+          // save up to date  user 
+          await AsyncStorage.setItem("user",  JSON.stringify(possibleUser))
+          setIngredients(possibleUser.pantry) // set user ingredients
           setUser(possibleUser);  
         }
          
@@ -96,28 +101,28 @@ export default function PantryPage() {
   }, []); 
 
 
-  // load the user ingredients the first time they open the pantry page
-  useEffect(()=>{
-    const getIngrs=  async () =>{
-        if(!loaded&&user){
-          try {
-              // retrieve user ingredients 
-            const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
-            const ingrList = response.data; // returns as a list 
+  // // load the user ingredients the first time they open the pantry page
+  // useEffect(()=>{
+  //   const getIngrs=  async () =>{
+  //       if(!loaded&&user){
+  //         try {
+  //             // retrieve user ingredients 
+  //           const response = await axios.get(`${apiUrl}/${user.id}/ingredient`)
+  //           const ingrList = response.data; // returns as a list 
 
-            //console.log("retrieved ingrlist: ",ingrList); 
+  //           //console.log("retrieved ingrlist: ",ingrList); 
 
-            setIngredients(ingrList);
-          } catch (error) {
-            console.log("Error When Loading User Ingredients: "+error)
-          } 
+  //           setIngredients(ingrList);
+  //         } catch (error) {
+  //           console.log("Error When Loading User Ingredients: "+error)
+  //         } 
 
-          setLoaded(true); // ingredients have been loaded 
-        }
-    }
-    getIngrs();
+  //         setLoaded(true); // ingredients have been loaded 
+  //       }
+  //   }
+  //   getIngrs();
 
-  }, [user ,loaded]) // only call when not alr loaded and user is updated 
+  // }, [user ,loaded]) // only call when not alr loaded and user is updated 
 
 
   useEffect(()=>{
@@ -135,14 +140,17 @@ export default function PantryPage() {
       setSelectedUnit(""); 
       setIngrInfoModalVisible(false)
     }else{
-      possibleUnits = ingrInfo.possibleUnits; // set possibleUnits
+      console.log("ingredient info: ", ingrInfo)
+      possibleUnits = ingrInfo.ingredient.possibleUnits; // set possibleUnits
       setSelectedUnit(possibleUnits[0])
       setItems(possibleUnits.map(unit => ({ label: unit, value: unit }))); 
       setIngrInfoModalVisible(true); 
     }
   }, [ingrInfo])
+
+
   // only render the actual stuff if it is loaded
-  if(!loaded|| !user){
+  if( !user){
     return(
       <Text>Loading...</Text>
     ); 
@@ -152,8 +160,9 @@ export default function PantryPage() {
   }
   // renders each ingredient as a ingredient card 
   function renderIngredients({item , index}) {
+
     return(
-       <Ingredient name={item.name} imageURL={item.image} possibleUnits={item.possibleUnits} amount={item.amount} unit={item.unit} openInfoModal={()=>openInfoModal(item)}/>
+       <Ingredient name={item.ingredient.name} imageURL={item.ingredient.image} possibleUnits={item.ingredient.possibleUnits} amount={item.amount} unit={item.unit} openInfoModal={()=>openInfoModal(item)}/>
     ); 
   } 
 
@@ -174,7 +183,7 @@ export default function PantryPage() {
           headers:{},
           data:chosenIngr  
         }); 
-  
+
         const data = response.data ; // returns ingredient as in our custom ingredient form
 
         // add ingredient to ingredients list 
@@ -203,7 +212,7 @@ export default function PantryPage() {
         
         // trim of possible white space off of text 
         const ingrName = text.trim(); 
-        const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${ingrName}&number=${ingrSearchAmt}`); 
+        const response = await axios.get(`${apiUrl}/${user.id}/ingredient/search?search=${ingrName}`); 
   
         const data = response.data
 
@@ -431,9 +440,9 @@ export default function PantryPage() {
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <View style={{ width: 300, padding: 20, backgroundColor: 'beige', borderRadius: 10, alignItems:'center' , gap:10}}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{ingrInfo?.name}</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{ingrInfo?.ingredient.name}</Text>
             {/** only render ingr image if it exist otherwise render image not fount  */}
-            <Image source={ingrInfo? {uri:ingrInfo.imageURL}: require('../../assets/favicon.png')} style={styles.ingrInfoImage}/>
+            <Image source={ingrInfo? {uri:ingrInfo.ingredient.image}: require('../../assets/favicon.png')} style={styles.ingrInfoImage}/>
             
             {/**amount and unit view  */}
             <View style = {styles.infoUnitView}>

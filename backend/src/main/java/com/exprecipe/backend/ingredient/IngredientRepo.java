@@ -13,6 +13,6 @@ public interface IngredientRepo extends JpaRepository<Ingredient, Long> {
 
     Optional<Ingredient> findByName(String name);
 
-    @Query(value = "SELECT * FROM ingredient ORDER BY  similarity(name, :searchTerm) DESC LIMIT :numResult", nativeQuery = true)
-    List<Ingredient> findSimilarIngredients(@Param("searchTerm") String searchTerm, @Param("numResult") int numResult);
+    @Query(value = "SELECT * FROM ingredient WHERE similarity(name, :searchTerm) > 0.7 ORDER BY similarity(name, :searchTerm) DESC LIMIT 3", nativeQuery = true)
+    List<Ingredient> findSimilarIngredients(@Param("searchTerm") String searchTerm);
 }

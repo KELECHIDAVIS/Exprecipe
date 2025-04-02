@@ -83,8 +83,8 @@ public class IngredientController {
     }
 
     @GetMapping("/{user}/ingredient/search")
-    public ResponseEntity<SpoonacularIngredient[]> searchIngredients( @RequestParam String search, @RequestParam Integer number) {
-       return ingredientService.ingredientSearch(search, number);
+    public ResponseEntity<SpoonacularIngredient[]> searchIngredients( @RequestParam String search) {
+       return ingredientService.ingredientSearch(search);
     }
 
 

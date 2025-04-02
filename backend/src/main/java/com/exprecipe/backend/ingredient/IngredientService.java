@@ -57,12 +57,12 @@ public class IngredientService {
 
 
     // searches api based on inputted ingredient name and return's a list of spoonac ingrs to choose from
-    // number is the amount of ingredients return
-    public ResponseEntity<SpoonacularIngredient[]> ingredientSearch(String search, int number) {
+    // returns 3 possible choices
+    public ResponseEntity<SpoonacularIngredient[]> ingredientSearch(String search) {
         // first check db to see if it returns the correct amount of ingredients
-        List<Ingredient> possibleIngredients = ingredientRepo.findSimilarIngredients(search, number);
+        List<Ingredient> possibleIngredients = ingredientRepo.findSimilarIngredients(search);
 
-        if(possibleIngredients!=null && possibleIngredients.size()==number) {
+        if(possibleIngredients!=null && possibleIngredients.size()== 3) {
             // translate into spingrs then return
             List<SpoonacularIngredient> ingredients =new ArrayList<SpoonacularIngredient>();
 
@@ -82,7 +82,7 @@ public class IngredientService {
 
         // otherwise call api then save the results
 
-        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+number+"&metaInformation=true";
+        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+3+"&metaInformation=true";
         RestTemplate restTemplate = new RestTemplate();
 
         try{
