@@ -50,6 +50,16 @@ public class RecipeController {
         return recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
     }
 
+
+    /*
+    @returns recipes that are possible based on user's ingredients and complex filters
+     returned in string form
+     */
+    @GetMapping("/{userId}/recipe/possible/complex")
+    public ResponseEntity<String> getPossibleRecipesComplex(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam String sort, @RequestParam boolean ignorePantry, @RequestParam String cuisines, String type, int maxReadyTime , int minServings, String diets, String intolerances ) {
+        return recipeService.getPossibleRecipesComplex(userId,numberOfRecipes,ignorePantry, cuisines, type, maxReadyTime, minServings , sort, diets, intolerances );
+    }
+
     /*
     @ returns recipe info object from external api using spid
      */

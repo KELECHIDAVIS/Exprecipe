@@ -213,4 +213,39 @@ public class RecipeService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    public ResponseEntity<String> getPossibleRecipesComplex(Long userId, int numberOfRecipes, boolean ignorePantry , String cuisines, String type , int maxReadyTime, int minServings, String sort, String diets, String intolerances) {
+        Optional<User> possibleUser = userRepo.findById(userId);
+
+        if(possibleUser.isPresent()) {
+            Set<UserIngredient> ingrList = userIngredientRepo.findByUser_Id(userId);
+
+            /*
+            format ingrs for api
+            it expects them as comma seperated string; Ex: "apples,flour,sugar"
+             */
+            String formattedIngredients = formatIngredientList(ingrList);
+
+            // format cuisines, diets, intolerances into comma seperated lists
+            String apiURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey="+apiKey
+                    +"&ingredients="+formattedIngredients
+                    +"&number="+numberOfRecipes
+                    +"&sort="+sort
+                    +"&ignorePantry="+ignorePantry
+                    +"&cuisines="+cuisines
+                    +"&type="+type
+                    +"&maxReadyTime="+maxReadyTime
+                    +"&minServings="+minServings
+                    +"&diets="+diets
+                    +"&intolerances="+intolerances;
+
+            RestTemplate restTemplate = new RestTemplate();
+            String responseEntity = restTemplate.getForObject(apiURL, String.class);
+
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }
