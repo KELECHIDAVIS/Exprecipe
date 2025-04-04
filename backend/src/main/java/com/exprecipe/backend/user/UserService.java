@@ -1,7 +1,5 @@
 package com.exprecipe.backend.user;
 
-import com.exprecipe.backend.ingredient.Ingredient;
-import com.exprecipe.backend.recipe.Recipe;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,7 +27,6 @@ public class UserService {
         User user = new User();
 
         user.setPremiumUser(false);
-        user.setDietRestrictions(new HashSet<>());
         user.setCreatedAt(LocalDate.now());
 
         User savedUser = userRepo.save(user);

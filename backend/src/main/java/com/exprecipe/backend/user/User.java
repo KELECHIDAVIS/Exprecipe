@@ -1,6 +1,5 @@
 package com.exprecipe.backend.user;
 
-import com.exprecipe.backend.recipe.Recipe;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userrecipe.UserRecipe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,11 +16,7 @@ public class User {
     private Long id;
 
 
-    @ElementCollection
-    @CollectionTable(name = "diet_restriction", joinColumns = @JoinColumn(name = "id")) // 2
-    @Column(name = "diet_restrictions") // 3
-    private Set<String> dietRestrictions;
-    private boolean premiumUser;
+    private boolean premiumUser= false;
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -31,20 +26,14 @@ public class User {
     @JsonIgnore
     private Set<UserRecipe> savedRecipes = new HashSet<>();
 
+
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Set<String> getDietRestrictions() {
-        return dietRestrictions;
-    }
-
-    public void setDietRestrictions(Set<String> dietRestrictions) {
-        this.dietRestrictions = dietRestrictions;
     }
 
     public boolean isPremiumUser() {
