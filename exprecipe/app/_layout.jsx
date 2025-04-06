@@ -26,13 +26,7 @@ export default function Layout() {
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="heart" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
-        }}
-      />
+     
     </Tabs>
   );
 }
