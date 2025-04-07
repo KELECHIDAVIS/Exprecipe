@@ -14,7 +14,7 @@ const Recipe = ({recipeData, ranking,  isListForm, isSavedRecipe}) =>{
         if(isSavedRecipe)
             return
         let textColor = "green"; 
-        if (ranking ==2 ){
+        if (ranking ==2 && recipeData.missedIngredientCount ){
             if(recipeData.missedIngredientCount>=1 && recipeData.missedIngredientCount<3)
                 textColor='orange'
             else if (recipeData.missedIngredientCount>=3 && recipeData.missedIngredientCount<6)
@@ -23,7 +23,7 @@ const Recipe = ({recipeData, ranking,  isListForm, isSavedRecipe}) =>{
             return (
                 <Text style={[styles1.contextText , {color:textColor}]}>{recipeData.missedIngredientCount} missing ingr(s)</Text>
             )
-        }else{
+        }else if(recipeData.usedIngredientCount && recipeData.missedIngredientCount){
             // if ratio of used count > .7 should be green , >=.5 orange, < .5 red  
             const ratio = (recipeData.usedIngredientCount / (recipeData.usedIngredientCount +recipeData.missedIngredientCount ))
             if(ratio < .5)

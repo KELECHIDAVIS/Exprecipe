@@ -56,7 +56,11 @@ public class RecipeController {
      returned in string form
      */
     @GetMapping("/{userId}/recipe/possible/complex")
-    public ResponseEntity<String> getPossibleRecipesComplex(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam String sort, @RequestParam boolean ignorePantry, @RequestParam String cuisines, String type, int maxReadyTime , int minServings, String diets, String intolerances ) {
+    public ResponseEntity<String> getPossibleRecipesComplex(@PathVariable Long userId
+            , @RequestParam Integer numberOfRecipes
+            , @RequestParam String sort, @RequestParam boolean ignorePantry
+            , @RequestParam String cuisines, @RequestParam String type, @RequestParam int maxReadyTime , @RequestParam int minServings
+            , @RequestParam String diets, @RequestParam String intolerances ) {
         return recipeService.getPossibleRecipesComplex(userId,numberOfRecipes,ignorePantry, cuisines, type, maxReadyTime, minServings , sort, diets, intolerances );
     }
 

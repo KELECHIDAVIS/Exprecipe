@@ -228,14 +228,14 @@ public class RecipeService {
 
             // format cuisines, diets, intolerances into comma seperated lists
             String apiURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey="+apiKey
-                    +"&ingredients="+formattedIngredients
+                    +"&includeIngredients="+formattedIngredients
                     +"&number="+Math.min(100, numberOfRecipes)
                     +"&sort="+sort
                     +"&ignorePantry="+ignorePantry
                     +"&cuisines="+cuisines
                     +"&type="+type
                     +"&maxReadyTime="+maxReadyTime
-                    +"&minServings="+minServings
+                    +"&minServings="+Math.max(1,minServings)
                     +"&diets="+diets
                     +"&intolerances="+intolerances;
 

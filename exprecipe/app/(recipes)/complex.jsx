@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {SafeAreaView, View, Switch, FlatList, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, TextInput,Keyboard } from 'react-native';
+import React, { useState , useEffect} from 'react';
+import {SafeAreaView, View, Switch,Alert,  FlatList, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, TextInput,Keyboard } from 'react-native';
 import { AccordionItem } from '../../components/AccordionItem';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
@@ -9,26 +9,108 @@ import cuisineData from '../../assets/cuisineData';
 import mealTypeData from '../../assets/mealTypeData';
 import { dietData } from '../../assets/dietData';
 import { intolerancesData } from '../../assets/intolerancesData';
+import RecipeModal from '../../components/recipeModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import Recipe from '../../components/recipe';
 export default function ComplexRecipePage() {
+
+  const [recipes , setRecipes] = useState([]); 
+  const [recipeInfoModalVisible, setRecipeInfoModalVisible] = useState(false); 
+  const [recipeModalInfo, setRecipeModalInfo] = useState(null); 
+  const [condensedRecipeInfo, setCondensedRecipeInfo] = useState(null); 
+  const [user, setUser] = useState(null) ; // use full api calls and dietary prefs
+  
+  const apiUrl =process.env.EXPO_PUBLIC_API_URL ;
   // filtering options
   const [cuisines, setCuisines]  = useState([]); 
   const [mealType, setMealType]= useState("main course")
   const [numResults, setNumResults] = useState(5); 
   const [ignorePantry, setIgnorePantry] = useState(true); 
-  const [diet , setDiets] = useState([]); 
+  const [diets , setDiets] = useState([]); 
   const [intolerances, setIntolerances] = useState([]); 
   const [ingredients, setIngredients ] = useState([]); 
   const [maxReadyTime , setMaxReadyTime ] = useState(120) ; // in mins 
   const [minServings , setMinServings]  = useState(1) ; 
   const [sort , setSort] = useState('min-missing-ingredients') // min missing or max used ingredients
   const [isFilterModalVisible , setFilterModalVisible] = useState(false); 
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(prev => !prev);
+
+  // when page is rendered for the first time want to get user from local storage
+  useEffect(()=>{
+    const retrieveUser = async ()=>{
+      // get user from localStorage 
+      try {
+        const storedUser= await AsyncStorage.getItem("user"); // should be there since confirmed on pantry page
+        setUser(JSON.parse(storedUser)); 
+      } catch (error) {
+        Alert.alert("Error when retrieving user")
+        console.log("Error when retrieving user: ", error.message); 
+      }
+    }
+    retrieveUser(); 
+  },[]); 
+
+  // ensure recipe flatlist rerenders when changed 
+  useEffect(() => {
+    //console.log("Recipes updated: ", recipes.length," recipes")
+  }, [recipes]);
+
+
+  const searchRecipes = async () =>{
+    // only call if user is present
+    if(user){
+      try {
+        // make request based on user, and options, max results is 100
+        const url = `${apiUrl}/${user.id}/recipe/possible/complex?numberOfRecipes=${numResults}&sort=${sort}&ignorePantry=${ignorePantry}&cuisines=${cuisines.join(',')}&type=${mealType}&maxReadyTime=${maxReadyTime}&minServings=${minServings}&diets=${diets.join(',')}&intolerances=${intolerances.join(',')}`; 
+        console.log("URL: ", url)
+        const response = await axios.get(url)
+
+
+        const recipeList = response.data.results; // check the api response format 
+        console.log("Response: ",response.data)
+        // setRecipes
+        if(recipeList)
+          setRecipes([...recipeList]); 
+      } catch (error) {
+        Alert.alert("Error Searching Ingredients. Please Try Again")
+        console.log("Error searching ingredients: ", error.message); 
+      }
+    }else{
+      Alert.alert("User couldn't be found. Please Try Again")
+    }
+  }
+
   function launchFilterModal (){
     setFilterModalVisible(true); 
   }
   function closeModal(){
     setFilterModalVisible(false); 
+  }
+
+  // when recipe card is clicked, get the recipe fully detailed recipe info using condensed info  
+  const openInfoModal = async (item)=>{
+    if(user)
+    {
+      // make request based on user, and options
+      const url = `${apiUrl}/${user.id}/recipe/information?recipeId=${item.id}`; 
+
+      const response = await axios.get(url)    
+      
+      const modalInfo = response.data; 
+
+      setRecipeModalInfo(modalInfo)
+      setCondensedRecipeInfo(item); // for remembering the used and missing ingredients 
+
+      setRecipeInfoModalVisible(true); 
+    }else{
+      Alert.alert("User couldn't be found. Please Try Again")
+    }
+  }
+
+  const closeInfoModal=()=>{
+    setRecipeInfoModalVisible(false); 
+    setRecipeModalInfo(null);
+    setCondensedRecipeInfo(null) 
   }
   return (
     
@@ -38,10 +120,42 @@ export default function ComplexRecipePage() {
           <Text style={styles.editFilterText}>Edit Filters</Text>
           {/* <Ionicons name="filter" size={24} color="black" /> */}
         </TouchableOpacity>
-        <TouchableOpacity style={{backgroundColor:'green'}}>
+        <TouchableOpacity style={{backgroundColor:'green'}} onPress={searchRecipes}>
           <AntDesign name="search1" size={42} color="white" />
         </TouchableOpacity>
       </View>
+
+      {/** Recipe List Container */}
+      <FlatList 
+              style={styles.recipeListContainer}
+              contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
+              data={recipes}
+              extraData={recipes}
+              renderItem={({item}) =>(
+                <TouchableOpacity onPress={()=>openInfoModal(item)}>
+                  <Recipe recipeData={item} ranking={sort} isSavedRecipe={true} /> 
+                </TouchableOpacity>
+              )}
+          
+              keyExtractor={(item) => item.id}
+
+      />
+      {/** Recipe Info Modal  */}
+      <Modal
+                animationType='fade'    
+                transparent= {true}
+                visible={recipeInfoModalVisible}
+                onRequestClose={closeInfoModal}
+            > 
+                <RecipeModal
+
+                  recipeInfo={recipeModalInfo}
+                  usedIngredients={condensedRecipeInfo? condensedRecipeInfo.usedIngredients: null}
+                  missingIngredients={condensedRecipeInfo? condensedRecipeInfo.missedIngredients : null}
+                  closeInfoModal={closeInfoModal}
+                  userID={user? user.id : null}
+                />
+      </Modal>
       {/** Filtering Modal */}
       <Modal visible= {isFilterModalVisible}
         onRequestClose={()=>setFilterModalVisible(false)}
@@ -170,7 +284,7 @@ export default function ComplexRecipePage() {
                 valueField="label"
                 placeholder="Select Diets"
                 searchPlaceholder="Search Diet ..."
-                value={diet}
+                value={diets}
                 onChange={item => {
                   console.log("Diets: ",item)
                   setDiets([...item]);
@@ -247,5 +361,9 @@ const styles = StyleSheet.create({
     },
     selectedStyle: {
       borderRadius: 12,
+    },
+    recipeListContainer:{
+      flex:9,
+      width:'100%',
     },
 })
