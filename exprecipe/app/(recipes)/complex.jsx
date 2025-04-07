@@ -6,6 +6,9 @@ import Feather from '@expo/vector-icons/Feather';
 import { RadioButton } from 'react-native-paper';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import cuisineData from '../../assets/cuisineData';
+import mealTypeData from '../../assets/mealTypeData';
+import { dietData } from '../../assets/dietData';
+import { intolerancesData } from '../../assets/intolerancesData';
 export default function ComplexRecipePage() {
   // filtering options
   const [cuisines, setCuisines]  = useState([]); 
@@ -102,6 +105,8 @@ export default function ComplexRecipePage() {
 
             
             <AccordionItem title={"Meal Types"}>
+              {/**Cuisines  */}
+              <Text style = {styles.headerTitle}>Cuisines: </Text>
               <MultiSelect
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
@@ -117,8 +122,31 @@ export default function ComplexRecipePage() {
                 searchPlaceholder="Search Cuisine ..."
                 value={cuisines}
                 onChange={item => {
-                  console.log("Item: ",item)
+                  console.log("Cuisines: ",item)
                   setCuisines([...item]);
+                }}
+                selectedStyle = {styles.selectedStyle}
+                
+              />
+              {/**Meal Type  */}
+              <Text style = {styles.headerTitle}>Meal Type: </Text>
+              <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={mealTypeData}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="label"
+                placeholder="Select Meal Type"
+                searchPlaceholder="Search Meal Type ..."
+                value={mealType}
+                onChange={item => {
+                  console.log("Meal Type: ", item.label)
+                  setMealType(item.label); 
                 }}
                 selectedStyle = {styles.selectedStyle}
                 
@@ -126,8 +154,53 @@ export default function ComplexRecipePage() {
             </AccordionItem>
 
             
-            <AccordionItem title={"Dietary Exclusions"}>
-
+            <AccordionItem title={"Dietary Exclusions"} >
+              {/**Diets  */}
+              <Text style = {styles.headerTitle}>Diets: </Text>
+              <MultiSelect
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={dietData}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="label"
+                placeholder="Select Diets"
+                searchPlaceholder="Search Diet ..."
+                value={diet}
+                onChange={item => {
+                  console.log("Diets: ",item)
+                  setDiets([...item]);
+                }}
+                selectedStyle = {styles.selectedStyle}
+                
+              />
+              {/**Intolerances  */}
+              <Text style = {styles.headerTitle}>Intolerances: </Text>
+              <MultiSelect
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={intolerancesData}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="label"
+                placeholder="Select Intolerances"
+                searchPlaceholder="Search Intolerances ..."
+                value={intolerances}
+                onChange={item => {
+                  console.log("Intolerances: ", item)
+                  setIntolerances([...item]); 
+                }}
+                selectedStyle = {styles.selectedStyle}
+                
+              />
             </AccordionItem>
           </SafeAreaView>
       </Modal>
@@ -149,9 +222,11 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
     dropdown: {
       height: 50,
+      width:256,
       backgroundColor: 'transparent',
       borderBottomColor: 'gray',
       borderBottomWidth: 0.5,
+      marginBottom:10
     },
     placeholderStyle: {
       fontSize: 16,
