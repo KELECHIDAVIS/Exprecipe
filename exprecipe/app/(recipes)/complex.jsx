@@ -4,6 +4,8 @@ import { AccordionItem } from '../../components/AccordionItem';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import { RadioButton } from 'react-native-paper';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import cuisineData from '../../assets/cuisineData';
 export default function ComplexRecipePage() {
   // filtering options
   const [cuisines, setCuisines]  = useState([]); 
@@ -100,7 +102,27 @@ export default function ComplexRecipePage() {
 
             
             <AccordionItem title={"Meal Types"}>
-
+              <MultiSelect
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={cuisineData}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="label"
+                placeholder="Select Cuisines"
+                searchPlaceholder="Search Cuisine ..."
+                value={cuisines}
+                onChange={item => {
+                  console.log("Item: ",item)
+                  setCuisines([...item]);
+                }}
+                selectedStyle = {styles.selectedStyle}
+                
+              />
             </AccordionItem>
 
             
@@ -124,4 +146,31 @@ const styles = StyleSheet.create({
     borderWidth:1,
     padding:5
   }, 
+  container: { padding: 16 },
+    dropdown: {
+      height: 50,
+      backgroundColor: 'transparent',
+      borderBottomColor: 'gray',
+      borderBottomWidth: 0.5,
+    },
+    placeholderStyle: {
+      fontSize: 16,
+    },
+    selectedTextStyle: {
+      fontSize: 14,
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
+    },
+    icon: {
+      marginRight: 5,
+    },
+    selectedStyle: {
+      borderRadius: 12,
+    },
 })
