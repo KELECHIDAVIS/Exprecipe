@@ -308,7 +308,7 @@ export default function PantryPage() {
         })
         
         const addedIngrsList = response.data; 
-        console.log("reponse list: ", addedIngrsList); 
+        //console.log("reponse list: ", addedIngrsList); 
         
         // add to ingr list to front of the list 
         setIngredients(prevIngredients=> [...addedIngrsList , ...prevIngredients])

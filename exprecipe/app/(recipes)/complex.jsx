@@ -62,12 +62,12 @@ export default function ComplexRecipePage() {
       try {
         // make request based on user, and options, max results is 100
         const url = `${apiUrl}/${user.id}/recipe/possible/complex?numberOfRecipes=${numResults}&sort=${sort}&ignorePantry=${ignorePantry}&cuisines=${cuisines.join(',')}&type=${mealType}&maxReadyTime=${maxReadyTime}&minServings=${minServings}&diets=${diets.join(',')}&intolerances=${intolerances.join(',')}`; 
-        console.log("URL: ", url)
+        //console.log("URL: ", url)
         const response = await axios.get(url)
 
 
         const recipeList = response.data.results; // check the api response format 
-        console.log("Response: ",response.data)
+        //console.log("Response: ",response.data)
         // setRecipes
         if(recipeList)
           setRecipes([...recipeList]); 
