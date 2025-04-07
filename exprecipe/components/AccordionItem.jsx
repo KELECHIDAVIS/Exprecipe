@@ -32,11 +32,11 @@ export const AccordionItem = ({ title, children }) => {
           backgroundColor: '#e0e0e0',
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: '600' }}>{title}</Text>
+        <Text style={{ fontSize: 24, fontWeight: '600' }}>{title}</Text>
         <Animated.View style={{
           transform: [{ rotate: expanded ? '180deg' : '0deg' }],
         }}>
-          <Entypo name="chevron-down" size={24} color="black" />
+          <Entypo name="chevron-down" size={26} color="black" />
         </Animated.View>
       </TouchableOpacity>
 

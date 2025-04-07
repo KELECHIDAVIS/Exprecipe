@@ -101,7 +101,7 @@ export default function SimpleRecipesPage() {
               <View style={styles.filterContainer}>
                 <View style={styles.innerOptionsFormat}>
                   <Text style={styles.filterText}>Results</Text>
-                  <TextInput style={styles.resultsTextInput} keyboardType='number-pad' onChangeText={setNumResults} value={numResults} placeholder={""+numResults} onSubmitEditing={Keyboard.dismiss} />
+                  <TextInput style={styles.resultsTextInput} keyboardType='number-pad' placeholderTextColor="black" onChangeText={setNumResults} value={numResults} placeholder={""+numResults} onSubmitEditing={Keyboard.dismiss} />
                 </View>
 
                 {/**The other two launch modals where the user can get more info and customize their search= */}
