@@ -8,3 +8,7 @@ Exprecipe is an app that allows the user to take a picture of their fridge or pa
 ![image](https://github.com/user-attachments/assets/448ee615-280d-4e28-9ba3-285097e9e8fe)
 
 
+Full Demo: 
+https://drive.google.com/file/d/1EvhjcI3VvDe99QtBVbCSetYTnTsBqAuI/view?usp=sharing
+
+
