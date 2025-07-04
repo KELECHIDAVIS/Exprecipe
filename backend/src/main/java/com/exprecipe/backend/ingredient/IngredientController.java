@@ -1,9 +1,12 @@
 package com.exprecipe.backend.ingredient;
 
 
+import java.time.Duration;
+
 import com.exprecipe.backend.user.UserService;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userIngr.UserIngredientService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +16,29 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
+
 @RestController
 @RequestMapping("/api/v1/user")
 public class IngredientController {
     private final UserService userService;
     private final IngredientService ingredientService;
     private final UserIngredientService userIngredientService;
+    private final int BASIC_USER_SCAN_LIMIT = 3;
+    private final int PREMIUM_USER_SCAN_LIMIT = 10;
+    private final Bucket bucket;  // amt of reqs that can be made per client
 
     @Autowired
     public IngredientController(UserService userService, IngredientService ingredientService, UserIngredientService userIngredientService) {
         this.userService = userService;
         this.ingredientService = ingredientService;
         this.userIngredientService = userIngredientService;
+
+        // set scan limit based on user's status 
+        
+        this.bucket = Bucket.builder().addLimit(limit -> limit.capacity(BASIC_USER_SCAN_LIMIT).refillGreedy(BASIC_USER_SCAN_LIMIT, Duration.ofDays(1))).build(); 
     }
 
     /*
@@ -75,7 +89,12 @@ public class IngredientController {
     */
     @PostMapping("/{user}/ingredient/detect")
     public ResponseEntity<String> detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
-        System.out.println(imageFile);
+        
+        // if reached max scans for the day
+        if (!bucket.tryConsume(1))
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("You've Reached Your Max Scans For Today. Upgrade To Premium To Have More! ");
+
+
         try{
             return ingredientService.detectIngredientsInImage(imageFile);
         }catch (Exception e) {
