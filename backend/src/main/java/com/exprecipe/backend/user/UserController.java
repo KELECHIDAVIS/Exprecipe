@@ -38,6 +38,11 @@ public class UserController {
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id)   ;
     }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<User> setUserToPremium(@PathVariable Long id){
+        return userService.setUserToPremium(id) ; 
+    }
 
 
 }

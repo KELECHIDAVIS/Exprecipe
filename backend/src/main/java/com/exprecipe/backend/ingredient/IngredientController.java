@@ -1,11 +1,12 @@
 package com.exprecipe.backend.ingredient;
 
 
-import java.time.Duration;
 
 import com.exprecipe.backend.user.UserService;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userIngr.UserIngredientService;
+import com.exprecipe.backend.user.UserRepo;
+import com.exprecipe.backend.user.User; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,31 +15,30 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
+import io.github.bucket4j.ConsumptionProbe;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
+
 public class IngredientController {
     private final UserService userService;
     private final IngredientService ingredientService;
     private final UserIngredientService userIngredientService;
-    private final int BASIC_USER_SCAN_LIMIT = 3;
-    private final int PREMIUM_USER_SCAN_LIMIT = 10;
-    private final Bucket bucket;  // amt of reqs that can be made per client
-
+    private PricingPlanService pricingPlanService; 
+    private final UserRepo userRepo; 
     @Autowired
-    public IngredientController(UserService userService, IngredientService ingredientService, UserIngredientService userIngredientService) {
+    public IngredientController(UserRepo userRepo, UserService userService, IngredientService ingredientService, UserIngredientService userIngredientService) {
         this.userService = userService;
         this.ingredientService = ingredientService;
         this.userIngredientService = userIngredientService;
-
+        this.userRepo = userRepo; 
         // set scan limit based on user's status 
         
-        this.bucket = Bucket.builder().addLimit(limit -> limit.capacity(BASIC_USER_SCAN_LIMIT).refillGreedy(BASIC_USER_SCAN_LIMIT, Duration.ofDays(1))).build(); 
     }
 
     /*
@@ -87,19 +87,36 @@ public class IngredientController {
     POST detects ingredients within inputted image and returns a list of detected ingredient names as a comma separated string
     IT'S RATE LIMITED PER USER, AVG USERS GET 3 CALLS PER DAY, PREMIUM GET 10
     */
-    @PostMapping("/{user}/ingredient/detect")
-    public ResponseEntity<String> detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
+    @PostMapping("/{userID}/ingredient/detect")
+    public ResponseEntity<String> detectIngredientsInImage(@PathVariable(value="userID") Long userID ,@RequestPart("image") MultipartFile imageFile) {
         
-        // if reached max scans for the day
-        if (!bucket.tryConsume(1))
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("You've Reached Your Max Scans For Today. Upgrade To Premium To Have More! ");
+        // get user premium status in string form 
+        Optional<User> userOpt = userRepo.findById(userID); 
+        
+        if(userOpt.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "User Doesn't Exist ");
 
+        boolean isPremium = userOpt.get().isPremiumUser(); 
 
-        try{
-            return ingredientService.detectIngredientsInImage(imageFile);
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
+        Bucket bucket = pricingPlanService.resolveBucket(Boolean.toString(isPremium)); 
+        ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
+
+        // can also return the amount of calls remaining for user but not neccesary for now 
+        if (probe.isConsumed()) {
+            try{
+                return ingredientService.detectIngredientsInImage(imageFile);
+            }catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
+            }
         }
+
+
+
+        //long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+            //.header("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitForRefill))
+            .body("You Have Exceeded Your Scan Limit For Today. Upgrade To Premium For More Daily Usage!");
+        
     }
 
     @GetMapping("/{user}/ingredient/search")

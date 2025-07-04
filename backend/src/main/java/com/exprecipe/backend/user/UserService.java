@@ -32,6 +32,7 @@ public class UserService {
         User savedUser = userRepo.save(user);
         return ResponseEntity.ok(savedUser);
     }
+
     @Transactional // so that we can see the instructions of recipes
     public ResponseEntity<User> getUserById(long id) {
         Optional<User> user = userRepo.findById(id);
@@ -53,6 +54,18 @@ public class UserService {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    public ResponseEntity<User> setUserToPremium(Long id) {
+        Optional<User> user = userRepo.findById(id);
+        if (user.isPresent()) {
+            User userAct = user.get(); 
+            userAct.setPremiumUser(true);
+            userRepo.save(userAct); 
+            return new ResponseEntity<>(userAct, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        
     }
 
 }
