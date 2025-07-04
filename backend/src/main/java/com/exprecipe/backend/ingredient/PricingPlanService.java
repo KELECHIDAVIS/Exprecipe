@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 class PricingPlanService {
     
     private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+    
 
     public Bucket resolveBucket(String isPremium) {
         return cache.computeIfAbsent(isPremium, this::newBucket);

@@ -98,6 +98,7 @@ public class IngredientController {
 
         boolean isPremium = userOpt.get().isPremiumUser(); 
 
+        pricingPlanService = new PricingPlanService();
         Bucket bucket = pricingPlanService.resolveBucket(Boolean.toString(isPremium)); 
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
