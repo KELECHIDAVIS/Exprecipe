@@ -71,7 +71,8 @@ public class IngredientController {
 
     /*
     POST detects ingredients within inputted image and returns a list of detected ingredient names as a comma separated string
-     */
+    IT'S RATE LIMITED PER USER, AVG USERS GET 3 CALLS PER DAY, PREMIUM GET 10
+    */
     @PostMapping("/{user}/ingredient/detect")
     public ResponseEntity<String> detectIngredientsInImage(@RequestPart("image") MultipartFile imageFile) {
         System.out.println(imageFile);

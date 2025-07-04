@@ -36,7 +36,8 @@ dependencies {
 	implementation group: 'com.google.cloud', name: 'google-cloud-vertexai', version: '1.18.0'
 	// https://mvnrepository.com/artifact/com.google.cloud/google-cloud-storage
 	implementation group: 'com.google.cloud', name: 'google-cloud-storage', version: '2.48.2'
-
+	// https://mvnrepository.com/artifact/com.bucket4j/bucket4j-core
+	implementation("com.bucket4j:bucket4j-core:8.7.0")
 
 }
 
