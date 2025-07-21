@@ -24,11 +24,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.net.http;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.http.*;
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
@@ -48,11 +48,6 @@ public class IngredientService {
         this.userRepo = userRepo;
         this.userIngredientRepo = userIngredientRepo;
     }
-
-
-
-
-
 
 
 
@@ -82,19 +77,44 @@ public class IngredientService {
 
         // otherwise call api then save the results
 
-        String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+3+"&metaInformation=true";
-        RestTemplate restTemplate = new RestTemplate();
+        // String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+3+"&metaInformation=true";
+        // RestTemplate restTemplate = new RestTemplate();
+    
+        String uri = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search" +
+            "?query=" + search+
+            "&number=3" ; 
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("x-rapidapi-key", apiKey)
+                .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+                .GET()
+                .build();
+
 
         
         try{
-            ResponseEntity<SpoonacularIngredient[]> list=  restTemplate.getForEntity(apiURL,SpoonacularIngredient[].class );
+           HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // For each sp ingr translate and save the result to ingredient
-            for(int i = 0; i< list.getBody().length; i++){
-                translateAndSaveSpIngredient(list.getBody()[i]);
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+
+                ObjectMapper mapper = new ObjectMapper();
+                IngredientsResponse ingredientsResponse = mapper.readValue(responseBody, IngredientsResponse.class);
+
+                SpoonacularIngredient[] ingredients = ingredientsResponse.getResults();
+
+                for (SpoonacularIngredient ingredient : ingredients) {
+                    translateAndSaveSpIngredient(ingredient);
+                }
+
+                return ResponseEntity.ok(ingredients);
+            } else {
+                return ResponseEntity.status(response.statusCode()).body(new SpoonacularIngredient[0]);
             }
-
-            return ResponseEntity.ok().body(list.getBody());
+            
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
         }
