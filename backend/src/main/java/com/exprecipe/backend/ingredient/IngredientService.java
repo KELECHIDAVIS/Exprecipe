@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.*;
+import com.exprecipe.backend.ingredient.IngredientResponse;
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
@@ -114,7 +115,7 @@ public class IngredientService {
             } else {
                 return ResponseEntity.status(response.statusCode()).body(new SpoonacularIngredient[0]);
             }
-            
+
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
         }
