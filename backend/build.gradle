@@ -39,6 +39,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.bucket4j/bucket4j-core
 	implementation("com.bucket4j:bucket4j-core:8.7.0")
 
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+	implementation("com.fasterxml.jackson.core:jackson-core:2.19.2")
+
 }
 
 tasks.named('test') {

@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
-
+import java.net.http;
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
@@ -85,6 +85,7 @@ public class IngredientService {
         String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+3+"&metaInformation=true";
         RestTemplate restTemplate = new RestTemplate();
 
+        
         try{
             ResponseEntity<SpoonacularIngredient[]> list=  restTemplate.getForEntity(apiURL,SpoonacularIngredient[].class );
 
