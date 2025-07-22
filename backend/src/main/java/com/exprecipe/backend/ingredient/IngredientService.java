@@ -4,6 +4,7 @@ import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userIngr.UserIngredientRepo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
@@ -98,8 +99,15 @@ public class IngredientService {
         }   
         
         // map response string into ingredient response object
-        ObjectMapper objMapper = new ObjectMapper(); 
-        IngredientResponse ingrResponse =objMapper.readValue(response.body(), IngredientResponse.class) ; 
+        ObjectMapper objMapper = new ObjectMapper();
+        IngredientResponse ingrResponse = null;
+
+        try {
+            ingrResponse = objMapper.readValue(response.body(), IngredientResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+            return ResponseEntity.badRequest().body(new SpoonacularIngredient[0]);
+        }
 
         //now for each spoonacular ingredient within the ingr response save into the db so we can retrieve if we ever call again 
         for (SpoonacularIngredient ingr : ingrResponse.getResults()){

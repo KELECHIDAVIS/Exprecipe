@@ -2,6 +2,7 @@ package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.ingredient.IngredientRepo;
+import com.exprecipe.backend.ingredient.SpoonacularIngredient;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.net.http.*;
 import java.net.URI;
 import java.util.List;
@@ -188,7 +191,14 @@ public class RecipeService {
             .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = null;
+            try {
+                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
@@ -223,7 +233,14 @@ public class RecipeService {
             .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
             .method("GET", HttpRequest.BodyPublishers.noBody())
             .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = null;
+            try {
+                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
@@ -265,7 +282,13 @@ public class RecipeService {
 		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 		.method("GET", HttpRequest.BodyPublishers.noBody())
 		.build();
-HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+            HttpResponse<String> response = null;
+            try {
+                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
