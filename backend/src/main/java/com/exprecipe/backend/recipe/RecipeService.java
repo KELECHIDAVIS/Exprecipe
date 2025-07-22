@@ -194,10 +194,8 @@ public class RecipeService {
             HttpResponse<String> response = null;
             try {
                 response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
@@ -236,10 +234,8 @@ public class RecipeService {
             HttpResponse<String> response = null;
             try {
                 response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
@@ -287,7 +283,7 @@ public class RecipeService {
             try {
                 response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }

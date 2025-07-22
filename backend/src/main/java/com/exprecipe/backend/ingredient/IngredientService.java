@@ -90,7 +90,13 @@ public class IngredientService {
 		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 		.method("GET", HttpRequest.BodyPublishers.noBody())
 		.build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = null;
+        try {
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
         System.out.println(response.body());
         
         if (response.statusCode() != 200 ){
@@ -105,7 +111,6 @@ public class IngredientService {
         try {
             ingrResponse = objMapper.readValue(response.body(), IngredientResponse.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
             return ResponseEntity.badRequest().body(new SpoonacularIngredient[0]);
         }
 
