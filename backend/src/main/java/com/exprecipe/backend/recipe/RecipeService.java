@@ -230,6 +230,10 @@ public class RecipeService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+
+
+    //THERE IS SOMETHING WEIRD GOING ON WITH THIS REQUEST FOR CERTAIN RECIPE TYPES HAVE TO LOOK INTO MORE
+    //MAYBE CHANGE COMPLEX SEARCH INTO QUERY BASED WITH FILTERS (query: burger ) 
     public ResponseEntity<String> getPossibleRecipesComplex(Long userId, int numberOfRecipes, boolean ignorePantry , String cuisines, String type , int maxReadyTime, int minServings, String sort, String diets, String intolerances) {
         Optional<User> possibleUser = userRepo.findById(userId);
 
@@ -243,8 +247,8 @@ public class RecipeService {
             String formattedIngredients = formatIngredientList(ingrList);
 
             // format cuisines, diets, intolerances into comma seperated lists
-            String apiURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey="+apiKey
-                    +"&includeIngredients="+formattedIngredients
+            String apiURL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/searchComplex?"
+                    +"includeIngredients="+formattedIngredients
                     +"&number="+Math.min(100, numberOfRecipes)
                     +"&sort="+sort
                     +"&ignorePantry="+ignorePantry
@@ -252,15 +256,17 @@ public class RecipeService {
                     +"&type="+type
                     +"&maxReadyTime="+maxReadyTime
                     +"&minServings="+Math.max(1,minServings)
-                    +"&diets="+diets
+                    +"&diet="+diets
                     +"&intolerances="+intolerances;
 
-            RestTemplate restTemplate = new RestTemplate();
-            String responseEntity = restTemplate.getForObject(apiURL, String.class);
-
-
-
-            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+          HttpRequest request = HttpRequest.newBuilder()
+		.uri(URI.create(apiURL))
+		.header("x-rapidapi-key", apiKey)
+		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+		.method("GET", HttpRequest.BodyPublishers.noBody())
+		.build();
+HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
