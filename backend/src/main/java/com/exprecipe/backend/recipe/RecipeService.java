@@ -177,6 +177,10 @@ public class RecipeService {
             RestTemplate restTemplate = new RestTemplate();
             String responseEntity = restTemplate.getForObject(apiURL, String.class);
 
+            // ADD DIET, INTOLERANCES , AND ALL OTHER FILTERS HERE 
+            // String uri = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch"+
+            // "?query=side%20salad&instructionsRequired=true&fillIngredients=false&addRecipeInformation=false&addRecipeInstructions=false&addRecipeNutrition=false&maxReadyTime=45&ignorePantry=true&sort=max-used-ingredients&offset=0&number=10"; 
+            
 
 
             return ResponseEntity.status(HttpStatus.OK).body(responseEntity);

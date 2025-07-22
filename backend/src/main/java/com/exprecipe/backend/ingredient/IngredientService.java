@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.*;
+import java.net.URI;
 import com.exprecipe.backend.ingredient.IngredientResponse;
 @Service
 public class IngredientService {
@@ -78,47 +79,33 @@ public class IngredientService {
 
         // otherwise call api then save the results
 
-        // String apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+search+"&number="+3+"&metaInformation=true";
-        // RestTemplate restTemplate = new RestTemplate();
-    
-        String uri = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search" +
-            "?query=" + search+
-            "&number=3" ; 
-
-        HttpClient client = HttpClient.newHttpClient();
-
+        // call rapid api , return three possible ingredients 
+        // rapid api returns in the form of ingredient response, first translate into that 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .header("x-rapidapi-key", apiKey)
-                .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-                .GET()
-                .build();
-
-
+		.uri(URI.create("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
+        "?query="+search+
+        "&number=3&metaInformation=false&offset=0"))
+		.header("x-rapidapi-key",  apiKey)
+		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+		.method("GET", HttpRequest.BodyPublishers.noBody())
+		.build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
         
-        try{
-           HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200 ){
+            // failed response 
+           return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
+        }   
+        
+        // map response string into ingredient response object
+        ObjectMapper objMapper = new ObjectMapper(); 
+        IngredientResponse ingrResponse =objMapper.readValue(response.body(), IngredientResponse.class) ; 
 
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-
-                ObjectMapper mapper = new ObjectMapper();
-                IngredientsResponse ingredientsResponse = mapper.readValue(responseBody, IngredientsResponse.class);
-
-                SpoonacularIngredient[] ingredients = ingredientsResponse.getResults();
-
-                for (SpoonacularIngredient ingredient : ingredients) {
-                    translateAndSaveSpIngredient(ingredient);
-                }
-
-                return ResponseEntity.ok(ingredients);
-            } else {
-                return ResponseEntity.status(response.statusCode()).body(new SpoonacularIngredient[0]);
-            }
-
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
+        //now for each spoonacular ingredient within the ingr response save into the db so we can retrieve if we ever call again 
+        for (SpoonacularIngredient ingr : ingrResponse.getResults()){
+            translateAndSaveSpIngredient(ingr)  ; 
         }
+        return ResponseEntity.ok(ingrResponse.getResults()); 
     };
 
 
