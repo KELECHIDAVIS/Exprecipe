@@ -81,15 +81,18 @@ public class IngredientService {
         // otherwise call api then save the results
 
         // call rapid api , return three possible ingredients 
-        // rapid api returns in the form of ingredient response, first translate into that 
+        // rapid api returns in the form of ingredient response, first translate into that
+        String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
+                "?query="+search+
+                "&number=3&metaInformation=false&offset=0";
+        
         HttpRequest request = HttpRequest.newBuilder()
-		.uri(URI.create("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
-        "?query="+search+
-        "&number=3&metaInformation=false&offset=0"))
+		.uri(URI.create(apiUrl))
 		.header("x-rapidapi-key",  apiKey)
 		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 		.method("GET", HttpRequest.BodyPublishers.noBody())
 		.build();
+
 
         HttpResponse<String> response = null;
         try {
@@ -98,6 +101,7 @@ public class IngredientService {
             return ResponseEntity.badRequest().build();
         }
         System.out.println(response.body());
+
         
         if (response.statusCode() != 200 ){
             // failed response 
