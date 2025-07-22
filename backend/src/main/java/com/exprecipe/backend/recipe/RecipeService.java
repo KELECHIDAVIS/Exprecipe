@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.http.*;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -173,17 +175,22 @@ public class RecipeService {
 
             // api request
 
-            String apiURL = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+apiKey+"&ingredients="+formattedIngredients+"&number="+numberOfRecipes+"&ranking="+ranking+"&ignorePantry="+ignorePantry;
-            RestTemplate restTemplate = new RestTemplate();
-            String responseEntity = restTemplate.getForObject(apiURL, String.class);
+            String apiURL ="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
+            +"?ingredients="+formattedIngredients
+            +"&number="+numberOfRecipes
+            +"&ranking="+ranking
+            +"&ignorePantry="+ignorePantry;
 
-            // ADD DIET, INTOLERANCES , AND ALL OTHER FILTERS HERE 
-            // String uri = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch"+
-            // "?query=side%20salad&instructionsRequired=true&fillIngredients=false&addRecipeInformation=false&addRecipeInstructions=false&addRecipeNutrition=false&maxReadyTime=45&ignorePantry=true&sort=max-used-ingredients&offset=0&number=10"; 
-            
+            // the result is just a list of ingredients so just return as a string 
+           HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(apiURL))
+            .header("x-rapidapi-key",apiKey)
+            .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-
-            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+            return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -208,12 +215,17 @@ public class RecipeService {
     public ResponseEntity<String> getRecipeInformation(Long userId, Integer recipeSpId) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
-            String apiUrl = "https://api.spoonacular.com/recipes/" + recipeSpId + "/information?apiKey=" + apiKey;
+            String apiUrl ="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + recipeSpId + "/information" ;
 
-            RestTemplate restTemplate = new RestTemplate();
-            String responseEntity = restTemplate.getForObject(apiUrl, String.class);
+            HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(apiUrl))
+            .header("x-rapidapi-key", apiKey)
+            .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-            return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+            return ResponseEntity.status(HttpStatus.OK).body(response.body());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

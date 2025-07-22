@@ -181,7 +181,7 @@ public class IngredientService {
         //Configure are uri so the model can detect
         String cloudStorageUri = "gs://" + bucketName + "/" + fileName;
 
-        String output = detectIngredients(projectId, "us-central1","gemini-1.5-flash-001", cloudStorageUri);
+        String output = detectIngredients(projectId, "us-central1","gemini-2.0-flash-lite", cloudStorageUri);
 
 
         // now try to delete it from the bucket after ingredients are detected
