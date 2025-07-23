@@ -274,7 +274,7 @@ public class RecipeService {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-            return response; 
+            return response;
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

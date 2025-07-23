@@ -26,6 +26,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -46,6 +48,9 @@ public class IngredientService {
     private String projectId;
     @Value("${api.key}")
     private String apiKey;
+    // Inject the environment variable GOOGLE_APPLICATION_CREDENTIALS_JSON
+    @Value("${GOOGLE_APPLICATION_CREDENTIALS_JSON:}")
+    private String googleCredentialsJson;
 
     @Autowired
     public IngredientService(IngredientRepo ingredientRepo, UserRepo userRepo, UserIngredientRepo userIngredientRepo) {
@@ -152,18 +157,34 @@ public class IngredientService {
 
 
     public ResponseEntity<String> detectIngredientsInImage(MultipartFile imageFile) throws IOException {
-        return ResponseEntity.ok().body(scanImage(imageFile)) ;
+
+        // first make sure credentials are valid
+        GoogleCredentials credentials= null;
+        try (ByteArrayInputStream stream = new ByteArrayInputStream(googleCredentialsJson.getBytes())) {
+             credentials = GoogleCredentials.fromStream(stream)
+                    .createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform")); // Or specific Vision API scope
+
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("Error creating ImageAnnotatorClient from JSON config var: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error verifying google cloud credentials: " + e.getMessage());
+        }
+
+        if (credentials == null) {
+            return ResponseEntity.badRequest().body("Google Cloud credentials were null ");
+        }
+        return ResponseEntity.ok().body(scanImage(imageFile, credentials)) ;
     }
 
 
     /*
     Returns list of ingredients names detected within image
      */
-    public  String scanImage(MultipartFile file) throws IOException {
+    public  String scanImage(MultipartFile file, GoogleCredentials credentials) throws IOException {
         // file name has to be unique to user
         String fileName = UUID.randomUUID().toString().replace("-","") + ".jpg";
         //connect to google cloud storage
-        Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.getApplicationDefault()).build().getService();
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         Bucket bucket = storage.get(bucketName) ;
 
         // Upload blob to bucket
@@ -183,11 +204,11 @@ public class IngredientService {
 
         // now try to delete it from the bucket after ingredients are detected
 
-        deleteImageFromBucket(fileName, cloudStorageUri);
+        deleteImageFromBucket(fileName, cloudStorageUri , credentials);
         return output;
     }
 
-    private void deleteImageFromBucket(String fileName, String cloudStorageUri) {
+    private void deleteImageFromBucket(String fileName, String cloudStorageUri, GoogleCredentials credentials ) {
         try {
             // 1. Extract bucket name and file path from the URI
             String[] parts = cloudStorageUri.substring("gs://".length()).split("/", 2);
@@ -195,7 +216,7 @@ public class IngredientService {
             String filePath = parts[1];
 
             // 2. Delete the blob (file)
-            Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.getApplicationDefault()).build().getService();
+            Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
             BlobId blobId = BlobId.of(bucketName, filePath);
             boolean deleted = storage.delete(blobId);
 
