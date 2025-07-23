@@ -20,8 +20,9 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.*;
 import java.net.URI;
 import com.exprecipe.backend.ingredient.IngredientResponse;
+
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
@@ -85,38 +87,16 @@ public class IngredientService {
         String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
                 "?query="+search+
                 "&number=3&metaInformation=false&offset=0";
-        
-        HttpRequest request = HttpRequest.newBuilder()
-		.uri(URI.create(apiUrl))
-		.header("x-rapidapi-key",  apiKey)
-		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-		.method("GET", HttpRequest.BodyPublishers.noBody())
-		.build();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-rapidapi-key", apiKey);
+        headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
-        HttpResponse<String> response = null;
-        try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-        System.out.println(response.body());
+        // make get call to rapid api
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<IngredientResponse> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
 
-        
-        if (response.statusCode() != 200 ){
-            // failed response 
-           return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
-        }   
-        
-        // map response string into ingredient response object
-        ObjectMapper objMapper = new ObjectMapper();
-        IngredientResponse ingrResponse = null;
-
-        try {
-            ingrResponse = objMapper.readValue(response.body(), IngredientResponse.class);
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().body(new SpoonacularIngredient[0]);
-        }
+        IngredientResponse ingrResponse = response.getBody();
 
         //now for each spoonacular ingredient within the ingr response save into the db so we can retrieve if we ever call again 
         for (SpoonacularIngredient ingr : ingrResponse.getResults()){
