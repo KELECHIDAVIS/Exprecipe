@@ -155,7 +155,6 @@ public class IngredientService {
         return ResponseEntity.badRequest().build();
     }
 
-
     public ResponseEntity<String> detectIngredientsInImage(MultipartFile imageFile) throws IOException {
 
         // first make sure credentials are valid
@@ -199,7 +198,7 @@ public class IngredientService {
         //Configure are uri so the model can detect
         String cloudStorageUri = "gs://" + bucketName + "/" + fileName;
 
-        String output = detectIngredients(projectId, "us-central1","gemini-2.0-flash-lite", cloudStorageUri);
+        String output = detectIngredients(projectId, "us-central1","gemini-2.0-flash-lite", cloudStorageUri,credentials);
 
 
         // now try to delete it from the bucket after ingredients are detected
@@ -230,11 +229,18 @@ public class IngredientService {
     }
 
     //Uses gemini model to detect ingredients in the image
-    private String detectIngredients( String projectId, String location, String modelName, String cloudStorageUri) throws IOException {
+    private String detectIngredients( String projectId, String location, String modelName, String cloudStorageUri, GoogleCredentials credentials) throws IOException {
         // Initialize client that will be used to send requests. This client only needs
         // to be created once, and can be reused for multiple requests.
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            // response will be in a json list of strings
+        // Initialize client that will be used to send requests. This client only needs
+        // to be created once, and can be reused for multiple requests.
+        // Pass the credentials directly to the VertexAI constructor
+        try (VertexAI vertexAI = new VertexAI.Builder()
+                .setProjectId(projectId)
+                .setLocation(location)
+                .setCredentials(credentials)
+                .build()) {
+
             GenerationConfig generationConfig = GenerationConfig.newBuilder()
                     .setResponseMimeType("application/json")
                     .setResponseSchema(Schema.newBuilder()
@@ -242,19 +248,16 @@ public class IngredientService {
                             .setItems(Schema.newBuilder()
                                     .setType(Type.STRING)
                                     .build())
-                            .build()
-                    )
+                            .build())
                     .build();
 
-            // generate model
             GenerativeModel model = new GenerativeModel(modelName, vertexAI)
                     .withGenerationConfig(generationConfig);
-
 
             GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
                     PartMaker.fromMimeTypeAndData("image/png", cloudStorageUri),
                     "Return a list of all the ingredients you can detect within this image. Use generic names when referring to the ingredients.\n"
-                    ));
+            ));
 
             String output = ResponseHandler.getText(response);
 
