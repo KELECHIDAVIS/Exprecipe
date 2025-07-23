@@ -2,6 +2,7 @@ package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.ingredient.Ingredient;
 import com.exprecipe.backend.ingredient.IngredientRepo;
+import com.exprecipe.backend.ingredient.IngredientResponse;
 import com.exprecipe.backend.ingredient.SpoonacularIngredient;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
@@ -13,11 +14,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.net.http.*;
@@ -184,21 +188,15 @@ public class RecipeService {
             +"&ranking="+ranking
             +"&ignorePantry="+ignorePantry;
 
-            // the result is just a list of ingredients so just return as a string 
-           HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(apiURL))
-            .header("x-rapidapi-key",apiKey)
-            .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
-            HttpResponse<String> response = null;
-            try {
-                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().build();
-            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-rapidapi-key", apiKey);
+            headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
-            return ResponseEntity.status(HttpStatus.OK).body(response.body());
+            // make get call to rapid api
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+
+            return response;
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -225,20 +223,16 @@ public class RecipeService {
         if(possibleUser.isPresent()) {
             String apiUrl ="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + recipeSpId + "/information" ;
 
-            HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(apiUrl))
-            .header("x-rapidapi-key", apiKey)
-            .header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
-            HttpResponse<String> response = null;
-            try {
-                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().build();
-            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-rapidapi-key", apiKey);
+            headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
-            return ResponseEntity.status(HttpStatus.OK).body(response.body());
+            // make get call to rapid api
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+
+
+            return response;
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -272,20 +266,15 @@ public class RecipeService {
                     +"&diet="+diets
                     +"&intolerances="+intolerances;
 
-          HttpRequest request = HttpRequest.newBuilder()
-		.uri(URI.create(apiURL))
-		.header("x-rapidapi-key", apiKey)
-		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-		.method("GET", HttpRequest.BodyPublishers.noBody())
-		.build();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-rapidapi-key", apiKey);
+            headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
-            HttpResponse<String> response = null;
-            try {
-                response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(response.body());
+            // make get call to rapid api
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+
+            return response; 
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
