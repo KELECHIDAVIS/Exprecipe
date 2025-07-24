@@ -91,7 +91,7 @@ public class IngredientService {
         // rapid api returns in the form of ingredient response, first translate into that
         String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
                 "?query="+search+
-                "&number=3&metaInformation=false&offset=0";
+                "&number=3&metaInformation=true&offset=0";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-rapidapi-key", apiKey);
