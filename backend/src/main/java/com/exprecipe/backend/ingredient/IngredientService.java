@@ -124,7 +124,14 @@ public class IngredientService {
 
         Ingredient ingr = new Ingredient();
         ingr.setName(spIngredient.getName());
-        ingr.setPossibleUnits(spIngredient.getPossibleUnits());
+        // if the possible units is null or empty just give default 
+        List<String> units = spIngredient.getPossibleUnits(); 
+        if(units == null || units.isEmpty())
+            units  = new ArrayList<String>() {{
+                add("g");
+                add("oz");
+            }};
+        ingr.setPossibleUnits(units);
         ingr.setSpID(spIngredient.getId());
         ingr.setAisle(spIngredient.getAisle());
         String imageUrl = spIngredient.getImage().startsWith("http") ?  spIngredient.getImage() : "https://img.spoonacular.com/ingredients_100x100/"+spIngredient.getImage() ;
