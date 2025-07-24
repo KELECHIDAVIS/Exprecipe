@@ -1,5 +1,4 @@
-// rapid api returns in this format
-package com.exprecipe.backend.ingredient;
+// rapid api returns in this format 
 import com.exprecipe.backend.ingredient.SpoonacularIngredient;
 public class IngredientResponse{
     private SpoonacularIngredient[] results; 

@@ -1,9 +1,8 @@
 {
   "expo": {
-    "scheme": "exprecipe-scheme",
+    "scheme":"exprecipe-scheme",
     "name": "exprecipe",
     "slug": "exprecipe",
-    "owner": "kboss",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,11 +14,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.kboss.exprecipe",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -33,14 +28,6 @@
     },
     "plugins": [
       "expo-router"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "626d6479-e65e-4e8b-b66c-4c5c9833b7ab"
-      }
-    }
+    ]
   }
 }

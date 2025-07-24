@@ -4,7 +4,6 @@ import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import com.exprecipe.backend.user.userIngr.UserIngredient;
 import com.exprecipe.backend.user.userIngr.UserIngredientRepo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
@@ -20,14 +19,11 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -35,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.*;
 import java.net.URI;
 import com.exprecipe.backend.ingredient.IngredientResponse;
-
 @Service
 public class IngredientService {
     private final IngredientRepo ingredientRepo;
@@ -48,9 +43,6 @@ public class IngredientService {
     private String projectId;
     @Value("${api.key}")
     private String apiKey;
-    // Inject the environment variable GOOGLE_APPLICATION_CREDENTIALS_JSON
-    @Value("${GOOGLE_APPLICATION_CREDENTIALS_JSON:}")
-    private String googleCredentialsJson;
 
     @Autowired
     public IngredientService(IngredientRepo ingredientRepo, UserRepo userRepo, UserIngredientRepo userIngredientRepo) {
@@ -88,20 +80,26 @@ public class IngredientService {
         // otherwise call api then save the results
 
         // call rapid api , return three possible ingredients 
-        // rapid api returns in the form of ingredient response, first translate into that
-        String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
-                "?query="+search+
-                "&number=3&metaInformation=false&offset=0";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("x-rapidapi-key", apiKey);
-        headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
-
-        // make get call to rapid api
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<IngredientResponse> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
-
-        IngredientResponse ingrResponse = response.getBody();
+        // rapid api returns in the form of ingredient response, first translate into that 
+        HttpRequest request = HttpRequest.newBuilder()
+		.uri(URI.create("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
+        "?query="+search+
+        "&number=3&metaInformation=true&offset=0"))
+		.header("x-rapidapi-key",  apiKey)
+		.header("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+		.method("GET", HttpRequest.BodyPublishers.noBody())
+		.build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        
+        if (response.statusCode() != 200 ){
+            // failed response 
+           return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new SpoonacularIngredient[0]);
+        }   
+        
+        // map response string into ingredient response object
+        ObjectMapper objMapper = new ObjectMapper(); 
+        IngredientResponse ingrResponse =objMapper.readValue(response.body(), IngredientResponse.class) ; 
 
         //now for each spoonacular ingredient within the ingr response save into the db so we can retrieve if we ever call again 
         for (SpoonacularIngredient ingr : ingrResponse.getResults()){
@@ -155,35 +153,20 @@ public class IngredientService {
         return ResponseEntity.badRequest().build();
     }
 
+
     public ResponseEntity<String> detectIngredientsInImage(MultipartFile imageFile) throws IOException {
-
-        // first make sure credentials are valid
-        GoogleCredentials credentials= null;
-        try (ByteArrayInputStream stream = new ByteArrayInputStream(googleCredentialsJson.getBytes())) {
-             credentials = GoogleCredentials.fromStream(stream)
-                    .createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform")); // Or specific Vision API scope
-
-        } catch (Exception e) {
-            // Log the error for debugging
-            System.err.println("Error creating ImageAnnotatorClient from JSON config var: " + e.getMessage());
-            return ResponseEntity.badRequest().body("Error verifying google cloud credentials: " + e.getMessage());
-        }
-
-        if (credentials == null) {
-            return ResponseEntity.badRequest().body("Google Cloud credentials were null ");
-        }
-        return ResponseEntity.ok().body(scanImage(imageFile, credentials)) ;
+        return ResponseEntity.ok().body(scanImage(imageFile)) ;
     }
 
 
     /*
     Returns list of ingredients names detected within image
      */
-    public  String scanImage(MultipartFile file, GoogleCredentials credentials) throws IOException {
+    public  String scanImage(MultipartFile file) throws IOException {
         // file name has to be unique to user
         String fileName = UUID.randomUUID().toString().replace("-","") + ".jpg";
         //connect to google cloud storage
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.getApplicationDefault()).build().getService();
         Bucket bucket = storage.get(bucketName) ;
 
         // Upload blob to bucket
@@ -198,16 +181,16 @@ public class IngredientService {
         //Configure are uri so the model can detect
         String cloudStorageUri = "gs://" + bucketName + "/" + fileName;
 
-        String output = detectIngredients(projectId, "us-central1","gemini-2.0-flash-lite", cloudStorageUri,credentials);
+        String output = detectIngredients(projectId, "us-central1","gemini-2.0-flash-lite", cloudStorageUri);
 
 
         // now try to delete it from the bucket after ingredients are detected
 
-        deleteImageFromBucket(fileName, cloudStorageUri , credentials);
+        deleteImageFromBucket(fileName, cloudStorageUri);
         return output;
     }
 
-    private void deleteImageFromBucket(String fileName, String cloudStorageUri, GoogleCredentials credentials ) {
+    private void deleteImageFromBucket(String fileName, String cloudStorageUri) {
         try {
             // 1. Extract bucket name and file path from the URI
             String[] parts = cloudStorageUri.substring("gs://".length()).split("/", 2);
@@ -215,7 +198,7 @@ public class IngredientService {
             String filePath = parts[1];
 
             // 2. Delete the blob (file)
-            Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+            Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.getApplicationDefault()).build().getService();
             BlobId blobId = BlobId.of(bucketName, filePath);
             boolean deleted = storage.delete(blobId);
 
@@ -229,18 +212,11 @@ public class IngredientService {
     }
 
     //Uses gemini model to detect ingredients in the image
-    private String detectIngredients( String projectId, String location, String modelName, String cloudStorageUri, GoogleCredentials credentials) throws IOException {
+    private String detectIngredients( String projectId, String location, String modelName, String cloudStorageUri) throws IOException {
         // Initialize client that will be used to send requests. This client only needs
         // to be created once, and can be reused for multiple requests.
-        // Initialize client that will be used to send requests. This client only needs
-        // to be created once, and can be reused for multiple requests.
-        // Pass the credentials directly to the VertexAI constructor
-        try (VertexAI vertexAI = new VertexAI.Builder()
-                .setProjectId(projectId)
-                .setLocation(location)
-                .setCredentials(credentials)
-                .build()) {
-
+        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+            // response will be in a json list of strings
             GenerationConfig generationConfig = GenerationConfig.newBuilder()
                     .setResponseMimeType("application/json")
                     .setResponseSchema(Schema.newBuilder()
@@ -248,16 +224,19 @@ public class IngredientService {
                             .setItems(Schema.newBuilder()
                                     .setType(Type.STRING)
                                     .build())
-                            .build())
+                            .build()
+                    )
                     .build();
 
+            // generate model
             GenerativeModel model = new GenerativeModel(modelName, vertexAI)
                     .withGenerationConfig(generationConfig);
+
 
             GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
                     PartMaker.fromMimeTypeAndData("image/png", cloudStorageUri),
                     "Return a list of all the ingredients you can detect within this image. Use generic names when referring to the ingredients.\n"
-            ));
+                    ));
 
             String output = ResponseHandler.getText(response);
 
