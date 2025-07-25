@@ -106,7 +106,9 @@ public class IngredientController {
         if (probe.isConsumed()) {
             try{
                 System.out.println("Detection Function was successfully called");
-                return ingredientService.detectIngredientsInImage(imageFile);
+                ResponseEntity<String> detectionResponse =  ingredientService.detectIngredientsInImage(imageFile);
+                System.out.println(detectionResponse.getBody());
+                return detectionResponse; 
             }catch (Exception e) {
                 System.out.println("Detection Function error catch");
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
