@@ -90,39 +90,42 @@ public class IngredientController {
     @PostMapping("/{userID}/ingredient/detect")
     public ResponseEntity<String> detectIngredientsInImage(@PathVariable(value="userID") Long userID ,@RequestPart("image") MultipartFile imageFile) {
         
-        // get user premium status in string form 
-        Optional<User> userOpt = userRepo.findById(userID); 
-        
-        if(userOpt.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "User Doesn't Exist ");
+//        // get user premium status in string form
+//        Optional<User> userOpt = userRepo.findById(userID);
+//
+//        if(userOpt.isEmpty())
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "User Doesn't Exist ");
+//
+//        boolean isPremium = userOpt.get().isPremiumUser();
+//
+//        pricingPlanService = new PricingPlanService();
+//        Bucket bucket = pricingPlanService.resolveBucket(Boolean.toString(isPremium));
+//        ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
+//
+//        // can also return the amount of calls remaining for user but not neccesary for now
+//        if (probe.isConsumed()) {
+//            try{
+//                System.out.println("Detection Function was successfully called");
+//                ResponseEntity<String> detectionResponse =  ingredientService.detectIngredientsInImage(imageFile);
+//                System.out.println(detectionResponse.getBody());
+//                return detectionResponse;
+//            }catch (Exception e) {
+//                System.out.println("Detection Function error catch");
+//                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
+//            }
+//        }
+//
+//
+//
+//        //long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
+//        System.out.println("Probe said there were to many calls from this user already");
+//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+//            //.header("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitForRefill))
+//            .body("You Have Exceeded Your Scan Limit For Today. Upgrade To Premium For More Daily Usage!");
 
-        boolean isPremium = userOpt.get().isPremiumUser(); 
-
-        pricingPlanService = new PricingPlanService();
-        Bucket bucket = pricingPlanService.resolveBucket(Boolean.toString(isPremium)); 
-        ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
-
-        // can also return the amount of calls remaining for user but not neccesary for now 
-        if (probe.isConsumed()) {
-            try{
-                System.out.println("Detection Function was successfully called");
-                ResponseEntity<String> detectionResponse =  ingredientService.detectIngredientsInImage(imageFile);
-                System.out.println(detectionResponse.getBody());
-                return detectionResponse; 
-            }catch (Exception e) {
-                System.out.println("Detection Function error catch");
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
-            }
-        }
 
 
-
-        //long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
-        System.out.println("Probe said there were to many calls from this user already");
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-            //.header("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitForRefill))
-            .body("You Have Exceeded Your Scan Limit For Today. Upgrade To Premium For More Daily Usage!");
-        
+        return ingredientService.detectIngredientsInImage(imageFile); 
     }
 
     @GetMapping("/{user}/ingredient/search")
