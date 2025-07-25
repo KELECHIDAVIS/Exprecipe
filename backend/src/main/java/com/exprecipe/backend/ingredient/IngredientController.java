@@ -61,7 +61,9 @@ public class IngredientController {
 
     @PostMapping("/{userId}/ingredient/list")
     public ResponseEntity<List<UserIngredient>> addListOfIngredients(@PathVariable Long userId, @RequestBody List<String> ingrNames) {
-        return userIngredientService.addListOfIngredients(userId, ingrNames);
+        System.out.println("Given List: "+ ingrNames);
+        ResponseEntity<List<UserIngredient>> response =  userIngredientService.addListOfIngredients(userId, ingrNames);
+        System.out.println("Response: "+ response.getBody());
     }
     /*
     DELETE specified ingredient user ingredient
