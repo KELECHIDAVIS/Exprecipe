@@ -64,6 +64,7 @@ public class IngredientController {
         System.out.println("Given List: "+ ingrNames);
         ResponseEntity<List<UserIngredient>> response =  userIngredientService.addListOfIngredients(userId, ingrNames);
         System.out.println("Response: "+ response.getBody());
+        return response; 
     }
     /*
     DELETE specified ingredient user ingredient
