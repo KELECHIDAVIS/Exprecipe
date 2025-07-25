@@ -105,8 +105,10 @@ public class IngredientController {
         // can also return the amount of calls remaining for user but not neccesary for now 
         if (probe.isConsumed()) {
             try{
+                System.out.println("Detection Function was successfully called");
                 return ingredientService.detectIngredientsInImage(imageFile);
             }catch (Exception e) {
+                System.out.println("Detection Function error catch");
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body( "Error Detecting Ingredients: "+e.getMessage());
             }
         }
@@ -114,6 +116,7 @@ public class IngredientController {
 
 
         //long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
+        System.out.println("Probe said there were to many calls from this user already");
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
             //.header("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitForRefill))
             .body("You Have Exceeded Your Scan Limit For Today. Upgrade To Premium For More Daily Usage!");

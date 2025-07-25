@@ -264,7 +264,7 @@ public class IngredientService {
 
             GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
                     PartMaker.fromMimeTypeAndData("image/png", cloudStorageUri),
-                    "Return a list of all the ingredients you can detect within this image. Use generic names when referring to the ingredients.\n"
+                    "Return a list of all the ingredients you can detect within this image. Use generic names when referring to the ingredients. If no images detected return empty list\n"
             ));
 
             String output = ResponseHandler.getText(response);
