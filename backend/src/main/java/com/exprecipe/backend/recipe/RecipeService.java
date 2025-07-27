@@ -19,6 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -196,14 +197,17 @@ public class RecipeService {
             // make get call to rapid api
             try {
                 RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
                 ResponseEntity<List<RpdRecipeSearchByIngr>> response = restTemplate.exchange(
                         apiURL,
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
                         new ParameterizedTypeReference<List<RpdRecipeSearchByIngr>>() {}
                 );
-                System.out.println("Successful api call  ");
-                return response;
+                List<RpdRecipeSearchByIngr> recipes = response.getBody();
+                return ResponseEntity.ok(recipes);
+
             }catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error when calling getPossibleRecipes:"+ e.getMessage());

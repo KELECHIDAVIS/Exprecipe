@@ -3,9 +3,12 @@ package com.exprecipe.backend.recipe;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 // recipe returned by the search by ingredients endpoint
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RpdRecipeSearchByIngr {
     private Integer id;
     private String title;
@@ -18,6 +21,7 @@ public class RpdRecipeSearchByIngr {
     private List<RpdSpRecipeIngredient> unusedIngredients;
     private Integer likes;
 
+    public RpdRecipeSearchByIngr() {}
     public Integer getId() {
         return id;
     }

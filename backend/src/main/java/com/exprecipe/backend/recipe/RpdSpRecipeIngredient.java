@@ -18,6 +18,7 @@ public class RpdSpRecipeIngredient {
     private String extendedName;
     private String image;
 
+    public RpdSpRecipeIngredient() {}
     public Integer getId() {
         return id;
     }
