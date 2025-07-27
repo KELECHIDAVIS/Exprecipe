@@ -141,7 +141,7 @@ public class IngredientController {
 
     @GetMapping("/{user}/ingredient/search")
     public ResponseEntity<SpoonacularIngredient[]> searchIngredients( @RequestParam String search) {
-       return ingredientService.ingredientSearch(search);
+       return ingredientService.ingredientSearch(search ,3 ); // 3 by default
     }
 
 

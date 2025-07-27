@@ -99,20 +99,14 @@ public class UserIngredientService {
             // for each ingredient
             for(int i =0 ; i<ingrNames.size(); i++){
 
-                // search spoonac for ingr name (use auto complete because it returns amount and unit
+                // search ingredient name
                 // call add ingredient function with
                 // add to list
-                String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
-                        "?query="+ingrNames.get(i)+
-                        "&number=1&metaInformation=true&offset=0";
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("x-rapidapi-key", apiKey);
-                headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+                ResponseEntity<SpoonacularIngredient[]> spIngrList = ingredientService.ingredientSearch(ingrNames.get(i),1);
 
                 try{
-                    ResponseEntity<IngredientResponse> response  = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
-                    SpoonacularIngredient[] list = response.getBody().getResults();
+
+                    SpoonacularIngredient[] list = spIngrList.getBody();
 
                     // if there is an ingredient, save to db
                     if(list[0] != null) {

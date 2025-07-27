@@ -64,11 +64,11 @@ public class IngredientService {
 
     // searches api based on inputted ingredient name and return's a list of spoonac ingrs to choose from
     // returns 3 possible choices
-    public ResponseEntity<SpoonacularIngredient[]> ingredientSearch(String search) {
+    public ResponseEntity<SpoonacularIngredient[]> ingredientSearch(String search , int number) {
         // first check db to see if it returns the correct amount of ingredients
         List<Ingredient> possibleIngredients = ingredientRepo.findSimilarIngredients(search);
 
-        if(possibleIngredients!=null && possibleIngredients.size()== 3) {
+        if(possibleIngredients!=null && possibleIngredients.size()>=number) {
             // translate into spingrs then return
             List<SpoonacularIngredient> ingredients =new ArrayList<SpoonacularIngredient>();
 
@@ -92,7 +92,7 @@ public class IngredientService {
         // rapid api returns in the form of ingredient response, first translate into that
         String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
                 "?query="+search+
-                "&number=3&metaInformation=true&offset=0";
+                "&number="+number+"&metaInformation=true&offset=0";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-rapidapi-key", apiKey);
