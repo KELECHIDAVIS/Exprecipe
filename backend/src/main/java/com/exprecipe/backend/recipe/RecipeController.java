@@ -51,12 +51,6 @@ public class RecipeController {
     @GetMapping("/{userId}/recipe/possible")
     public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         ResponseEntity<List<RpdRecipeSearchByIngr>> response =  recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            System.out.println(mapper.writeValueAsString(response.getBody()));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
         return response ;
     }
