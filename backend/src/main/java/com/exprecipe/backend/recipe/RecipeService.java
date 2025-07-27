@@ -13,6 +13,7 @@ import com.exprecipe.backend.user.userrecipe.UserRecipeRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -169,7 +170,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<RpdRecipeSearchByIngr[]> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             Set<UserIngredient> ingrList = userIngredientRepo.findByUser_Id(userId);
@@ -195,11 +196,16 @@ public class RecipeService {
             // make get call to rapid api
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<RpdRecipeSearchByIngr[]> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), RpdRecipeSearchByIngr[].class);
-
+                ResponseEntity<List<RpdRecipeSearchByIngr>> response = restTemplate.exchange(
+                        apiURL,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        new ParameterizedTypeReference<List<RpdRecipeSearchByIngr>>() {}
+                );
                 System.out.println("Successful api call  ");
                 return response;
             }catch(Exception e) {
+                e.printStackTrace();
                 System.out.println("Error when calling getPossibleRecipes:"+ e.getMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
