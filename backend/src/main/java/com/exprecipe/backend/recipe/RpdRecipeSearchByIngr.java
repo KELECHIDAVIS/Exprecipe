@@ -14,8 +14,8 @@ public class RpdRecipeSearchByIngr {
     private Integer usedIngredientCount;
     private Integer missedIngredientCount;
     private List<RpdSpRecipeIngredient> missedIngredients;
-    private RpdSpRecipeIngredient usedIngredients;
-    private RpdSpRecipeIngredient unusedIngredients;
+    private List<RpdSpRecipeIngredient> usedIngredients;
+    private List<RpdSpRecipeIngredient> unusedIngredients;
     private Integer likes;
 
     public Integer getId() {
@@ -74,19 +74,19 @@ public class RpdRecipeSearchByIngr {
         this.missedIngredients = missedIngredients;
     }
 
-    public RpdSpRecipeIngredient getUsedIngredients() {
+    public List<RpdSpRecipeIngredient> getUsedIngredients() {
         return usedIngredients;
     }
 
-    public void setUsedIngredients(RpdSpRecipeIngredient usedIngredients) {
+    public void setUsedIngredients(List<RpdSpRecipeIngredient> usedIngredients) {
         this.usedIngredients = usedIngredients;
     }
 
-    public RpdSpRecipeIngredient getUnusedIngredients() {
+    public List<RpdSpRecipeIngredient> getUnusedIngredients() {
         return unusedIngredients;
     }
 
-    public void setUnusedIngredients(RpdSpRecipeIngredient unusedIngredients) {
+    public void setUnusedIngredients(List<RpdSpRecipeIngredient> unusedIngredients) {
         this.unusedIngredients = unusedIngredients;
     }
 
