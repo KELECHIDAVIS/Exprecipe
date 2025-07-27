@@ -1,15 +1,11 @@
 package com.exprecipe.backend.user.userIngr;
 
-import com.exprecipe.backend.ingredient.Ingredient;
-import com.exprecipe.backend.ingredient.IngredientRepo;
-import com.exprecipe.backend.ingredient.IngredientService;
-import com.exprecipe.backend.ingredient.SpoonacularIngredient;
+import com.exprecipe.backend.ingredient.*;
 import com.exprecipe.backend.user.User;
 import com.exprecipe.backend.user.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -106,10 +102,17 @@ public class UserIngredientService {
                 // search spoonac for ingr name (use auto complete because it returns amount and unit
                 // call add ingredient function with
                 // add to list
-                apiURL = "https://api.spoonacular.com/food/ingredients/autocomplete?apiKey="+apiKey+"&query="+ingrNames.get(i)+"&number="+1+"&metaInformation=true";
+                String apiUrl = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/ingredients/search"+
+                        "?query="+ingrNames.get(i)+
+                        "&number=1&metaInformation=true&offset=0";
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("x-rapidapi-key", apiKey);
+                headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
                 try{
-                    SpoonacularIngredient[] list=  restTemplate.getForObject(apiURL, SpoonacularIngredient[].class); // returns as a list
+                    ResponseEntity<IngredientResponse> response  = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
+                    SpoonacularIngredient[] list = response.getBody().getResults();
 
                     // if there is an ingredient, save to db
                     if(list[0] != null) {

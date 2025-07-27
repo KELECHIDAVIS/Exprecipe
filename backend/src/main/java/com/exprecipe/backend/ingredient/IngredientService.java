@@ -100,7 +100,14 @@ public class IngredientService {
 
         // make get call to rapid api
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<IngredientResponse> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
+        ResponseEntity<IngredientResponse> response  = null;
+
+        try{
+            response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
+        }catch(Exception e){
+            System.out.println("Error When Searching Ingredients: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new SpoonacularIngredient[]{});
+        }
 
         IngredientResponse ingrResponse = response.getBody();
 
