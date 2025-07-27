@@ -1,5 +1,6 @@
 package com.exprecipe.backend.recipe;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
@@ -9,9 +10,11 @@ public class SpRecipeIngredient {
     private Double amount;
     private Integer id;
     private String image;
+    @JsonIgnore
     private List<String> meta;
     private String name;
     private String original;
+    @JsonIgnore
     private String originalName;
     private String unit;
     private String unitLong;
