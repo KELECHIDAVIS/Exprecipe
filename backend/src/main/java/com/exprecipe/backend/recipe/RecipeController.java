@@ -51,8 +51,14 @@ public class RecipeController {
     @GetMapping("/{userId}/recipe/possible")
     public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         ResponseEntity<List<RpdRecipeSearchByIngr>> response =  recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
-
-        return response ;
+        RpdRecipeSearchByIngr dummy = new RpdRecipeSearchByIngr();
+        dummy.setId(1);
+        dummy.setTitle("Dummy Recipe");
+        dummy.setImage("dummy.jpg");
+        dummy.setImageType("jpg");
+        dummy.setLikes(10);
+        return ResponseEntity.ok(List.of(dummy));
+        //return response ;
     }
 
 
