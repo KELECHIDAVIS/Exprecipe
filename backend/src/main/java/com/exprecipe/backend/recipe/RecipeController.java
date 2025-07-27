@@ -48,7 +48,7 @@ public class RecipeController {
     @GetMapping("/{userId}/recipe/possible")
     public ResponseEntity<String> getPossibleRecipes(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         ResponseEntity<String> response =  recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
-        System.out.println(response);
+        System.out.println("Function Response Body: " + response.getBody());
         return response ;
     }
 

@@ -193,10 +193,19 @@ public class RecipeService {
             headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
             // make get call to rapid api
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-            return response;
+                System.out.println("Successful api call  ");
+                return response;
+            }catch(Exception e) {
+                System.out.println("Error when calling getPossibleRecipes:"+ e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            }
+
+
+
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
