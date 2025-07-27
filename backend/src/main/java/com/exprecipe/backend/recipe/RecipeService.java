@@ -169,7 +169,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<String> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<RpdRecipeSearchByIngr[]> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             Set<UserIngredient> ingrList = userIngredientRepo.findByUser_Id(userId);
@@ -195,13 +195,13 @@ public class RecipeService {
             // make get call to rapid api
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+                ResponseEntity<RpdRecipeSearchByIngr[]> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), RpdRecipeSearchByIngr[].class);
 
                 System.out.println("Successful api call  ");
                 return response;
             }catch(Exception e) {
                 System.out.println("Error when calling getPossibleRecipes:"+ e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
 
