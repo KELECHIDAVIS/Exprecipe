@@ -3,9 +3,6 @@ package com.exprecipe.backend.recipe;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 // recipe returned by the search by ingredients endpoint
@@ -17,8 +14,8 @@ public class RpdRecipeSearchByIngr {
     private Integer usedIngredientCount;
     private Integer missedIngredientCount;
     private List<RpdSpRecipeIngredient> missedIngredients;
-    private List<RpdSpRecipeIngredient> usedIngredients;
-    private List<RpdSpRecipeIngredient> unusedIngredients;
+    private RpdSpRecipeIngredient usedIngredients;
+    private RpdSpRecipeIngredient unusedIngredients;
     private Integer likes;
 
     public Integer getId() {
@@ -69,27 +66,27 @@ public class RpdRecipeSearchByIngr {
         this.missedIngredientCount = missedIngredientCount;
     }
 
-    public List<SpRecipeIngredient> getMissedIngredients() {
+    public List<RpdSpRecipeIngredient> getMissedIngredients() {
         return missedIngredients;
     }
 
-    public void setMissedIngredients(List<SpRecipeIngredient> missedIngredients) {
+    public void setMissedIngredients(List<RpdSpRecipeIngredient> missedIngredients) {
         this.missedIngredients = missedIngredients;
     }
 
-    public List<SpRecipeIngredient> getUsedIngredients() {
+    public RpdSpRecipeIngredient getUsedIngredients() {
         return usedIngredients;
     }
 
-    public void setUsedIngredients(List<SpRecipeIngredient> usedIngredients) {
+    public void setUsedIngredients(RpdSpRecipeIngredient usedIngredients) {
         this.usedIngredients = usedIngredients;
     }
 
-    public List<SpRecipeIngredient> getUnusedIngredients() {
+    public RpdSpRecipeIngredient getUnusedIngredients() {
         return unusedIngredients;
     }
 
-    public void setUnusedIngredients(List<SpRecipeIngredient> unusedIngredients) {
+    public void setUnusedIngredients(RpdSpRecipeIngredient unusedIngredients) {
         this.unusedIngredients = unusedIngredients;
     }
 
