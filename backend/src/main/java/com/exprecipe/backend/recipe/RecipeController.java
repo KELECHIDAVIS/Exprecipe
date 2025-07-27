@@ -3,13 +3,10 @@ package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.user.UserService;
 import com.exprecipe.backend.user.userrecipe.UserRecipe;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -51,14 +48,14 @@ public class RecipeController {
     @GetMapping("/{userId}/recipe/possible")
     public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         ResponseEntity<List<RpdRecipeSearchByIngr>> response =  recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
-        RpdRecipeSearchByIngr dummy = new RpdRecipeSearchByIngr();
-        dummy.setId(1);
-        dummy.setTitle("Dummy Recipe");
-        dummy.setImage("dummy.jpg");
-        dummy.setImageType("jpg");
-        dummy.setLikes(10);
-        return ResponseEntity.ok(List.of(dummy));
-        //return response ;
+//        RpdRecipeSearchByIngr dummy = new RpdRecipeSearchByIngr();
+//        dummy.setId(1);
+//        dummy.setTitle("Dummy Recipe");
+//        dummy.setImage("dummy.jpg");
+//        dummy.setImageType("jpg");
+//        dummy.setLikes(10);
+//        return ResponseEntity.ok(List.of(dummy));
+        return response ;
     }
 
 

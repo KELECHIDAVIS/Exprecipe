@@ -3,7 +3,6 @@ package com.exprecipe.backend.recipe;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
@@ -15,12 +14,12 @@ public class RpdRecipeSearchByIngr {
     private String title;
     private String image;
     private String imageType;
-    private int usedIngredientCount;
-    private int missedIngredientCount;
+    private Integer usedIngredientCount;
+    private Integer missedIngredientCount;
     private List<SpRecipeIngredient> missedIngredients;
     private List<SpRecipeIngredient> usedIngredients;
     private List<SpRecipeIngredient> unusedIngredients;
-    private int likes;
+    private Integer likes;
 
     public RpdRecipeSearchByIngr() {}
     public Integer getId() {
@@ -55,19 +54,19 @@ public class RpdRecipeSearchByIngr {
         this.imageType = imageType;
     }
 
-    public int getUsedIngredientCount() {
+    public Integer getUsedIngredientCount() {
         return usedIngredientCount;
     }
 
-    public void setUsedIngredientCount(int usedIngredientCount) {
+    public void setUsedIngredientCount(Integer usedIngredientCount) {
         this.usedIngredientCount = usedIngredientCount;
     }
 
-    public int getMissedIngredientCount() {
+    public Integer getMissedIngredientCount() {
         return missedIngredientCount;
     }
 
-    public void setMissedIngredientCount(int missedIngredientCount) {
+    public void setMissedIngredientCount(Integer missedIngredientCount) {
         this.missedIngredientCount = missedIngredientCount;
     }
 
@@ -95,11 +94,11 @@ public class RpdRecipeSearchByIngr {
         this.unusedIngredients = unusedIngredients;
     }
 
-    public int getLikes() {
+    public Integer getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    public void setLikes(Integer likes) {
         this.likes = likes;
     }
 }
