@@ -105,7 +105,7 @@ public class IngredientService {
         try{
             response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), IngredientResponse.class);
         }catch(Exception e){
-            System.out.println("Error When Searching Ingredients: " + e.getMessage());
+            System.err.println("Error When Searching Ingredients: " + e.getMessage());
             return ResponseEntity.badRequest().body(new SpoonacularIngredient[]{});
         }
 
