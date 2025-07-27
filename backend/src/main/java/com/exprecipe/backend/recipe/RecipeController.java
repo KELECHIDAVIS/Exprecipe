@@ -3,10 +3,13 @@ package com.exprecipe.backend.recipe;
 
 import com.exprecipe.backend.user.UserService;
 import com.exprecipe.backend.user.userrecipe.UserRecipe;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +51,13 @@ public class RecipeController {
     @GetMapping("/{userId}/recipe/possible")
     public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes(@PathVariable Long userId, @RequestParam Integer numberOfRecipes, @RequestParam Integer ranking, @RequestParam boolean ignorePantry ) {
         ResponseEntity<List<RpdRecipeSearchByIngr>> response =  recipeService.getPossibleRecipes(userId, numberOfRecipes, ranking, ignorePantry);
-        System.out.println("Function Response Body: " + response.getBody());
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            System.out.println(mapper.writeValueAsString(response.getBody()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         return response ;
     }
 
