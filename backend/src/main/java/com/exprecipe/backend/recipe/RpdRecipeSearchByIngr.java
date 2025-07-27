@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 // recipe returned by the search by ingredients endpoint
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RpdRecipeSearchByIngr {
     private Integer id;
     private String title;
@@ -17,15 +16,11 @@ public class RpdRecipeSearchByIngr {
     private String imageType;
     private Integer usedIngredientCount;
     private Integer missedIngredientCount;
-    @JsonIgnore
-    private List<SpRecipeIngredient> missedIngredients;
-    @JsonIgnore
-    private List<SpRecipeIngredient> usedIngredients;
-    @JsonIgnore
-    private List<SpRecipeIngredient> unusedIngredients;
+    private List<RpdSpRecipeIngredient> missedIngredients;
+    private List<RpdSpRecipeIngredient> usedIngredients;
+    private List<RpdSpRecipeIngredient> unusedIngredients;
     private Integer likes;
 
-    public RpdRecipeSearchByIngr() {}
     public Integer getId() {
         return id;
     }
