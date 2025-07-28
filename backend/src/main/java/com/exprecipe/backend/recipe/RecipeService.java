@@ -290,8 +290,9 @@ public class RecipeService {
             String formattedIngredients = formatIngredientList(ingrList);
 
             // format cuisines, diets, intolerances into comma seperated lists
-            String apiURL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/searchComplex?"
-                    +"includeIngredients="+formattedIngredients
+            String apiURL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?"
+                    +"?query=lunch"
+                    +"&includeIngredients="+formattedIngredients
                     +"&number="+Math.min(100, numberOfRecipes)
                     +"&sort="+sort
                     +"&ignorePantry="+ignorePantry
