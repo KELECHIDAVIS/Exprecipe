@@ -275,8 +275,9 @@ public class RecipeService {
 
 
     //THERE IS SOMETHING WEIRD GOING ON WITH THIS REQUEST FOR CERTAIN RECIPE TYPES HAVE TO LOOK INTO MORE
-    //MAYBE CHANGE COMPLEX SEARCH INTO QUERY BASED WITH FILTERS (query: burger ) 
-    public ResponseEntity<String> getPossibleRecipesComplex(Long userId, int numberOfRecipes, boolean ignorePantry , String cuisines, String type , int maxReadyTime, int minServings, String sort, String diets, String intolerances) {
+    //MAYBE CHANGE COMPLEX SEARCH INTO QUERY BASED WITH FILTERS (query: burger )
+    //for rn using base recipe search from the api   
+    public  ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipesComplex(Long userId, int numberOfRecipes, boolean ignorePantry , String cuisines, String type , int maxReadyTime, int minServings, String sort, String diets, String intolerances) {
         Optional<User> possibleUser = userRepo.findById(userId);
 
         if(possibleUser.isPresent()) {
@@ -294,10 +295,9 @@ public class RecipeService {
                     +"&number="+Math.min(100, numberOfRecipes)
                     +"&sort="+sort
                     +"&ignorePantry="+ignorePantry
-                    +"&cuisines="+cuisines
+                    +"&cuisine="+cuisines
                     +"&type="+type
                     +"&maxReadyTime="+maxReadyTime
-                    +"&minServings="+Math.max(1,minServings)
                     +"&diet="+diets
                     +"&intolerances="+intolerances;
 
@@ -306,10 +306,26 @@ public class RecipeService {
             headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
             // make get call to rapid api
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+           // make get call to rapid api
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-            return response;
+                ResponseEntity<List<RpdRecipeSearchByIngr>> response = restTemplate.exchange(
+                        apiURL,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        new ParameterizedTypeReference<List<RpdRecipeSearchByIngr>>() {}
+                );
+                List<RpdRecipeSearchByIngr> recipes = response.getBody();
+                return ResponseEntity.ok(recipes);
+
+            }catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error when calling get possible recipes complex:"+ e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
