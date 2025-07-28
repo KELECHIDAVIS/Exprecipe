@@ -13,13 +13,11 @@ import com.exprecipe.backend.user.userrecipe.UserRecipeRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -171,7 +169,7 @@ public class RecipeService {
     ranking: either 1 or 2: (1) returns recipes that use the most amt of our ingrs, (2) minimizes missing ingrs
     ignorePantry: if true it assumes you have common household ingredients like salt, flour, etc. false will just go off of inputted ingredients
      */
-    public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
+    public ResponseEntity<String> getPossibleRecipes (Long userId, int numberOfRecipes, int ranking, boolean ignorePantry ) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             Set<UserIngredient> ingrList = userIngredientRepo.findByUser_Id(userId);
@@ -195,27 +193,10 @@ public class RecipeService {
             headers.set("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
 
             // make get call to rapid api
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(apiURL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-                ResponseEntity<List<RpdRecipeSearchByIngr>> response = restTemplate.exchange(
-                        apiURL,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        new ParameterizedTypeReference<List<RpdRecipeSearchByIngr>>() {}
-                );
-                List<RpdRecipeSearchByIngr> recipes = response.getBody();
-                return ResponseEntity.ok(recipes);
-
-            }catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error when calling getPossibleRecipes:"+ e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-
-
-
+            return response;
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -248,9 +229,11 @@ public class RecipeService {
 
             // make get call to rapid api
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<SpoonacularRecipe> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), SpoonacularRecipe.class);
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-           
+
+            return response;
+        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
