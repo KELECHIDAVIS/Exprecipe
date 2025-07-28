@@ -1,5 +1,6 @@
+package com.exprecipe.backend.recipe; 
+import com.exprecipe.backend.recipe.RpdRecipeSearchByIngr;
 import java.util.List;
-
 public class RecipeResponse {
     private List<RpdRecipeSearchByIngr> results; 
     private Integer offset; 
