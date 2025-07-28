@@ -64,7 +64,7 @@ public class RecipeController {
      returned in string form
      */
     @GetMapping("/{userId}/recipe/possible/complex")
-    public ResponseEntity<String> getPossibleRecipesComplex(@PathVariable Long userId
+    public ResponseEntity<List<RpdRecipeSearchByIngr>> getPossibleRecipesComplex(@PathVariable Long userId
             , @RequestParam Integer numberOfRecipes
             , @RequestParam String sort, @RequestParam boolean ignorePantry
             , @RequestParam String cuisines, @RequestParam String type, @RequestParam int maxReadyTime , @RequestParam int minServings
