@@ -101,4 +101,12 @@ public class RpdRecipeSearchByIngr {
     public void setLikes(Integer likes) {
         this.likes = likes;
     }
+     @Override
+    public String toString() {
+        return "RpdRecipeSearchByIngr{" +
+                "name='" + title + '\'' +
+                ", id=" + id +
+                ", usedIngredientCount=" + usedIngredientCount +
+                '}';
+    }
 }

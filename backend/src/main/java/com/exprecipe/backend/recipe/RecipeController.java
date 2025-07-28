@@ -69,7 +69,9 @@ public class RecipeController {
             , @RequestParam String sort, @RequestParam boolean ignorePantry
             , @RequestParam String cuisines, @RequestParam String type, @RequestParam int maxReadyTime , @RequestParam int minServings
             , @RequestParam String diets, @RequestParam String intolerances ) {
-        return recipeService.getPossibleRecipesComplex(userId,numberOfRecipes,ignorePantry, cuisines, type, maxReadyTime, minServings , sort, diets, intolerances );
+             ResponseEntity<List<RpdRecipeSearchByIngr>> response= recipeService.getPossibleRecipesComplex(userId,numberOfRecipes,ignorePantry, cuisines, type, maxReadyTime, minServings , sort, diets, intolerances );
+            System.out.println(response.getBody()); 
+                return response; 
     }
 
     /*
