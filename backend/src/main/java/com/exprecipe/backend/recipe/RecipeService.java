@@ -237,7 +237,7 @@ public class RecipeService {
     }
 
     // makes a request to the external api to retreive recipe information
-    public ResponseEntity<String> getRecipeInformation(Long userId, Integer recipeSpId) {
+    public ResponseEntity<SpoonacularRecipe> getRecipeInformation(Long userId, Integer recipeSpId) {
         Optional<User> possibleUser = userRepo.findById(userId);
         if(possibleUser.isPresent()) {
             String apiUrl ="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + recipeSpId + "/information" ;
@@ -248,7 +248,7 @@ public class RecipeService {
 
             // make get call to rapid api
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            ResponseEntity<SpoonacularRecipe> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), SpoonacularRecipe.class);
 
 
             return response;

@@ -76,7 +76,7 @@ public class RecipeController {
     @ returns recipe info object from external api using spid
      */
     @GetMapping("/{userId}/recipe/information")
-    public ResponseEntity<String> getRecipeInformation(@PathVariable Long userId, @RequestParam Integer recipeId) {
+    public ResponseEntity<SpoonacularRecipe> getRecipeInformation(@PathVariable Long userId, @RequestParam Integer recipeId) {
         return recipeService.getRecipeInformation(userId, recipeId)   ;
     }
 
