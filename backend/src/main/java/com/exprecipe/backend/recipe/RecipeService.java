@@ -248,11 +248,9 @@ public class RecipeService {
 
             // make get call to rapid api
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            ResponseEntity<SpoonacularRecipe> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers), SpoonacularRecipe.class);
 
-
-            return response;
-        }
+           
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
