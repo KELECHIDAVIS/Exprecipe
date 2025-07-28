@@ -311,14 +311,14 @@ public class RecipeService {
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-                ResponseEntity<List<RpdRecipeSearchByIngr>> response = restTemplate.exchange(
+                ResponseEntity<RecipeResponse> response = restTemplate.exchange(
                         apiURL,
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
-                        new ParameterizedTypeReference<List<RpdRecipeSearchByIngr>>() {}
+                        new ParameterizedTypeReference<RecipeResponse>() {}
                 );
-                List<RpdRecipeSearchByIngr> recipes = response.getBody();
-                return ResponseEntity.ok(recipes);
+               RecipeResponse recipes = response.getBody();
+                return ResponseEntity.ok(recipes.getResults());
 
             }catch(Exception e) {
                 e.printStackTrace();
